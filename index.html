@@ -1,0 +1,470 @@
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Yuchani Tools — React 미리보기</title>
+  <!-- Tailwind CDN (미리보기용) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- React 18 + ReactDOM -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <!-- Babel(브라우저에서 JSX 변환) -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="bg-[#0F1113] text-white">
+  <div id="root"></div>
+
+  <!-- 원본 JSX를 Babel이 변환하도록 삽입 -->
+  <script type="text/babel">
+    const { useState, useMemo, useEffect, useRef } = React;
+
+
+// JS 버전 (타입 제거) — 캔버스 미리보기 호환
+function YuchaniToolsDemo() {
+  const [tab, setTab] = useState("home"); // "home" | "tool"
+  return (
+    <div className="min-h-screen bg-[#0F1113] text-white">
+      <Header tab={tab} onTab={setTab} />
+      <main className="mx-auto max-w-7xl px-4 pb-24">
+        {tab === "home" ? <HomeScreen onGoTool={() => setTab("tool")} /> : <ToolDetail />}
+      </main>
+      <Footer />
+    </div>
+  );
+}
+
+function Header({ tab, onTab }) {
+  return (
+    <header className="sticky top-0 z-30 backdrop-blur supports-[backdrop-filter]:bg-[#0F1113]/70">
+      <div className="mx-auto max-w-7xl px-4">
+        <div className="flex h-16 items-center justify-between">
+          {/* Logo */}
+          <div className="flex items-center gap-3">
+            <Logo />
+            <span className="text-lg font-semibold tracking-tight bg-gradient-to-r from-emerald-300 to-teal-400 bg-clip-text text-transparent">Yuchani Tools pro</span>
+          </div>
+
+          {/* Search */}
+          <div className="hidden md:flex md:min-w-[420px] md:flex-1 md:justify-center">
+            <SearchBar />
+          </div>
+
+          {/* Nav */}
+          <nav className="flex items-center gap-2">
+            <NavButton active={tab === "home"} onClick={() => onTab("home")}>
+              메인
+            </NavButton>
+            <NavButton active={tab === "tool"} onClick={() => onTab("tool")}>
+              툴 상세
+            </NavButton>
+            <a
+              href="#"
+              className="rounded-xl border border-white/15 px-3 py-2 text-sm text-white/80 transition hover:translate-y-[-1px] hover:border-white/25 hover:text-white"
+            >
+              Donate
+            </a>
+          </nav>
+        </div>
+
+        {/* Mobile Search */}
+        <div className="pb-3 md:hidden">
+          <SearchBar />
+        </div>
+      </div>
+    </header>
+  );
+}
+
+function Logo() {
+  return (
+    <div className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-emerald-400/80 to-teal-500/80 shadow-[0_6px_30px_-10px_rgba(16,185,129,0.7)]">
+      {/* Y */}
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M5 4l7 7 7-7" stroke="black" strokeWidth="2.2" strokeLinecap="round"/>
+        <path d="M12 11v9" stroke="black" strokeWidth="2.2" strokeLinecap="round"/>
+      </svg>
+    </div>
+  );
+}
+
+function NavButton({ active, children, onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`rounded-xl px-3 py-2 text-sm transition ${
+        active
+          ? "bg-white text-black shadow hover:translate-y-[-1px]"
+          : "border border-white/15 text-white/80 hover:border-white/25 hover:text-white"
+      }`}
+    >
+      {children}
+    </button>
+  );
+}
+
+function SearchBar() {
+  return (
+    <div className="relative w-full">
+      <input
+        placeholder="무엇을 만들까요? QR, PDF, Base64, Regex…"
+        className="w-full rounded-2xl border border-white/15 bg-white/5 px-4 py-3 pl-10 text-sm outline-none placeholder:text-white/40 focus:border-white/25"
+      />
+      <div className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 opacity-60">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="11" cy="11" r="7" stroke="white" strokeOpacity="0.9" strokeWidth="1.6" />
+          <path d="M20 20l-3.5-3.5" stroke="white" strokeOpacity="0.9" strokeWidth="1.6" strokeLinecap="round" />
+        </svg>
+      </div>
+    </div>
+  );
+}
+
+function HomeScreen({ onGoTool }) {
+  return (
+    <>
+      <Hero onGoTool={onGoTool} />
+      <QuickCategories />
+      <FeaturedGrid />
+      <SEOBlock />
+    </>
+  );
+}
+
+function Hero({ onGoTool }) {
+  return (
+    <section className="py-10 md:py-16">
+      <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 to-white/0 p-6 md:p-10">
+        <div className="flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
+          <div className="max-w-2xl">
+            <h1 className="text-3xl font-bold tracking-tight md:text-5xl">
+              <span className="block">필요한 도구 찾느라 시간낭비 금지.</span>
+              <span className="block bg-gradient-to-r from-emerald-300 to-teal-400 bg-clip-text text-transparent">한 번에 끝내는 Yuchani Tools pro</span>
+            </h1>
+            <p className="mt-4 text-white/80">
+              <span className="bg-gradient-to-r from-emerald-300 to-teal-400 bg-clip-text text-transparent">초고속 AI웹툴을 경험하세요</span><br/>
+              국내/글로벌 유저를 위해 설계된 초집중 툴 허브<br/>
+              비용= 완전무료 / 속도=초고속 / 결과물= 완벽<br/>
+              <span className="text-yellow-300">후원은 제가 개발하는데 큰 도움이 됩니다. 사이트 하단에 링크있습니다 ❤️</span>
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <button onClick={onGoTool} className="rounded-xl bg-white px-4 py-2.5 text-black shadow transition hover:translate-y-[-1px]">
+                예시 툴 열어보기
+              </button>
+              <a href="#categories" className="rounded-xl border border-white/15 px-4 py-2.5 text-white/80 hover:border-white/25 hover:text-white">
+                카테고리 보기
+              </a>
+            </div>
+          </div>
+
+          <div className="grid w-full grid-cols-2 gap-4 self-start md:self-auto">
+            {["QR 생성기","PDF 합치기","PDF 용량줄이기","텍스트 → 이미지 OCR","Base64 변환","Regex 테스트"].map((t) => (
+              <a key={t} href="#" className="rounded-2xl border border-white/10 bg-white/5 p-5 transition hover:translate-y-[-2px]">
+                <div className="text-lg font-semibold">{t}</div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function QuickCategories() {
+  const cats = [
+    { name: "PDF 3대장", desc: "합치기/나누기/용량줄이기", hue: "from-yellow-300/40 to-yellow-500/30" },
+    { name: "이미지/텍스트", desc: "OCR/변환/리사이즈", hue: "from-sky-300/40 to-sky-500/30" },
+    { name: "코딩/웹", desc: "Base64/OG/Robots/Sitemap", hue: "from-emerald-300/40 to-emerald-500/30" },
+    { name: "SNS/미디어", desc: "OG/Twitter 카드", hue: "from-pink-300/40 to-pink-500/30" },
+  ];
+  return (
+    <section id="categories" className="space-y-4 py-6">
+      <div className="flex items-end justify-between">
+        <h2 className="text-xl font-semibold md:text-2xl">카테고리 빠른 이동</h2>
+        <a href="#" className="text-sm text-white/60 hover:text-white/90">모두 보기</a>
+      </div>
+      {/* 모바일 2열, 데스크탑 4열 */}
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {cats.map((c) => (
+          <a key={c.name} href="#" className={`rounded-2xl border border-white/10 bg-gradient-to-br ${c.hue} p-5 transition hover:translate-y-[-2px]`}>
+            <div className="text-lg font-semibold">{c.name}</div>
+            <div className="mt-1 text-sm text-white/70">{c.desc}</div>
+          </a>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function FeaturedGrid() {
+  const tools = [
+    { t: "QR 코드 생성기", tag: "인기", color: "bg-emerald-400/20 border-emerald-400/30" },
+    { t: "PDF 합치기", tag: "신규", color: "bg-yellow-400/15 border-yellow-300/30" },
+    { t: "Base64 변환", tag: "업데이트", color: "bg-sky-400/20 border-sky-300/30" },
+    { t: "Regex 테스트", tag: "개발자", color: "bg-pink-400/20 border-pink-300/30" },
+    { t: "OG 카드 미리보기", tag: "마케터", color: "bg-purple-400/20 border-purple-300/30" },
+    { t: "Sitemap 생성", tag: "SEO", color: "bg-lime-400/20 border-lime-300/30" },
+  ];
+  return (
+    <section className="py-8">
+      <div className="flex items-end justify-between">
+        <h2 className="text-xl font-semibold md:text-2xl">추천 툴</h2>
+        <a href="#" className="text-sm text-white/60 hover:text-white/90">더 보기</a>
+      </div>
+      {/* 모바일 2열, 데스크탑 3열 */}
+      <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {tools.map((it) => (
+          <a key={it.t} href="#" className={`group rounded-2xl border ${it.color} p-5 transition hover:translate-y-[-2px]`}>
+            <div className="flex items-center justify-between">
+              <div className="text-base font-medium">{it.t}</div>
+              <span className="rounded-md bg-white/10 px-2 py-1 text-xs text-white/80">{it.tag}</span>
+            </div>
+            <p className="mt-2 text-sm text-white/70">원클릭으로 처리하고, 결과는 즉시 다운로드.</p>
+          </a>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function SEOBlock() {
+  return (
+    <section className="py-8">
+      <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <div>
+            <div className="text-base font-medium">SEO/브랜딩 고정 블록</div>
+            <p className="text-sm text-white/70">멀티랭 hreflang, JSON-LD(WebApplication), 가격 0, OG/Twitter 메타, 카테고리 링크 고정.</p>
+          </div>
+          <div className="flex gap-2">
+            <a href="#" className="rounded-xl border border-white/15 px-3 py-2 text-sm text-white/80 hover:border-white/25 hover:text-white">브랜드 가이드</a>
+            <a href="#" className="rounded-xl border border-white/15 px-3 py-2 text-sm text-white/80 hover:border-white/25 hover:text-white">개발자 문서</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ToolDetail() {
+  const [text, setText] = useState("https://tools.yuchani.com");
+  const qrUrl = useMemo(() => {
+    const data = encodeURIComponent(text);
+    return `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${data}`;
+  }, [text]);
+
+  return (
+    <section className="py-10">
+      <Breadcrumb />
+      <header className="mt-3 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight md:text-3xl">QR 코드 생성기</h1>
+          <p className="mt-2 max-w-2xl text-white/70">URL/텍스트를 입력하면 즉시 미리보기와 함께 PNG를 다운로드합니다. 컬러, 여백, 사이즈는 옵션에서 조절.</p>
+        </div>
+        <div className="flex gap-2">
+          <a href="#" className="rounded-xl border border-white/15 px-3 py-2 text-sm text-white/80 hover:border-white/25 hover:text-white">문서</a>
+          <a href="#" className="rounded-xl border border-white/15 px-3 py-2 text-sm text-white/80 hover:border-white/25 hover:text-white">GitHub</a>
+        </div>
+      </header>
+
+      {/* 입력/미리보기 2단 레이아웃 */}
+      <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
+        {/* 입력 패널 - 노랑 테두리 */}
+        <div className="rounded-2xl border-2 border-yellow-300/40 bg-white/5 p-5">
+          <div className="text-sm font-medium text-yellow-200/90">입력</div>
+          <div className="mt-3 space-y-3">
+            <label className="block text-sm text-white/75">텍스트/URL</label>
+            <input
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              className="w-full rounded-xl border border-white/15 bg-black/40 px-3 py-2.5 text-sm outline-none placeholder:text-white/40 focus:border-white/25"
+              placeholder="예: https://example.com"
+            />
+            <div className="grid grid-cols-3 gap-2 text-sm text-white/70">
+              <button className="rounded-lg border border-white/15 px-3 py-2 hover:border-white/25">240px</button>
+              <button className="rounded-lg border border-white/15 px-3 py-2 hover:border-white/25">360px</button>
+              <button className="rounded-lg border border-white/15 px-3 py-2 hover:border-white/25">480px</button>
+            </div>
+            <div className="flex gap-2 text-sm text-white/70">
+              <button className="rounded-lg border border-white/15 px-3 py-2 hover:border-white/25">여백 +</button>
+              <button className="rounded-lg border border-white/15 px-3 py-2 hover:border-white/25">여백 -</button>
+            </div>
+          </div>
+        </div>
+
+        {/* 미리보기 패널 - 파랑 테두리 */}
+        <div className="rounded-2xl border-2 border-sky-300/40 bg-white/5 p-5">
+          <div className="flex items-center justify-between">
+            <div className="text-sm font-medium text-sky-200/90">미리보기</div>
+            <button className="rounded-xl bg-white px-3 py-1.5 text-xs font-medium text-black shadow hover:translate-y-[-1px]">PNG 다운로드</button>
+          </div>
+          <div className="mt-4 grid place-items-center">
+            <img src={qrUrl} alt="QR 미리보기" className="h-60 w-60 rounded-lg bg-white p-2" />
+          </div>
+          <p className="mt-3 text-center text-xs text-white/60">노트: 데모용 외부 API 이미지. 실제 배포시 자체 생성기로 교체 가능.</p>
+        </div>
+      </div>
+
+      {/* 도움말/FAQ - 초록 테두리 */}
+      <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <div className="rounded-2xl border-2 border-emerald-300/40 bg-white/5 p-5 lg:col-span-2">
+          <div className="text-sm font-medium text-emerald-200/90">도움말 & 팁</div>
+          <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-white/75">
+            <li>PNG가 흐리면 사이즈를 2배로 생성 후 CSS로 축소해 사용.</li>
+            <li>명함/전단지 인쇄용은 흑백 대비(검정/하양) 권장.</li>
+            <li>한글 긴 URL은 짧게 줄인 뒤 QR 생성하면 스캔 안정성 ↑</li>
+          </ul>
+        </div>
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+          <div className="text-sm font-medium">관련 툴</div>
+          {/* 모바일 2열, sm부터 1열 */}
+          <div className="mt-3 grid grid-cols-2 gap-2 text-sm text-white/80 sm:grid-cols-1">
+            <a href="#" className="rounded-lg border border-white/10 px-3 py-2 hover:border-white/25">바코드 생성기</a>
+            <a href="#" className="rounded-lg border border-white/10 px-3 py-2 hover:border-white/25">OG 카드 프리뷰</a>
+            <a href="#" className="rounded-lg border border-white/10 px-3 py-2 hover:border-white/25">URL 단축</a>
+          </div>
+        </div>
+      </div>
+
+      {/* SEO 고정 정보 */}
+      <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-5">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="text-sm text-white/70">JSON-LD • hreflang • canonical • 무료가격(0) • 메타 설명 </div>
+          <button className="rounded-xl border border-white/15 px-3 py-2 text-sm text-white/80 hover:border-white/25 hover:text-white">구현 가이드 보기</button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Breadcrumb() {
+  return (
+    <nav className="text-sm text-white/60">
+      <ol className="flex flex-wrap items-center gap-2">
+        <li><a className="hover:text-white/90" href="#">홈</a></li>
+        <li>/</li>
+        <li><a className="hover:text-white/90" href="#">코딩/웹</a></li>
+        <li>/</li>
+        <li className="text-white">QR 코드 생성기</li>
+      </ol>
+    </nav>
+  );
+}
+
+function Footer() {
+  return (
+    <footer className="border-t border-white/10 py-12 text-sm text-white/70">
+      <div className="mx-auto max-w-7xl px-4">
+        {/* 고급 푸터 액션 버튼 */}
+        <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          {/* yuchani.com */}
+          <a
+            href="https://yuchani.com"
+            target="_blank"
+            rel="noreferrer noopener"
+            aria-label="yuchani website (블로그)"
+            className="group relative rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 backdrop-blur transition hover:-translate-y-0.5 hover:border-white/25 hover:bg-white/[0.06]"
+          >
+            <div className="flex items-center gap-2">
+              <span className="grid h-8 w-8 place-items-center rounded-xl bg-gradient-to-br from-emerald-400/70 to-teal-500/70 shadow-[0_8px_30px_-12px_rgba(16,185,129,0.6)]">
+                {/* Globe icon */}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="12" cy="12" r="10" stroke="black" strokeWidth="1.6"/>
+                  <path d="M2 12h20M12 2c3 3 3 17 0 20M12 2c-3 3-3 17 0 20" stroke="black" strokeWidth="1.6"/>
+                </svg>
+              </span>
+              <div>
+                <div className="font-medium text-white">yuchani website</div>
+                <div className="text-xs text-white/55">블로그 · yuchani.com</div>
+              </div>
+            </div>
+          </a>
+
+          {/* bloodmenlife.com */}
+          <a
+            href="https://bloodmenlife.com"
+            target="_blank"
+            rel="noreferrer noopener"
+            aria-label="boolmenlife website (블로그)"
+            className="group relative rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 backdrop-blur transition hover:-translate-y-0.5 hover:border-white/25 hover:bg-white/[0.06]"
+          >
+            <div className="flex items-center gap-2">
+              <span className="grid h-8 w-8 place-items-center rounded-xl bg-gradient-to-br from-sky-400/70 to-indigo-500/70 shadow-[0_8px_30px_-12px_rgba(56,189,248,0.6)]">
+                {/* Globe icon */}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="12" cy="12" r="10" stroke="black" strokeWidth="1.6"/>
+                  <path d="M2 12h20M12 2c3 3 3 17 0 20M12 2c-3 3-3 17 0 20" stroke="black" strokeWidth="1.6"/>
+                </svg>
+              </span>
+              <div>
+                <div className="font-medium text-white">boolmenlife website</div>
+                <div className="text-xs text-white/55">블로그 · bloodmenlife.com</div>
+              </div>
+            </div>
+          </a>
+
+          {/* KakaoTalk Admin */}
+          <a
+            href="https://open.kakao.com/me/yuchani_x"
+            target="_blank"
+            rel="noreferrer noopener"
+            aria-label="관리자 카카오톡"
+            className="group relative rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 backdrop-blur transition hover:-translate-y-0.5 hover:border-white/25 hover:bg-white/[0.06]"
+          >
+            <div className="flex items-center gap-2">
+              <span className="grid h-8 w-8 place-items-center rounded-xl bg-gradient-to-br from-yellow-300/80 to-amber-500/80 shadow-[0_8px_30px_-12px_rgba(251,191,36,0.6)]">
+                {/* KakaoTalk bubble */}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 5c-4.5 0-8.5 2.7-8.5 6s4 6 8.5 6c.8 0 1.6-.1 2.4-.3L20.2 20l-1.5-3c.8-1 .8-1.9.8-3 0-3.3-3.5-6-7.5-6Z" fill="black"/>
+                  <path d="M8.2 12.2h7.6" stroke="#FFC801" strokeWidth="1.8" strokeLinecap="round"/>
+                </svg>
+              </span>
+              <div>
+                <div className="font-medium text-white">관리자 카카오톡</div>
+                <div className="text-xs text-white/55">open.kakao.com/me/yuchani_x</div>
+              </div>
+            </div>
+          </a>
+
+          {/* KakaoPay Donate (강조) */}
+          <a
+            href="https://qr.kakaopay.com/FcRGwQ7nE"
+            target="_blank"
+            rel="noreferrer noopener"
+            aria-label="카카오페이 후원"
+            className="group relative rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 backdrop-blur transition hover:-translate-y-0.5 hover:border-white/25 hover:bg-white/[0.06]"
+          >
+            <div className="flex items-center gap-2">
+              <span className="grid h-8 w-8 place-items-center rounded-xl bg-gradient-to-br from-yellow-300/85 to-yellow-400/85 shadow-[0_8px_30px_-12px_rgba(251,191,36,0.65)]">
+                {/* KakaoPay mark */}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="3" y="5" width="18" height="14" rx="3" fill="black"/>
+                  <text x="12" y="14" fontSize="7" fontWeight="800" textAnchor="middle" fill="#FFC801">pay</text>
+                </svg>
+              </span>
+              <div>
+                <div className="font-medium text-white">카카오페이 후원</div>
+                <div className="text-xs text-white/55">qr.kakaopay.com/FcRGwQ7nE</div>
+              </div>
+            </div>
+          </a>
+        </div>
+
+        {/* 하단 보조 링크 라인 (선택) */}
+        <div className="mt-6 flex flex-wrap items-center gap-2 text-xs text-white/45">
+          <span className="rounded-lg border border-white/10 px-2 py-1">브랜드 가이드</span>
+          <span className="rounded-lg border border-white/10 px-2 py-1">개발자 문서</span>
+          <span className="rounded-lg border border-white/10 px-2 py-1">이용약관</span>
+          <span className="rounded-lg border border-white/10 px-2 py-1">Privacy</span>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+
+    // 렌더
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(React.createElement(YuchaniToolsDemo));
+  </script>
+</body>
+</html>

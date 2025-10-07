@@ -1,214 +1,570 @@
-<!doctype html>
-<html lang="ko">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Yuchani Tools pro — 웹툴 허브</title>
-  <meta name="description" content="한 번에 끝내는 Yuchani Tools pro 초고속 AI웹툴. 비용=무료 · 속도=초고속 · 결과물=완벽" />
-  <!-- Tailwind (CDN) -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>tailwind.config = { theme: { extend: {} } }</script>
+import React, { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
+import {
+  Search,
+  Sparkles,
+  Settings2,
+  Rocket,
+  Star,
+  HeartHandshake,
+  Globe,
+  QrCode,
+  FileCode2,
+  FileText,
+  ImageDown,
+  Link2,
+  FileSearch,
+  BookOpenCheck,
+  ShieldCheck,
+  Gauge,
+} from "lucide-react";
 
-  <!-- Open Graph / Twitter -->
-  <meta property="og:title" content="Yuchani Tools pro" />
-  <meta property="og:description" content="한 번에 끝내는 초고속 AI웹툴" />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://tools.yuchani.com/" />
+// ──────────────────────────────────────────────────────────────────────────────
+// 브랜드/팔레트 (로고/그라데이션/칩 스타일)
+// NOTE: LOGO_URL 은 데이터 URL 또는 절대/상대경로 모두 가능
+const LOGO_URL = "data:image/webp;base64,UklGRlRWAABXRUJQVlA4WAoAAAAgAAAA/wEA/wEASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAA...GmI7XvHpAL1ohcb+Tz4qafQQS5xA78rpGmp7tRjKbZlGGrqh8+BwBVnBQMQAA==";
+const BRAND_CLASSES = {
+  brandFrom: "from-amber-400",
+  brandTo: "to-cyan-300",
+  chip: "bg-amber-400/15 border-amber-400/30 hover:bg-amber-400/20",
+  callToAction: "bg-gradient-to-r from-amber-400 to-cyan-400 text-black",
+  ring: "ring-1 ring-white/10",
+};
 
-  <!-- JSON-LD -->
-  <script type="application/ld+json">
+// 카테고리 컬러 팔레트 & 헬퍼
+const CAT_COLORS: Record<string, { from: string; to: string; ring: string; text: string }> = {
+  convert: { from: "from-amber-400/20", to: "to-orange-400/10", ring: "ring-amber-400/30", text: "text-amber-200" },
+  preview: { from: "from-sky-400/20", to: "to-cyan-300/10", ring: "ring-sky-400/30", text: "text-sky-200" },
+  doc: { from: "from-emerald-400/20", to: "to-green-300/10", ring: "ring-emerald-400/30", text: "text-emerald-200" },
+  image: { from: "from-violet-400/20", to: "to-fuchsia-300/10", ring: "ring-violet-400/30", text: "text-violet-200" },
+  seo: { from: "from-indigo-400/20", to: "to-purple-300/10", ring: "ring-indigo-400/30", text: "text-indigo-200" },
+  dev: { from: "from-slate-400/20", to: "to-zinc-300/10", ring: "ring-slate-400/30", text: "text-slate-200" },
+  senior: { from: "from-rose-400/20", to: "to-pink-300/10", ring: "ring-rose-400/30", text: "text-rose-200" },
+  brand: { from: "from-yellow-400/20", to: "to-amber-300/10", ring: "ring-yellow-400/30", text: "text-yellow-200" },
+};
+const catTone = (key: string) => {
+  const c = CAT_COLORS[key] || CAT_COLORS.dev;
+  return {
+    icon: `bg-gradient-to-br ${c.from} ${c.to} ${BRAND_CLASSES.ring} ${c.ring}`,
+    title: `${c.text}`,
+  } as const;
+};
+
+// 아이콘 톤 (툴/카드/카테고리 아이콘 색상)
+const ICON_TONES: Record<string, string> = {
+  html: "text-cyan-300",
+  qrcode: "text-emerald-300",
+  url: "text-sky-300",
+  pdf: "text-rose-300",
+  og: "text-indigo-300",
+  ocr: "text-violet-300",
+  base64: "text-amber-300",
+  ko: "text-yellow-300",
+  default: "text-white",
+};
+const iconTone = (tone?: string) => ICON_TONES[tone || "default"] || ICON_TONES.default;
+
+const CAT_ICON_TONES: Record<string, string> = {
+  convert: "text-amber-300",
+  preview: "text-cyan-300",
+  doc: "text-emerald-300",
+  image: "text-violet-300",
+  seo: "text-indigo-300",
+  dev: "text-slate-300",
+  senior: "text-rose-300",
+  brand: "text-yellow-300",
+};
+const catIconColor = (key: string) => CAT_ICON_TONES[key] || "text-white";
+
+// ──────────────────────────────────────────────────────────────────────────────
+// 데이터 타입
+type Category = {
+  key: keyof typeof CAT_COLORS | string;
+  label: string;
+  desc: string;
+  icon: React.ReactElement;
+};
+
+type Tool = {
+  title: string;
+  href: string;
+  desc: string;
+  icon: React.ReactElement;
+  tags: string[];
+  tone?: keyof typeof ICON_TONES | string;
+};
+
+// 콘텐츠: 카테고리
+const CATEGORIES: Category[] = [
+  { key: "convert", label: "변환", desc: "단위/인코딩/포맷", icon: <Gauge className="w-5 h-5" /> },
+  { key: "preview", label: "미리보기", desc: "HTML/OG/Twitter", icon: <FileSearch className="w-5 h-5" /> },
+  { key: "doc", label: "문서", desc: "PDF/텍스트", icon: <FileText className="w-5 h-5" /> },
+  { key: "image", label: "이미지/OCR", desc: "추출/리사이즈", icon: <ImageDown className="w-5 h-5" /> },
+  { key: "seo", label: "SEO", desc: "메타/스키마", icon: <Globe className="w-5 h-5" /> },
+  { key: "dev", label: "개발", desc: "Regex/JSON", icon: <FileCode2 className="w-5 h-5" /> },
+  { key: "senior", label: "시니어", desc: "큰 글씨/간편", icon: <BookOpenCheck className="w-5 h-5" /> },
+  { key: "brand", label: "브랜딩", desc: "로고/프리셋", icon: <Sparkles className="w-5 h-5" /> },
+];
+
+// 콘텐츠: 툴 목록 (아이콘/설명/톤/태그/링크 완비)
+const TOOLS: Tool[] = [
   {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "Yuchani Tools pro",
-    "alternateName": ["Yuchani Tools", "Yuchani Tools Pro"],
-    "url": "https://tools.yuchani.com",
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": "https://tools.yuchani.com/search?q={query}",
-      "query-input": "required name=query"
-    }
-  }
-  </script>
+    title: "HTML 미리보기",
+    href: "/tools/html-preview",
+    desc: "브라우저에서 즉시 React/HTML 렌더",
+    icon: <FileCode2 className="w-[22px] h-[22px]" />,
+    tags: ["인기", "실시간"],
+    tone: "html",
+  },
+  {
+    title: "QR 코드 생성기",
+    href: "/tools/qrcode",
+    desc: "컬러·로고·크기 커스텀",
+    icon: <QrCode className="w-[22px] h-[22px]" />,
+    tags: ["신규"],
+    tone: "qrcode",
+  },
+  {
+    title: "URL 인코더/디코더",
+    href: "/tools/url-encoder",
+    desc: "UTF-8/쿼리/경로 안전 변환",
+    icon: <Link2 className="w-[22px] h-[22px]" />,
+    tags: ["기본기"],
+    tone: "url",
+  },
+  {
+    title: "PDF 3대장",
+    href: "/tools/pdf-suite",
+    desc: "합치기·분할·압축 원샷",
+    icon: <FileText className="w-[22px] h-[22px]" />,
+    tags: ["베스트"],
+    tone: "pdf",
+  },
+  {
+    title: "OG/Twitter 카드 미리보기",
+    href: "/tools/og-preview",
+    desc: "메타 태그 실시간 검증",
+    icon: <Globe className="w-[22px] h-[22px]" />,
+    tags: ["SEO"],
+    tone: "og",
+  },
+  {
+    title: "OCR · 이미지 → 텍스트",
+    href: "/tools/ocr",
+    desc: "한글 인식 강화, 영역 선택",
+    icon: <ImageDown className="w-[22px] h-[22px]" />,
+    tags: ["AI"],
+    tone: "ocr",
+  },
+  {
+    title: "Base64 변환기",
+    href: "/tools/base64",
+    desc: "파일·문자열 양방향",
+    icon: <Gauge className="w-[22px] h-[22px]" />,
+    tags: ["개발"],
+    tone: "base64",
+  },
+  {
+    title: "한글 맞춤법 검사",
+    href: "/tools/ko-spellcheck",
+    desc: "신뢰도 점수와 교정안 제공",
+    icon: <ShieldCheck className="w-[22px] h-[22px]" />,
+    tags: ["국문"],
+    tone: "ko",
+  },
+];
 
-  <style>
-    .card{border-radius:1rem;background:#121417;border:1px solid rgba(255,255,255,.08);box-shadow:0 8px 30px rgba(0,0,0,.25)}
-    .ring-soft{box-shadow:0 0 0 1px rgba(255,255,255,.08) inset}
-  </style>
-</head>
-<body class="bg-[#0F1113] text-white antialiased">
-  <!-- 헤더 -->
-  <header class="sticky top-0 z-40 backdrop-blur bg-[#0F1113]/80 border-b border-white/5">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="w-8 h-8 rounded-xl grid place-items-center bg-gradient-to-br from-white/10 to-white/0 ring-soft">
-          <!-- 로고(데이터URL 사용 가능). 필요시 <img src="..."> 로 교체 -->
-          <svg width="18" height="18" viewBox="0 0 24 24" class="text-amber-300">
-            <path fill="currentColor" d="M12 2L2 7l10 5l10-5l-10-5Zm0 7L2 4v13l10 5l10-5V4l-10 5Z"/>
-          </svg>
-        </div>
-        <div class="flex items-center gap-1.5">
-          <span class="font-semibold tracking-tight bg-gradient-to-r from-amber-400 to-cyan-300 bg-clip-text text-transparent">Yuchani Tools</span>
-          <span class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-white text-black shadow-sm">PRO</span>
-        </div>
-        <span class="ml-2 text-xs text-white/50 hidden sm:inline">필요한 도구, 한 곳에.</span>
+// ──────────────────────────────────────────────────────────────────────────────
+// 유틸
+function useHotkeySlashFocus(ref: React.RefObject<HTMLInputElement>) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "/" && !(e as any).metaKey && !(e as any).ctrlKey && !(e as any).altKey) {
+        e.preventDefault();
+        (ref.current as any)?.focus?.();
+      }
+    };
+    window.addEventListener("keydown", onKey as any);
+    return () => window.removeEventListener("keydown", onKey as any);
+  }, [ref]);
+}
+
+function Tag({ children }: { children: React.ReactNode }) {
+  const color = (() => {
+    const label = String(children);
+    if (/(인기|베스트)/.test(label)) return "bg-amber-400/15 border-amber-400/30 text-amber-200";
+    if (/실시간/.test(label)) return "bg-cyan-400/15 border-cyan-400/30 text-cyan-200";
+    if (/신규/.test(label)) return "bg-emerald-400/15 border-emerald-400/30 text-emerald-200";
+    if (/SEO/.test(label)) return "bg-indigo-400/15 border-indigo-400/30 text-indigo-200";
+    if (/(AI|OCR)/.test(label)) return "bg-violet-400/15 border-violet-400/30 text-violet-200";
+    if (/(개발|기본기|Base64)/.test(label)) return "bg-slate-400/15 border-slate-400/30 text-slate-200";
+    if (/(국문|KO)/.test(label)) return "bg-rose-400/15 border-rose-400/30 text-rose-200";
+    return "bg-white/5 border-white/10";
+  })();
+  return (
+    <span className={`px-2 py-0.5 rounded-full border text-xs/5 tracking-tight ${color}`}>{children}</span>
+  );
+}
+
+function Card({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return (
+    <motion.div
+      initial={{ y: 8, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.4 }}
+      className={`rounded-2xl border border-white/8 bg-[#121417] shadow-[0_8px_30px_rgba(0,0,0,0.25)] ${className}`}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+function BrandMark() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="mt-4"
+      aria-label="Yuchani Tools Pro"
+    >
+      <div className="relative inline-flex items-center">
+        <span className={`text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight bg-gradient-to-r ${BRAND_CLASSES.brandFrom} ${BRAND_CLASSES.brandTo} bg-clip-text text-transparent drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)]`}>
+          Yuchani&nbsp;Tools
+        </span>
+        <span className="ml-2 px-2 py-0.5 rounded-lg text-[10px] md:text-xs font-black uppercase tracking-wider bg-white text-black shadow">
+          PRO
+        </span>
       </div>
-      <nav class="hidden md:flex items-center gap-6 text-sm text-white/80">
-        <a href="#tools" class="hover:text-white">툴 모음</a>
-        <a href="#popular" class="hover:text-white">인기</a>
-        <a href="#learn" class="hover:text-white">가이드</a>
-        <a href="#donate" class="hover:text-white">후원</a>
-      </nav>
-      <div class="flex items-center gap-2">
-        <a href="#donate" class="inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm border bg-amber-400/15 border-amber-400/30 hover:bg-amber-400/20">
-          후원
-        </a>
-        <a href="#launch" class="hidden sm:inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm font-semibold hover:opacity-90 bg-gradient-to-r from-amber-400 to-cyan-400 text-black">
-          바로 시작
-        </a>
-      </div>
-    </div>
-  </header>
+      <div className="mt-2 h-[3px] w-full max-w-[320px] rounded-full bg-gradient-to-r from-amber-400/60 via-white/70 to-cyan-300/60 animate-pulse" />
+    </motion.div>
+  );
+}
 
-  <!-- 배경 글로우 -->
-  <div aria-hidden class="pointer-events-none fixed inset-0 -z-10">
-    <div class="absolute -top-24 -left-24 w-[40rem] h-[40rem] rounded-full bg-gradient-to-br from-indigo-500/10 to-cyan-400/5 blur-3xl"></div>
-    <div class="absolute bottom-[-8rem] right-[-6rem] w-[36rem] h-[36rem] rounded-full bg-gradient-to-br from-amber-400/10 to-rose-400/5 blur-3xl"></div>
-  </div>
-
-  <!-- 히어로 -->
-  <section class="border-b border-white/5">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 md:py-16 grid md:grid-cols-2 gap-8 items-center">
-      <div>
-        <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight">
-          시간을 아껴주는
-          <span class="bg-gradient-to-r from-emerald-400 to-lime-300 bg-clip-text text-transparent"> 웹툴 허브</span>
-        </h1>
-        <p class="mt-4 text-white/70 leading-relaxed">
-          한 번에 끝내는 <span class="font-semibold">Yuchani Tools pro</span> 초고속 AI웹툴을 경험하세요<br>
-          <span class="text-white/80">비용=무료 · 속도=초고속 · 결과물=완벽</span>
-        </p>
-
-        <div class="card mt-6 p-2 ring-soft">
-          <div class="flex items-center gap-2 px-2">
-            <svg width="18" height="18" viewBox="0 0 24 24" class="text-white/60"><path fill="currentColor" d="M10 18a8 8 0 1 1 6.32-3.1l4.39 4.39l-1.41 1.41l-4.39-4.39A7.96 7.96 0 0 1 10 18m0-2a6 6 0 1 0 0-12a6 6 0 0 0 0 12"/></svg>
-            <input id="global-search" placeholder="무엇을 도와드릴까요? (/)"
-              class="w-full bg-transparent outline-none placeholder:text-white/40 text-base py-3"/>
-            <button id="search-btn"
-              class="inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-sm font-semibold hover:opacity-90 bg-gradient-to-r from-amber-400 to-cyan-300 text-black">
-              검색
-            </button>
+function Header() {
+  return (
+    <header className="sticky top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-[#0F1113]/70 bg-[#0F1113]/80 border-b border-white/5">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className={`w-8 h-8 rounded-xl grid place-items-center bg-gradient-to-br from-white/10 to-white/0 ${BRAND_CLASSES.ring}`}>
+            {LOGO_URL ? (
+              <img src={LOGO_URL} alt="Yuchani Tools pro" className="w-5 h-5 object-contain" />
+            ) : (
+              <Sparkles className="w-4 h-4" />
+            )}
           </div>
-          <div class="px-2 pt-2 pb-3 flex flex-wrap gap-2">
-            <a class="text-xs px-2 py-1 rounded-lg border bg-amber-400/15 border-amber-400/30 hover:bg-amber-400/20" href="/tools/qrcode/">QR 생성</a>
-            <a class="text-xs px-2 py-1 rounded-lg border bg-amber-400/15 border-amber-400/30 hover:bg-amber-400/20" href="/tools/html-preview/">HTML 미리보기</a>
-            <a class="text-xs px-2 py-1 rounded-lg border bg-amber-400/15 border-amber-400/30 hover:bg-amber-400/20" href="/tools/url-encoder/">URL 인코딩</a>
-            <a class="text-xs px-2 py-1 rounded-lg border bg-amber-400/15 border-amber-400/30 hover:bg-amber-400/20" href="/tools/pdf-suite/">PDF 합치기</a>
-            <a class="text-xs px-2 py-1 rounded-lg border bg-amber-400/15 border-amber-400/30 hover:bg-amber-400/20" href="/tools/og-preview/">OG 미리보기</a>
+          <div className="flex items-center gap-1.5">
+            <span className={`font-semibold tracking-tight bg-gradient-to-r ${BRAND_CLASSES.brandFrom} ${BRAND_CLASSES.brandTo} bg-clip-text text-transparent`}>
+              Yuchani Tools
+            </span>
+            <span className="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-white text-black shadow-sm">PRO</span>
           </div>
+          <span className="ml-2 text-xs text-white/50 hidden sm:inline">필요한 도구, 한 곳에.</span>
         </div>
-
-        <div class="mt-4 flex items-center gap-3 text-xs text-white/50">
-          인기 툴은 상단에 고정돼요 · 모바일/데스크톱 반응형
+        <nav className="hidden md:flex items-center gap-6 text-sm text-white/80">
+          <a href="#tools" className="hover:text-white">툴 모음</a>
+          <a href="#popular" className="hover:text-white">인기</a>
+          <a href="#learn" className="hover:text-white">가이드</a>
+          <a href="#donate" className="hover:text-white">후원</a>
+        </nav>
+        <div className="flex items-center gap-2">
+          <a href="#donate" className={`inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm border ${BRAND_CLASSES.chip}`}>
+            <HeartHandshake className="w-4 h-4" />
+            후원
+          </a>
+          <a href="#launch" className={`hidden sm:inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm font-semibold hover:opacity-90 ${BRAND_CLASSES.callToAction}`}>
+            <Rocket className="w-4 h-4" />바로 시작
+          </a>
         </div>
       </div>
+    </header>
+  );
+}
 
-      <div class="hidden md:block relative">
-        <div class="card p-6 ring-soft">
-          <div class="text-sm text-white/60">추천 콜렉션</div>
-          <div class="mt-3 grid grid-cols-3 gap-3">
-            <!-- 카드 1 예시 -->
-            <a href="/tools/html-preview/" class="group">
-              <div class="rounded-xl border border-white/10 bg-[#15181E] p-3 group-hover:bg-[#171A20] transition-colors">
-                <div class="w-9 h-9 rounded-lg grid place-items-center bg-gradient-to-br from-white/5 to-white/0 ring-soft">
-                  <svg width="20" height="20" viewBox="0 0 24 24" class="text-cyan-300"><path fill="currentColor" d="M3 4h18v16H3z"/></svg>
-                </div>
-                <div class="mt-2 text-sm font-medium leading-tight">HTML 미리보기</div>
-                <div class="text-[11px] text-white/50">브라우저에서 즉시 React/HTML 렌더</div>
+function Hero() {
+  const inputRef = useRef<HTMLInputElement>(null);
+  useHotkeySlashFocus(inputRef);
+  const [q, setQ] = useState("");
+
+  const quick = [
+    { label: "QR 생성", href: "/tools/qrcode" },
+    { label: "HTML 미리보기", href: "/tools/html-preview" },
+    { label: "URL 인코딩", href: "/tools/url-encoder" },
+    { label: "PDF 합치기", href: "/tools/pdf-suite" },
+    { label: "OG 미리보기", href: "/tools/og-preview" },
+  ];
+
+  return (
+    <section className="relative border-b border-white/5">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+        <div className="grid md:grid-cols-2 gap-8 items-center">
+          <div>
+            <motion.h1
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.45 }}
+              className="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight"
+            >
+              시간을 아껴주는 <span className={`bg-gradient-to-r from-emerald-400 to-lime-300 bg-clip-text text-transparent`}>웹툴 허브</span>
+            </motion.h1>
+            <BrandMark />
+            <p className="mt-4 text-white/70 leading-relaxed">
+              한 번에 끝내는 <span className="font-semibold">Yuchani Tools pro</span> 초고속 AI웹툴을 경험하세요<br/>
+              <span className="text-white/80">비용=무료 · 속도=초고속 · 결과물=완벽</span>
+            </p>
+
+            <Card className="mt-6 p-2 ring-1 ring-white/10">
+              <div className="flex items-center gap-2 px-2">
+                <Search className="w-5 h-5 text-white/60" />
+                <input
+                  ref={inputRef}
+                  value={q}
+                  onChange={(e) => setQ(e.target.value)}
+                  placeholder="무엇을 도와드릴까요? (/)"
+                  className="w-full bg-transparent outline-none placeholder:text-white/40 text-base py-3"
+                />
+                <button
+                  onClick={() => {
+                    const anchor = document.getElementById("tools");
+                    anchor?.scrollIntoView({ behavior: "smooth" });
+                  }}
+                  className={`inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-sm font-semibold hover:opacity-90 bg-gradient-to-r ${BRAND_CLASSES.brandFrom} ${BRAND_CLASSES.brandTo} text-black`}
+                >
+                  검색
+                </button>
               </div>
-            </a>
-            <!-- 나머지 5개도 같은 패턴으로 복제 가능 -->
-          </div>
-          <div class="mt-4 text-xs text-white/50">* 클릭하면 해당 툴로 바로 이동합니다.</div>
-        </div>
-      </div>
-    </div>
-  </section>
+              <div className="px-2 pt-2 pb-3 flex flex-wrap gap-2">
+                {quick.map((q) => (
+                  <a
+                    key={q.href}
+                    href={q.href}
+                    className={`text-xs px-2 py-1 rounded-lg border ${BRAND_CLASSES.chip}`}
+                  >
+                    {q.label}
+                  </a>
+                ))}
+              </div>
+            </Card>
 
-  <!-- 모든 툴 -->
-  <section id="tools" class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
-    <div class="flex items-center justify-between">
-      <h2 class="text-xl md:text-2xl font-bold tracking-tight">모든 툴</h2>
-      <a href="#" class="text-sm text-white/70 hover:text-white">전체 보기</a>
-    </div>
-    <div class="mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
-      <!-- 예시 카드 하나 -->
-      <a href="/tools/qrcode/" class="group">
-        <div class="card p-4 h-full">
-          <div class="flex items-center justify-between">
-            <div class="w-10 h-10 rounded-lg grid place-items-center bg-gradient-to-br from-white/5 to-white/0 ring-soft">
-              <svg width="22" height="22" viewBox="0 0 24 24" class="text-emerald-300"><path fill="currentColor" d="M3 3h8v8H3zm10 0h8v8h-8zM3 13h8v8H3zm10 6h4v2h-4z"/></svg>
+            <div className="mt-4 flex items-center gap-3 text-xs text-white/50">
+              <Star className="w-4 h-4" /> 인기 툴은 상단에 고정돼요
+              <Settings2 className="w-4 h-4 ml-3" /> 모바일/데스크톱 반응형
             </div>
-            <div class="flex gap-1"><span class="px-2 py-0.5 rounded-full border text-xs bg-emerald-400/15 border-emerald-400/30 text-emerald-200">신규</span></div>
           </div>
-          <div class="mt-3 font-semibold leading-tight">QR 코드 생성기</div>
-          <div class="mt-1 text-sm text-white/60">컬러·로고·크기 커스텀</div>
-          <div class="mt-4 text-xs text-white/50">바로가기 →</div>
-        </div>
-      </a>
-      <!-- 필요한 만큼 복제해서 채우세요 -->
-    </div>
-  </section>
 
-  <!-- 푸터 -->
-  <footer class="mt-10 border-t border-white/5">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 grid md:grid-cols-4 gap-8 text-sm">
-      <div>
-        <div class="flex items-center gap-2">
-          <div class="w-7 h-7 rounded-lg bg-white/5 grid place-items-center ring-soft"></div>
-          <div class="font-semibold">Yuchani Tools pro</div>
-        </div>
-        <p class="mt-3 text-white/60 leading-relaxed">
-          필요한 웹도구를 찾는 데 시간을 쓰지 마세요. 한 곳에서 빠르게 해결하세요.
-        </p>
-      </div>
-      <div>
-        <div class="font-semibold">리소스</div>
-        <ul class="mt-3 space-y-2 text-white/70">
-          <li><a href="#learn" class="hover:text-white">가이드 & 튜토리얼</a></li>
-          <li><a href="#changelog" class="hover:text-white">업데이트 로그</a></li>
-          <li><a href="#privacy" class="hover:text-white">개인정보 처리방침</a></li>
-        </ul>
-      </div>
-      <div>
-        <div class="font-semibold">연결</div>
-        <ul class="mt-3 space-y-2 text-white/70">
-          <li><a href="#blog" class="hover:text-white">블로그</a></li>
-          <li><a href="#contact" class="hover:text-white">Contact</a></li>
-          <li><a href="#donate" class="hover:text-white">후원</a></li>
-        </ul>
-      </div>
-      <div>
-        <div class="font-semibold">언어</div>
-        <div class="mt-3 flex flex-wrap gap-2">
-          <button class="px-3 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10">한국어</button>
-          <button class="px-3 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10">English</button>
+          <div className="hidden md:block relative">
+            <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 opacity-[0.08] mix-blend-screen">
+              {LOGO_URL && <img src={LOGO_URL} alt="" className="w-full h-full object-contain" />}
+            </div>
+            <Card className="p-6 ring-1 ring-white/10">
+              <div className="text-sm text-white/60">추천 콜렉션</div>
+              <div className="mt-3 grid grid-cols-3 gap-3">
+                {TOOLS.slice(0, 6).map((t) => (
+                  <a key={t.href} href={t.href} className="group">
+                    <div className="rounded-xl border border-white/10 bg-[#15181E] p-3 group-hover:bg-[#171A20] transition-colors">
+                      <div className={`w-9 h-9 rounded-lg grid place-items-center bg-gradient-to-br from-white/5 to-white/0 ${BRAND_CLASSES.ring}`}>
+                        {React.cloneElement(t.icon, { className: ((t.icon.props.className||"") + " " + iconTone(t.tone)).trim() })}
+                      </div>
+                      <div className="mt-2 text-sm font-medium leading-tight line-clamp-2">{t.title}</div>
+                      <div className="text-[11px] text-white/50 line-clamp-1">{t.desc}</div>
+                    </div>
+                  </a>
+                ))}
+              </div>
+              <div className="mt-4 text-xs text-white/50">*
+                클릭하면 해당 툴로 바로 이동합니다.
+              </div>
+            </Card>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="border-t border-white/5 py-6 text-center text-xs text-white/50">© <span id="year"></span> Yuchani Tools pro • All rights reserved</div>
-  </footer>
+    </section>
+  );
+}
 
-  <script>
-    // 년도 업데이트 + 검색 핫키
-    document.getElementById('year').textContent = new Date().getFullYear();
-    const search = document.getElementById('global-search');
-    window.addEventListener('keydown', (e) => {
-      if (e.key === '/' && !e.metaKey && !e.ctrlKey && !e.altKey) { e.preventDefault(); search?.focus(); }
-    });
-    document.getElementById('search-btn')?.addEventListener('click', () => {
-      document.getElementById('tools')?.scrollIntoView({behavior:'smooth'});
-    });
-  </script>
-</body>
-</html>
+function CategoryGrid() {
+  return (
+    <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
+      <h2 className="text-xl md:text-2xl font-bold tracking-tight">카테고리</h2>
+      <div className="mt-5 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+        {CATEGORIES.map((c) => (
+          <a
+            key={c.key}
+            href={`#cat-${c.key}`}
+            className="group"
+          >
+            <Card className="p-4 hover:ring-1 ring-white/10">
+              <div className="flex items-center gap-3">
+                <div className={`w-9 h-9 rounded-lg grid place-items-center ${catTone(c.key).icon}`}>
+                  {React.cloneElement(c.icon, { className: ((c.icon.props.className||"") + " " + catIconColor(c.key)).trim() })}
+                </div>
+                <div>
+                  <div className={`font-semibold ${catTone(c.key).title}`}>{c.label}</div>
+                  <div className="text-xs text-white/50">{c.desc}</div>
+                </div>
+              </div>
+            </Card>
+          </a>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function ToolCard({ t }: { t: Tool }) {
+  return (
+    <a href={t.href} className="group">
+      <Card className="p-4 h-full hover:ring-1 ring-indigo-400/30">
+        <div className="flex items-center justify-between">
+          <div className={`w-10 h-10 rounded-lg grid place-items-center bg-gradient-to-br from-white/5 to-white/0 ${BRAND_CLASSES.ring}`}>
+            {React.cloneElement(t.icon, { className: ((t.icon.props.className||"") + " " + iconTone(t.tone)).trim() })}
+          </div>
+          <div className="flex gap-1">
+            {t.tags?.map((x) => (
+              <Tag key={x}>{x}</Tag>
+            ))}
+          </div>
+        </div>
+        <div className="mt-3 font-semibold leading-tight line-clamp-2">{t.title}</div>
+        <div className="mt-1 text-sm text-white/60 line-clamp-2">{t.desc}</div>
+        <div className="mt-4 text-xs text-white/50">바로가기 →</div>
+      </Card>
+    </a>
+  );
+}
+
+function ToolGrid() {
+  return (
+    <section id="tools" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl md:text-2xl font-bold tracking-tight">모든 툴</h2>
+        <a href="#" className="text-sm text-white/70 hover:text-white">전체 보기</a>
+      </div>
+
+      <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
+        {TOOLS.map((t) => (
+          <ToolCard key={t.href} t={t} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function Footer() {
+  return (
+    <footer className="mt-10 border-t border-white/5">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 grid md:grid-cols-4 gap-8 text-sm">
+        <div>
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-lg bg-white/5 grid place-items-center ring-1 ring-white/10">
+              <Sparkles className="w-4 h-4" />
+            </div>
+            <div className="font-semibold">Yuchani Tools pro</div>
+          </div>
+          <p className="mt-3 text-white/60 leading-relaxed">
+            필요한 웹도구를 찾는 데 시간을 쓰지 마세요. 
+            한 곳에서 빠르게 해결하세요.
+          </p>
+        </div>
+
+        <div>
+          <div className="font-semibold">리소스</div>
+          <ul className="mt-3 space-y-2 text-white/70">
+            <li><a href="#learn" className="hover:text-white">가이드 & 튜토리얼</a></li>
+            <li><a href="#changelog" className="hover:text-white">업데이트 로그</a></li>
+            <li><a href="#privacy" className="hover:text-white">개인정보 처리방침</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div className="font-semibold">연결</div>
+          <ul className="mt-3 space-y-2 text-white/70">
+            <li><a href="#blog" className="hover:text-white">블로그</a></li>
+            <li><a href="#contact" className="hover:text-white">Contact</a></li>
+            <li><a href="#donate" className="hover:text-white">후원</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div className="font-semibold">언어</div>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {["한국어","English","日本語","中文","Español"].map((l) => (
+              <button key={l} className="px-3 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10">{l}</button>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div className="border-t border-white/5 py-6 text-center text-xs text-white/50">
+        © {new Date().getFullYear()} Yuchani Tools pro • All rights reserved
+      </div>
+    </footer>
+  );
+}
+
+export default function YuchaniMainPage() {
+  // 가벼운 페이드 인 + 간단한 셀프 테스트
+  useEffect(() => {
+    // ── Self-tests (개발 모드에서 콘솔에만 출력)
+    const tests = [
+      { name: "TOOLS length >= 6", pass: TOOLS.length >= 6 },
+      { name: "All tools have href", pass: TOOLS.every(t => typeof t.href === "string" && t.href.startsWith("/")) },
+      { name: "All tools have icon", pass: TOOLS.every(t => React.isValidElement(t.icon)) },
+      { name: "All categories valid", pass: CATEGORIES.every(c => !!c.key && !!c.label) },
+    ];
+    tests.forEach(t => console.assert(t.pass, `Test failed: ${t.name}`));
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-[#0F1113] text-white">
+      {/* 배경 그라데이션 데코 */}
+      <div aria-hidden className="pointer-events-none fixed inset-0 -z-10">
+        <div className="absolute -top-24 -left-24 w-[40rem] h-[40rem] rounded-full bg-gradient-to-br from-indigo-500/10 to-cyan-400/5 blur-3xl" />
+        <div className="absolute bottom-[-8rem] right-[-6rem] w-[36rem] h-[36rem] rounded-full bg-gradient-to-br from-amber-400/10 to-rose-400/5 blur-3xl" />
+      </div>
+
+      {/* SEO 스키마 (예시) */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            name: "Yuchani Tools pro",
+            alternateName: ["Yuchani Tools", "Yuchani Tools Pro"],
+            url: "https://tools.yuchani.com",
+            potentialAction: {
+              "@type": "SearchAction",
+              target: "https://tools.yuchani.com/search?q={query}",
+              // NOTE: schema.org는 query-input 키를 권장
+              "query-input": "required name=query",
+            },
+          }),
+        }}
+      />
+
+      <Header />
+      <Hero />
+      <CategoryGrid />
+
+      {/* 추천 섹션 */}
+      <section id="popular" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
+        <div className={`rounded-2xl bg-gradient-to-r ${BRAND_CLASSES.brandFrom}/10 to-white/0 border border-white/10 p-5 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4`}>
+          <div className="space-y-1">
+            <div className="text-sm text-white/60">이번 주 추천</div>
+            <div className="text-lg md:text-xl font-semibold">HTML 미리보기 · PDF 3대장 · URL 인코더</div>
+            <div className="text-xs text-white/50">누적 사용량을 기준으로 선정했어요.</div>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <a href="/tools/html-preview" className="px-3 py-1.5 rounded-xl bg-white text-black text-sm font-semibold hover:bg-white/90">HTML 미리보기</a>
+            <a href="/tools/pdf-suite" className="px-3 py-1.5 rounded-xl border border-white/10 hover:bg-white/5 text-sm">PDF 3대장</a>
+            <a href="/tools/url-encoder" className="px-3 py-1.5 rounded-xl border border-white/10 hover:bg-white/5 text-sm">URL 인코더</a>
+          </div>
+        </div>
+      </section>
+
+      <ToolGrid />
+      <Footer />
+    </div>
+  );
+}
+

@@ -1,5 +1,5 @@
 <!-- /partials/footer.html -->
-<footer class="mt-10 border-t border-white/5">
+<footer id="yt-footer" class="mt-10 border-t border-white/5">
   <!-- 상단 그리드: 모바일 2열, 데스크톱 4열 -->
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 grid grid-cols-2 md:grid-cols-4 gap-8 text-sm">
     <!-- 브랜드: 모바일/태블릿에서 가로 전체, 데스크톱에선 1칸 -->
@@ -21,13 +21,11 @@
     <div class="col-span-1">
       <div class="font-semibold">리소스</div>
       <ul class="mt-3 space-y-2 text-white/70">
-        <li><a href="#learn" class="hover:text-white">가이드 & 튜토리얼</a></li>
-        <li><a href="changelog" class="hover:text-white">업데이트 로그</a></li>
+        <li><a href="/#learn" class="hover:text-white">가이드 & 튜토리얼</a></li>
+        <li><a href="/changelog" class="hover:text-white">업데이트 로그</a></li>
         <li><a href="/privacy/" class="hover:text-white">개인정보 처리방침</a></li>
-        <!-- ▼ 추가된 항목 두 개 -->
-        <li><a href="/legal/cookies.html" class="hover:text-white">쿠키 정책</a></li>
+        <li><a href="/privacy/cookie-policy.html" class="hover:text-white">쿠키 정책</a></li>
         <li><a href="/sitemap.xml" class="hover:text-white">사이트맵</a></li>
-        <!-- ▲ 추가 끝 -->
       </ul>
     </div>
 
@@ -58,7 +56,7 @@
         <li>
           <a href="https://qr.kakaopay.com/FcRGwQ7nE" target="_blank" rel="noopener noreferrer" class="hover:text-white inline-flex items-center gap-2">
             <i data-lucide="heart" class="w-4 h-4 text-rose-500"></i>
-            <span>후원은 사랑입니다 <span aria-hidden="true" class="text-rose-500"></span></span>
+            <span>후원은 사랑입니다</span>
           </a>
         </li>
       </ul>
@@ -91,8 +89,3 @@
     window.lucide?.createIcons?.();
   })();
 </script>
-
-<!-- 푸터 내 링크들 -->
-<a href="/legal/cookie-policy.html" class="hover:underline">쿠키정책</a>
-<a href="/sitemap.xml" class="hover:underline">사이트맵</a>
-

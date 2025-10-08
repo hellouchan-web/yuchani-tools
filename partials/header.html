@@ -1,1 +1,37 @@
+<!-- /partials/header.html -->
+<header class="sticky top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-[#0F1113]/70 bg-[#0F1113]/80 border-b border-white/5">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-[72px] flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+    <!-- 좌측: 로고 + 타이틀 -->
+    <div class="flex items-center gap-3">
+      <div
+        class="w-9 h-9 rounded-xl overflow-hidden grid place-items-center bg-gradient-to-br from-white/10 to-white/0 ring-1 ring-white/10"
+        style="box-shadow: inset 0 0 0 1px rgba(255,255,255,.12);"
+      >
+        <!-- 상대경로! (루트 슬래시 X) -->
+        <img src="assets/logo.webp" alt="Logo" class="w-full h-full object-contain p-0.5"
+             onerror="this.remove();document.getElementById('logo-fallback')?.style.setProperty('display','grid')">
+        <div id="logo-fallback" style="display:none" class="place-items-center text-white/80 text-xs">✨</div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <span class="font-extrabold tracking-tight bg-gradient-to-r from-emerald-400 to-lime-300 bg-clip-text text-transparent">
+          Yuchani Tools
+        </span>
+        <span class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-white text-black shadow-sm">PRO</span>
+      </div>
+    </div>
+
+    <!-- 우측: 초록 버튼 네비 -->
+    <nav class="flex flex-wrap gap-2">
+      <a class="inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm border border-emerald-500/35 bg-emerald-500/15 text-emerald-100 hover:bg-emerald-500/25"
+         href="index.html">메인홈</a>
+      <a class="inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm border border-emerald-500/35 bg-emerald-500/15 text-emerald-100 hover:bg-emerald-500/25"
+         href="#popular">인기</a>
+      <a class="inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm border border-emerald-500/35 bg-emerald-500/15 text-emerald-100 hover:bg-emerald-500/25"
+         href="#learn">가이드</a>
+      <a class="inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm border border-emerald-500/35 bg-emerald-500/15 text-emerald-100 hover:bg-emerald-500/25"
+         href="#donate">후원</a>
+    </nav>
+  </div>
+</header>
 

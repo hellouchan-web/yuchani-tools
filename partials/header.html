@@ -21,23 +21,23 @@
       <div class="flex items-center justify-between">
         <!-- 좌측: 로고 + 타이틀 (왼쪽 정렬) -->
         <div class="flex items-center gap-3">
-          <div class="w-14 h-14 md:w-16 md:h-16 rounded-2xl grid place-items-center bg-gradient-to-br from-white/10 to-white/0 ring-soft overflow-hidden">
-            <img src="/assets/logo.webp" alt="사이트 로고" class="w-10 h-10 md:w-12 md:h-12 object-contain" onerror="this.remove();document.getElementById('logo-fallback').style.display='grid'">
-            <div id="logo-fallback" style="display:none" class="place-items-center">
-              <i data-lucide="sparkles" class="w-6 h-6 text-emerald-300"></i>
-            </div>
+          <div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl overflow-hidden ring-soft bg-white/5">
+          <img src="/assets/logo.webp" alt="사이트 로고" class="w-full h-full object-cover" onerror="this.remove();document.getElementById('logo-fallback').style.display='grid'">
+          <div id="logo-fallback" style="display:none" class="w-full h-full grid place-items-center">
+            <i data-lucide="sparkles" class="w-7 h-7 text-emerald-300"></i>
           </div>
+        </div>
           <a href="/" class="brand-grad bg-clip-text text-transparent font-extrabold tracking-tight text-2xl md:text-3xl lg:text-4xl">Yuchani Tools <span class="opacity-70">pro</span></a>
         </div>
         <!-- 우측: 외부 링크 2개 (인터넷 아이콘 통일) -->
         <div class="flex items-center gap-2 md:gap-3 text-sm">
-          <a href="https://yuchani.com" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-white/10 hover:bg-white/5">
+          <a href="https://yuchani.com" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-white/15 bg-white/5 text-white/80 hover:bg-white/10">
             <i data-lucide="globe" class="w-4 h-4"></i>
-            <span>Yuchani Web site</span>
+            <span>Yuchani Site</span>
           </a>
-          <a href="https://b-man.site" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-white/10 hover:bg-white/5">
+          <a href="https://b-man.site" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-white/15 bg-white/5 text-white/80 hover:bg-white/10">
             <i data-lucide="globe" class="w-4 h-4"></i>
-            <span>B-Men Web site</span>
+            <span>B-Men Site</span>
           </a>
         </div>
       </div>
@@ -73,7 +73,7 @@
 
         // 간단 테스트(변경 금지): 핵심 요소 유무
         console.assert(document.querySelector('header'), 'header 존재해야 함');
-        const mustTexts = ['홈','인기','가이드','언어변경','Yuchani Web site','B-Men Web site'];
+        const mustTexts = ['홈','인기','가이드','언어변경','Yuchani Site','B-Men Site'];
         console.assert(mustTexts.every(t => document.body.textContent.includes(t)), '네비 텍스트 7종 확인');
       } catch (e) {
         console.warn('header partial error:', e);
@@ -82,10 +82,6 @@
   </script>
   <!-- ===== 복사하여 /partials/header.html 로 저장할 영역 끝 ===== -->
 
-  <!-- 미리보기용 더미 섹션 (스크롤 확인) -->
-  <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 space-y-6">
-    <p class="text-white/70">이 영역은 미리보기를 위한 더미입니다. 상단 헤더의 sticky, 반응형, 모바일 메뉴 동작을 확인하세요.</p>
-    <div class="h-[1200px] rounded-2xl border border-white/10 bg-white/5 grid place-items-center text-white/50">스크롤 테스트</div>
-  </main>
+  
 </body>
 </html>

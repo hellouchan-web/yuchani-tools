@@ -44,3 +44,34 @@
     dedupe('footer'); dedupe('header');
   });
 })();
+
+
+(function cookieBanner() {
+  const KEY = 'yt_cookie_consent_v1'; // 버전 바꾸면 재동의 받음
+  if (localStorage.getItem(KEY)) return;
+
+  const bar = document.createElement('div');
+  bar.innerHTML = `
+    <div style="
+      position:fixed;left:0;right:0;bottom:0;z-index:9999;
+      background:#0B0C0F;color:#fff;border-top:1px solid rgba(255,255,255,.08);
+      padding:12px 16px;display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap
+    ">
+      <span style="opacity:.85">쿠키를 사용합니다. 더 나은 사용 경험을 위해 동의해 주세요.</span>
+      <a href="/legal/cookies.html" style="color:#93c5fd;text-decoration:underline">자세히</a>
+      <div style="display:flex;gap:8px">
+        <button id="yt-cookie-decline" style="padding:8px 12px;border:1px solid #475569;background:transparent;color:#fff;border-radius:10px">거부</button>
+        <button id="yt-cookie-accept" style="padding:8px 12px;background:#22c55e;color:#000;border-radius:10px;font-weight:700">동의</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(bar);
+
+  const close = (accepted) => {
+    if (accepted) localStorage.setItem(KEY, JSON.stringify({ accepted:true, ts:Date.now() }));
+    bar.remove();
+  };
+  bar.querySelector('#yt-cookie-accept').addEventListener('click', () => close(true));
+  bar.querySelector('#yt-cookie-decline').addEventListener('click', () => close(false));
+})();
+

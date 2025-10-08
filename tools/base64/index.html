@@ -61,7 +61,7 @@
 
   <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
     <!-- 타이틀 -->
-    <header class="mb-4">
+    <header class="mb-4 text-center md:text-left">
       <h1 class="text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-tight">
         <span class="brand-grad bg-clip-text text-transparent">Base64 변환기</span>
       </h1>
@@ -129,11 +129,11 @@
             <div class="flex flex-wrap gap-2">
               <button id="btnEncode" class="px-3 py-1.5 text-sm rounded-xl border border-emerald-400/35 bg-emerald-400/15 text-emerald-700 hover:bg-emerald-400/25">인코드</button>
               <button id="btnDecode" class="px-3 py-1.5 text-sm rounded-xl border border-cyan-400/35 bg-cyan-400/15 text-cyan-700 hover:bg-cyan-400/25">디코드</button>
-              <button id="btnSwap" class="px-3 py-1.5 text-sm rounded-xl border border-white/20 hover:bg-white/10 text-white">입력↔결과 교체</button>
-              <button id="btnClear" class="px-3 py-1.5 text-sm rounded-xl border border-white/20 hover:bg-white/10 text-white">초기화</button>
+              <button id="btnSwap"   class="px-3 py-1.5 text-sm rounded-xl border border-white/20 hover:bg-white/10 text-white">입력↔결과 교체</button>
+              <button id="btnClear"  class="px-3 py-1.5 text-sm rounded-xl border border-white/20 hover:bg-white/10 text-white">초기화</button>
             </div>
             <div class="flex gap-2">
-              <button id="btnCopy" class="px-3 py-1.5 text-sm rounded-xl border border-white/20 hover:bg-white/10 text-white">복사</button>
+              <button id="btnCopy"     class="px-3 py-1.5 text-sm rounded-xl border border-white/20 hover:bg-white/10 text-white">복사</button>
               <button id="btnDownload" class="px-3 py-1.5 text-sm rounded-xl border border-white/20 hover:bg-white/10 text-white">다운로드</button>
             </div>
           </div>
@@ -204,7 +204,7 @@
     const btnDownload = $('#btnDownload');
 
     const modeRadios = document.querySelectorAll('input[name="mode"]');
-    const kindRadios = document.querySelectorAll('input[name="kind"]');
+    // const kindRadios = document.querySelectorAll('input[name="kind"]'); // 필요시 사용
 
     // --- Sanity checks (lightweight tests) ---
     (function selfTest(){
@@ -216,7 +216,6 @@
       Promise.all([
         encodeText('가나다ABC123').then(b64 => decodeText(b64)).then(txt => console.assert(txt === '가나다ABC123', 'UTF-8 라운드트립 실패', {txt})),
         encodeText('🙂🔥🚀').then(b64 => decodeText(b64)).then(txt => console.assert(txt === '🙂🔥🚀', 'Emoji 라운드트립 실패', {txt})),
-        // Binary-like data: create bytes and back
         (async()=>{ const u8 = new Uint8Array([0,1,2,250,251,252,253,254,255]);
           const b64 = (function(bytes){ let bin=''; for(let i=0;i<bytes.length;i++) bin+=String.fromCharCode(bytes[i]); return btoa(bin); })(u8);
           const back = atob(b64); console.assert(back.length===u8.length, '바이너리 길이 불일치'); })()
@@ -230,7 +229,6 @@
     function hideAlert(){ alertBox.classList.add('hidden'); }
 
     function bytesToBase64(bytes){
-      // Uint8Array -> base64
       let bin = '';
       const chunk = 0x8000; // perf
       for (let i=0; i<bytes.length; i+=chunk){
@@ -265,7 +263,6 @@
     }
 
     function inferDataUrlMeta(str){
-      // data:mime/type;base64,.....
       const m = /^data:([^;]+);base64,(.*)$/s.exec(str.trim());
       if (!m) return null;
       return { mime:m[1], b64:m[2] };
@@ -299,16 +296,13 @@
         const meta = inferDataUrlMeta(src);
         if (meta){
           const bytes = base64ToBytes(meta.b64);
-          // 파일로 다운로드 가능한 blob URL 미리 준비
           const blob = new Blob([bytes], {type: meta.mime});
           outputEl.value = `data:${meta.mime};base64,${meta.b64}`;
           outInfo.textContent = `${meta.mime} • ${bytes.length.toLocaleString()} bytes`;
           outInfo.classList.remove('hidden');
-          // 자동 다운로드는 UX상 지양. 대신 다운로드 버튼으로 저장.
           btnDownload.dataset.blobUrl = URL.createObjectURL(blob);
           btnDownload.dataset.filename = `decoded.${meta.mime.split('/')[1] || 'bin'}`;
         } else {
-          // 순수 base64 → 텍스트로 가정
           outputEl.value = await decodeText(src);
           outInfo.textContent = `텍스트 • ${outputEl.value.length.toLocaleString()} chars`;
           outInfo.classList.remove('hidden');
@@ -330,11 +324,11 @@
       hideAlert();
     }
 
-    // 이벤트 바인딩 (요소 존재 확인 후 연결)
+    // 이벤트 바인딩 (존재 가드)
     if (btnEncode) btnEncode.addEventListener('click', doEncode);
     if (btnDecode) btnDecode.addEventListener('click', doDecode);
-    if (btnSwap) btnSwap.addEventListener('click', swapIO);
-    if (btnClear) btnClear.addEventListener('click', clearAll);
+    if (btnSwap)   btnSwap.addEventListener('click', swapIO);
+    if (btnClear)  btnClear.addEventListener('click', clearAll);
 
     if (btnCopy) btnCopy.addEventListener('click', async () => {
       try {
@@ -348,14 +342,12 @@
       try {
         let blob, filename;
         if (btnDownload.dataset.blobUrl){
-          // 디코드한 바이너리
           const url = btnDownload.dataset.blobUrl;
           filename = btnDownload.dataset.filename || 'download.bin';
           const a = document.createElement('a'); a.href = url; a.download = filename; a.click();
           setTimeout(()=>URL.revokeObjectURL(url), 1000);
           return;
         }
-        // 텍스트 결과 저장
         blob = new Blob([outputEl.value || ''], {type:'text/plain;charset=utf-8'});
         filename = 'base64.txt';
         const url = URL.createObjectURL(blob);
@@ -364,7 +356,7 @@
       } catch(e){ showAlert('다운로드 실패: '+(e.message||e)); }
     });
 
-    // 파일 업로드 및 드롭/붙여넣기
+    // 파일 업로드
     if (fileEl) fileEl.addEventListener('change', () => {
       const f = fileEl.files[0];
       if (!f){ fileInfo.classList.add('hidden'); return; }
@@ -382,7 +374,6 @@
       e.preventDefault(); e.stopPropagation();
       const f = e.dataTransfer?.files?.[0];
       if (!f) return;
-      // 표준 방식: DataTransfer로 FileList 주입
       const dt = new DataTransfer();
       dt.items.add(f);
       fileEl.files = dt.files;
@@ -428,7 +419,7 @@
       }
     });
 
-    // 초기 아이콘
+    // 아이콘
     window.lucide?.createIcons?.();
   });
   </script>

@@ -2,53 +2,67 @@
 <html lang="ko">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Yuchani Tools pro — 웹툴 허브</title>
-  <meta name="description" content="한 번에 끝내는 Yuchani Tools pro 초고속 AI웹툴. 비용=무료 · 속도=초고속 · 결과물=완벽" />
-  <!-- Tailwind (CDN) -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>tailwind.config = { theme: { extend: {} } }</script>
+  <meta name="description" content="필요한 웹도구를 한 곳에서. HTML 미리보기, QR 코드, PDF, URL 인코딩, OG 미리보기 등. 비용=무료 · 속도=초고속 · 결과물=완벽" />
+  <link rel="canonical" href="https://tools.yuchani.com/" />
+  <meta name="robots" content="index,follow" />
 
   <!-- Open Graph / Twitter -->
-  <meta property="og:title" content="Yuchani Tools pro" />
-  <meta property="og:description" content="한 번에 끝내는 초고속 AI웹툴" />
   <meta property="og:type" content="website" />
+  <meta property="og:title" content="Yuchani Tools pro — 웹툴 허브" />
+  <meta property="og:description" content="한 번에 끝내는 Yuchani Tools pro 초고속 AI웹툴" />
   <meta property="og:url" content="https://tools.yuchani.com/" />
+  <meta property="og:image" content="https://tools.yuchani.com/og/cover.png" />
+  <meta name="twitter:card" content="summary_large_image" />
 
-  <!-- JSON-LD -->
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide(아이콘) CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root{ color-scheme: dark; }
+    body { background:#0F1113; }
+    .brand-grad { background-image: linear-gradient(90deg,#fbbf24,#67e8f9); } /* amber→cyan */
+    .ring-soft { box-shadow: inset 0 0 0 1px rgba(255,255,255,.1); }
+  </style>
+
+  <!-- JSON-LD: WebSite -->
   <script type="application/ld+json">
   {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "Yuchani Tools pro",
-    "alternateName": ["Yuchani Tools", "Yuchani Tools Pro"],
-    "url": "https://tools.yuchani.com",
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": "https://tools.yuchani.com/search?q={query}",
-      "query-input": "required name=query"
+    "@context":"https://schema.org",
+    "@type":"WebSite",
+    "name":"Yuchani Tools pro",
+    "url":"https://tools.yuchani.com",
+    "potentialAction":{
+      "@type":"SearchAction",
+      "target":"https://tools.yuchani.com/search?q={query}",
+      "query-input":"required name=query"
     }
   }
   </script>
-
-  <style>
-    .card{border-radius:1rem;background:#121417;border:1px solid rgba(255,255,255,.08);box-shadow:0 8px 30px rgba(0,0,0,.25)}
-    .ring-soft{box-shadow:0 0 0 1px rgba(255,255,255,.08) inset}
-  </style>
 </head>
-<body class="bg-[#0F1113] text-white antialiased">
+<body class="text-white">
+  <!-- 배경 데코 -->
+  <div aria-hidden class="pointer-events-none fixed inset-0 -z-10">
+    <div class="absolute -top-24 -left-24 w-[40rem] h-[40rem] rounded-full bg-gradient-to-br from-indigo-500/10 to-cyan-400/5 blur-3xl"></div>
+    <div class="absolute bottom-[-8rem] right-[-6rem] w-[36rem] h-[36rem] rounded-full bg-gradient-to-br from-amber-400/10 to-rose-400/5 blur-3xl"></div>
+  </div>
+
   <!-- 헤더 -->
-  <header class="sticky top-0 z-40 backdrop-blur bg-[#0F1113]/80 border-b border-white/5">
+  <header class="sticky top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-[#0F1113]/70 bg-[#0F1113]/80 border-b border-white/5">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
       <div class="flex items-center gap-3">
         <div class="w-8 h-8 rounded-xl grid place-items-center bg-gradient-to-br from-white/10 to-white/0 ring-soft">
-          <!-- 로고(데이터URL 사용 가능). 필요시 <img src="..."> 로 교체 -->
-          <svg width="18" height="18" viewBox="0 0 24 24" class="text-amber-300">
-            <path fill="currentColor" d="M12 2L2 7l10 5l10-5l-10-5Zm0 7L2 4v13l10 5l10-5V4l-10 5Z"/>
-          </svg>
+          <!-- 로고 있으면 표시 -->
+          <img src="/assets/logo.webp" alt="" class="w-5 h-5 object-contain" onerror="this.remove();document.getElementById('logo-fallback').style.display='grid'">
+          <div id="logo-fallback" style="display:none" class="place-items-center">
+            <i data-lucide="sparkles" class="w-4 h-4"></i>
+          </div>
         </div>
         <div class="flex items-center gap-1.5">
-          <span class="font-semibold tracking-tight bg-gradient-to-r from-amber-400 to-cyan-300 bg-clip-text text-transparent">Yuchani Tools</span>
+          <span class="font-semibold tracking-tight brand-grad bg-clip-text text-transparent">Yuchani Tools</span>
           <span class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-white text-black shadow-sm">PRO</span>
         </div>
         <span class="ml-2 text-xs text-white/50 hidden sm:inline">필요한 도구, 한 곳에.</span>
@@ -60,74 +74,126 @@
         <a href="#donate" class="hover:text-white">후원</a>
       </nav>
       <div class="flex items-center gap-2">
-        <a href="#donate" class="inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm border bg-amber-400/15 border-amber-400/30 hover:bg-amber-400/20">
-          후원
+        <a href="#donate" class="inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm border bg-amber-400/15 border-amber-400/30 hover:bg-amber-400/20 text-amber-200">
+          <i data-lucide="handshake" class="w-4 h-4"></i>후원
         </a>
-        <a href="#launch" class="hidden sm:inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm font-semibold hover:opacity-90 bg-gradient-to-r from-amber-400 to-cyan-400 text-black">
-          바로 시작
+        <a href="#launch" class="hidden sm:inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm font-semibold hover:opacity-90 brand-grad text-black">
+          <i data-lucide="rocket" class="w-4 h-4"></i>바로 시작
         </a>
       </div>
     </div>
   </header>
 
-  <!-- 배경 글로우 -->
-  <div aria-hidden class="pointer-events-none fixed inset-0 -z-10">
-    <div class="absolute -top-24 -left-24 w-[40rem] h-[40rem] rounded-full bg-gradient-to-br from-indigo-500/10 to-cyan-400/5 blur-3xl"></div>
-    <div class="absolute bottom-[-8rem] right-[-6rem] w-[36rem] h-[36rem] rounded-full bg-gradient-to-br from-amber-400/10 to-rose-400/5 blur-3xl"></div>
-  </div>
-
   <!-- 히어로 -->
-  <section class="border-b border-white/5">
+  <section class="relative border-b border-white/5">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 md:py-16 grid md:grid-cols-2 gap-8 items-center">
       <div>
         <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight">
-          시간을 아껴주는
-          <span class="bg-gradient-to-r from-emerald-400 to-lime-300 bg-clip-text text-transparent"> 웹툴 허브</span>
+          시간을 아껴주는 <span class="bg-gradient-to-r from-emerald-400 to-lime-300 bg-clip-text text-transparent">웹툴 허브</span>
         </h1>
+
+        <!-- 브랜드 마크 -->
+        <div class="mt-4">
+          <div class="relative inline-flex items-center">
+            <span class="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight brand-grad bg-clip-text text-transparent drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)]">Yuchani&nbsp;Tools</span>
+            <span class="ml-2 px-2 py-0.5 rounded-lg text-[10px] md:text-xs font-black uppercase tracking-wider bg-white text-black shadow">PRO</span>
+          </div>
+          <div class="mt-2 h-[3px] w-full max-w-[320px] rounded-full brand-grad opacity-70"></div>
+        </div>
+
         <p class="mt-4 text-white/70 leading-relaxed">
           한 번에 끝내는 <span class="font-semibold">Yuchani Tools pro</span> 초고속 AI웹툴을 경험하세요<br>
           <span class="text-white/80">비용=무료 · 속도=초고속 · 결과물=완벽</span>
         </p>
 
-        <div class="card mt-6 p-2 ring-soft">
+        <!-- 검색 카드 -->
+        <div class="mt-6 rounded-2xl border border-white/10 bg-[#121417] ring-1 ring-white/10 p-2 shadow-[0_8px_30px_rgba(0,0,0,0.25)]">
           <div class="flex items-center gap-2 px-2">
-            <svg width="18" height="18" viewBox="0 0 24 24" class="text-white/60"><path fill="currentColor" d="M10 18a8 8 0 1 1 6.32-3.1l4.39 4.39l-1.41 1.41l-4.39-4.39A7.96 7.96 0 0 1 10 18m0-2a6 6 0 1 0 0-12a6 6 0 0 0 0 12"/></svg>
-            <input id="global-search" placeholder="무엇을 도와드릴까요? (/)"
-              class="w-full bg-transparent outline-none placeholder:text-white/40 text-base py-3"/>
-            <button id="search-btn"
-              class="inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-sm font-semibold hover:opacity-90 bg-gradient-to-r from-amber-400 to-cyan-300 text-black">
+            <i data-lucide="search" class="w-5 h-5 text-white/60"></i>
+            <input id="q" placeholder="무엇을 도와드릴까요? (/)"
+                   class="w-full bg-transparent outline-none placeholder:text-white/40 text-base py-3"/>
+            <button id="goTools" class="inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-sm font-semibold hover:opacity-90 brand-grad text-black">
               검색
             </button>
           </div>
-          <div class="px-2 pt-2 pb-3 flex flex-wrap gap-2">
-            <a class="text-xs px-2 py-1 rounded-lg border bg-amber-400/15 border-amber-400/30 hover:bg-amber-400/20" href="/tools/qrcode/">QR 생성</a>
-            <a class="text-xs px-2 py-1 rounded-lg border bg-amber-400/15 border-amber-400/30 hover:bg-amber-400/20" href="/tools/html-preview/">HTML 미리보기</a>
-            <a class="text-xs px-2 py-1 rounded-lg border bg-amber-400/15 border-amber-400/30 hover:bg-amber-400/20" href="/tools/url-encoder/">URL 인코딩</a>
-            <a class="text-xs px-2 py-1 rounded-lg border bg-amber-400/15 border-amber-400/30 hover:bg-amber-400/20" href="/tools/pdf-suite/">PDF 합치기</a>
-            <a class="text-xs px-2 py-1 rounded-lg border bg-amber-400/15 border-amber-400/30 hover:bg-amber-400/20" href="/tools/og-preview/">OG 미리보기</a>
+          <div class="px-2 pt-2 pb-3 flex flex-wrap gap-2 text-xs">
+            <a href="/tools/qrcode" class="px-2 py-1 rounded-lg border bg-emerald-400/15 border-emerald-400/30 text-emerald-200 hover:bg-emerald-400/20">QR 생성</a>
+            <a href="/tools/html-preview" class="px-2 py-1 rounded-lg border bg-cyan-400/15 border-cyan-400/30 text-cyan-200 hover:bg-cyan-400/20">HTML 미리보기</a>
+            <a href="/tools/url-encoder" class="px-2 py-1 rounded-lg border bg-sky-400/15 border-sky-400/30 text-sky-200 hover:bg-sky-400/20">URL 인코딩</a>
+            <a href="/tools/pdf-suite" class="px-2 py-1 rounded-lg border bg-rose-400/15 border-rose-400/30 text-rose-200 hover:bg-rose-400/20">PDF 합치기</a>
+            <a href="/tools/og-preview" class="px-2 py-1 rounded-lg border bg-indigo-400/15 border-indigo-400/30 text-indigo-200 hover:bg-indigo-400/20">OG 미리보기</a>
           </div>
         </div>
 
         <div class="mt-4 flex items-center gap-3 text-xs text-white/50">
-          인기 툴은 상단에 고정돼요 · 모바일/데스크톱 반응형
+          <i data-lucide="star" class="w-4 h-4"></i> 인기 툴은 상단에 고정돼요
+          <i data-lucide="settings-2" class="w-4 h-4 ml-3"></i> 모바일/데스크톱 반응형
         </div>
       </div>
 
+      <!-- 추천 콜렉션 -->
       <div class="hidden md:block relative">
-        <div class="card p-6 ring-soft">
+        <div aria-hidden class="pointer-events-none absolute inset-0 -z-10 opacity-[0.08] mix-blend-screen">
+          <img src="/assets/logo.webp" alt="" class="w-full h-full object-contain" onerror="this.remove()">
+        </div>
+        <div class="rounded-2xl border border-white/10 bg-[#121417] ring-1 ring-white/10 p-6 shadow-[0_8px_30px_rgba(0,0,0,0.25)]">
           <div class="text-sm text-white/60">추천 콜렉션</div>
           <div class="mt-3 grid grid-cols-3 gap-3">
-            <!-- 카드 1 예시 -->
-            <a href="/tools/html-preview/" class="group">
+            <!-- 6개만 샘플 노출 -->
+            <a href="/tools/html-preview" class="group">
               <div class="rounded-xl border border-white/10 bg-[#15181E] p-3 group-hover:bg-[#171A20] transition-colors">
                 <div class="w-9 h-9 rounded-lg grid place-items-center bg-gradient-to-br from-white/5 to-white/0 ring-soft">
-                  <svg width="20" height="20" viewBox="0 0 24 24" class="text-cyan-300"><path fill="currentColor" d="M3 4h18v16H3z"/></svg>
+                  <i data-lucide="file-code-2" class="w-[22px] h-[22px] text-cyan-300"></i>
                 </div>
                 <div class="mt-2 text-sm font-medium leading-tight">HTML 미리보기</div>
-                <div class="text-[11px] text-white/50">브라우저에서 즉시 React/HTML 렌더</div>
+                <div class="text-[11px] text-white/50">브라우저에서 즉시 렌더</div>
               </div>
             </a>
-            <!-- 나머지 5개도 같은 패턴으로 복제 가능 -->
+            <a href="/tools/qrcode" class="group">
+              <div class="rounded-xl border border-white/10 bg-[#15181E] p-3 group-hover:bg-[#171A20] transition-colors">
+                <div class="w-9 h-9 rounded-lg grid place-items-center bg-gradient-to-br from-white/5 to-white/0 ring-soft">
+                  <i data-lucide="qr-code" class="w-[22px] h-[22px] text-emerald-300"></i>
+                </div>
+                <div class="mt-2 text-sm font-medium leading-tight">QR 코드 생성기</div>
+                <div class="text-[11px] text-white/50">컬러·로고·크기</div>
+              </div>
+            </a>
+            <a href="/tools/url-encoder" class="group">
+              <div class="rounded-xl border border-white/10 bg-[#15181E] p-3 group-hover:bg-[#171A20] transition-colors">
+                <div class="w-9 h-9 rounded-lg grid place-items-center bg-gradient-to-br from-white/5 to-white/0 ring-soft">
+                  <i data-lucide="link-2" class="w-[22px] h-[22px] text-sky-300"></i>
+                </div>
+                <div class="mt-2 text-sm font-medium leading-tight">URL 인코더/디코더</div>
+                <div class="text-[11px] text-white/50">UTF-8/쿼리/경로</div>
+              </div>
+            </a>
+            <a href="/tools/pdf-suite" class="group">
+              <div class="rounded-xl border border-white/10 bg-[#15181E] p-3 group-hover:bg-[#171A20] transition-colors">
+                <div class="w-9 h-9 rounded-lg grid place-items-center bg-gradient-to-br from-white/5 to-white/0 ring-soft">
+                  <i data-lucide="file-text" class="w-[22px] h-[22px] text-rose-300"></i>
+                </div>
+                <div class="mt-2 text-sm font-medium leading-tight">PDF 3대장</div>
+                <div class="text-[11px] text-white/50">합치기·분할·압축</div>
+              </div>
+            </a>
+            <a href="/tools/og-preview" class="group">
+              <div class="rounded-xl border border-white/10 bg-[#15181E] p-3 group-hover:bg-[#171A20] transition-colors">
+                <div class="w-9 h-9 rounded-lg grid place-items-center bg-gradient-to-br from-white/5 to-white/0 ring-soft">
+                  <i data-lucide="globe" class="w-[22px] h-[22px] text-indigo-300"></i>
+                </div>
+                <div class="mt-2 text-sm font-medium leading-tight">OG/Twitter 카드</div>
+                <div class="text-[11px] text-white/50">메타 태그 검증</div>
+              </div>
+            </a>
+            <a href="/tools/ocr" class="group">
+              <div class="rounded-xl border border-white/10 bg-[#15181E] p-3 group-hover:bg-[#171A20] transition-colors">
+                <div class="w-9 h-9 rounded-lg grid place-items-center bg-gradient-to-br from-white/5 to-white/0 ring-soft">
+                  <i data-lucide="image-down" class="w-[22px] h-[22px] text-violet-300"></i>
+                </div>
+                <div class="mt-2 text-sm font-medium leading-tight">OCR · 이미지→텍스트</div>
+                <div class="text-[11px] text-white/50">한글 인식 강화</div>
+              </div>
+            </a>
           </div>
           <div class="mt-4 text-xs text-white/50">* 클릭하면 해당 툴로 바로 이동합니다.</div>
         </div>
@@ -135,80 +201,134 @@
     </div>
   </section>
 
-  <!-- 모든 툴 -->
-  <section id="tools" class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
-    <div class="flex items-center justify-between">
-      <h2 class="text-xl md:text-2xl font-bold tracking-tight">모든 툴</h2>
-      <a href="#" class="text-sm text-white/70 hover:text-white">전체 보기</a>
-    </div>
-    <div class="mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
-      <!-- 예시 카드 하나 -->
-      <a href="/tools/qrcode/" class="group">
-        <div class="card p-4 h-full">
-          <div class="flex items-center justify-between">
-            <div class="w-10 h-10 rounded-lg grid place-items-center bg-gradient-to-br from-white/5 to-white/0 ring-soft">
-              <svg width="22" height="22" viewBox="0 0 24 24" class="text-emerald-300"><path fill="currentColor" d="M3 3h8v8H3zm10 0h8v8h-8zM3 13h8v8H3zm10 6h4v2h-4z"/></svg>
+  <!-- 카테고리 -->
+  <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
+    <h2 class="text-xl md:text-2xl font-bold tracking-tight">카테고리</h2>
+    <div class="mt-5 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+      <!-- 8개 카테고리 -->
+      <a href="#tools" class="group">
+        <div class="rounded-2xl border border-white/8 bg-[#121417] p-4 hover:ring-1 ring-amber-400/30">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg grid place-items-center bg-gradient-to-br from-amber-400/20 to-orange-400/10 ring-1 ring-amber-400/30">
+              <i data-lucide="gauge" class="w-5 h-5 text-amber-300"></i>
             </div>
-            <div class="flex gap-1"><span class="px-2 py-0.5 rounded-full border text-xs bg-emerald-400/15 border-emerald-400/30 text-emerald-200">신규</span></div>
+            <div>
+              <div class="font-semibold text-amber-200">변환</div>
+              <div class="text-xs text-white/50">단위/인코딩/포맷</div>
+            </div>
           </div>
-          <div class="mt-3 font-semibold leading-tight">QR 코드 생성기</div>
-          <div class="mt-1 text-sm text-white/60">컬러·로고·크기 커스텀</div>
-          <div class="mt-4 text-xs text-white/50">바로가기 →</div>
         </div>
       </a>
-      <!-- 필요한 만큼 복제해서 채우세요 -->
+      <a href="#tools" class="group">
+        <div class="rounded-2xl border border-white/8 bg-[#121417] p-4 hover:ring-1 ring-sky-400/30">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg grid place-items-center bg-gradient-to-br from-sky-400/20 to-cyan-300/10 ring-1 ring-sky-400/30">
+              <i data-lucide="file-search" class="w-5 h-5 text-cyan-300"></i>
+            </div>
+            <div>
+              <div class="font-semibold text-sky-200">미리보기</div>
+              <div class="text-xs text-white/50">HTML/OG/Twitter</div>
+            </div>
+          </div>
+        </div>
+      </a>
+      <a href="#tools" class="group">
+        <div class="rounded-2xl border border-white/8 bg-[#121417] p-4 hover:ring-1 ring-emerald-400/30">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg grid place-items-center bg-gradient-to-br from-emerald-400/20 to-green-300/10 ring-1 ring-emerald-400/30">
+              <i data-lucide="file-text" class="w-5 h-5 text-emerald-300"></i>
+            </div>
+            <div>
+              <div class="font-semibold text-emerald-200">문서</div>
+              <div class="text-xs text-white/50">PDF/텍스트</div>
+            </div>
+          </div>
+        </div>
+      </a>
+      <a href="#tools" class="group">
+        <div class="rounded-2xl border border-white/8 bg-[#121417] p-4 hover:ring-1 ring-violet-400/30">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg grid place-items-center bg-gradient-to-br from-violet-400/20 to-fuchsia-300/10 ring-1 ring-violet-400/30">
+              <i data-lucide="image-down" class="w-5 h-5 text-violet-300"></i>
+            </div>
+            <div>
+              <div class="font-semibold text-violet-200">이미지/OCR</div>
+              <div class="text-xs text-white/50">추출/리사이즈</div>
+            </div>
+          </div>
+        </div>
+      </a>
+      <a href="#tools" class="group">
+        <div class="rounded-2xl border border-white/8 bg-[#121417] p-4 hover:ring-1 ring-indigo-400/30">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg grid place-items-center bg-gradient-to-br from-indigo-400/20 to-purple-300/10 ring-1 ring-indigo-400/30">
+              <i data-lucide="globe" class="w-5 h-5 text-indigo-300"></i>
+            </div>
+            <div>
+              <div class="font-semibold text-indigo-200">SEO</div>
+              <div class="text-xs text-white/50">메타/스키마</div>
+            </div>
+          </div>
+        </div>
+      </a>
+      <a href="#tools" class="group">
+        <div class="rounded-2xl border border-white/8 bg-[#121417] p-4 hover:ring-1 ring-slate-400/30">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg grid place-items-center bg-gradient-to-br from-slate-400/20 to-zinc-300/10 ring-1 ring-slate-400/30">
+              <i data-lucide="file-code-2" class="w-5 h-5 text-slate-300"></i>
+            </div>
+            <div>
+              <div class="font-semibold text-slate-200">개발</div>
+              <div class="text-xs text-white/50">Regex/JSON</div>
+            </div>
+          </div>
+        </div>
+      </a>
+      <a href="#tools" class="group">
+        <div class="rounded-2xl border border-white/8 bg-[#121417] p-4 hover:ring-1 ring-rose-400/30">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg grid place-items-center bg-gradient-to-br from-rose-400/20 to-pink-300/10 ring-1 ring-rose-400/30">
+              <i data-lucide="book-open-check" class="w-5 h-5 text-rose-300"></i>
+            </div>
+            <div>
+              <div class="font-semibold text-rose-200">시니어</div>
+              <div class="text-xs text-white/50">큰 글씨/간편</div>
+            </div>
+          </div>
+        </div>
+      </a>
+      <a href="#tools" class="group">
+        <div class="rounded-2xl border border-white/8 bg-[#121417] p-4 hover:ring-1 ring-yellow-400/30">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg grid place-items-center bg-gradient-to-br from-yellow-400/20 to-amber-300/10 ring-1 ring-yellow-400/30">
+              <i data-lucide="sparkles" class="w-5 h-5 text-yellow-300"></i>
+            </div>
+            <div>
+              <div class="font-semibold text-yellow-200">브랜딩</div>
+              <div class="text-xs text-white/50">로고/프리셋</div>
+            </div>
+          </div>
+        </div>
+      </a>
     </div>
   </section>
 
-  <!-- 푸터 -->
-  <footer class="mt-10 border-t border-white/5">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 grid md:grid-cols-4 gap-8 text-sm">
-      <div>
-        <div class="flex items-center gap-2">
-          <div class="w-7 h-7 rounded-lg bg-white/5 grid place-items-center ring-soft"></div>
-          <div class="font-semibold">Yuchani Tools pro</div>
-        </div>
-        <p class="mt-3 text-white/60 leading-relaxed">
-          필요한 웹도구를 찾는 데 시간을 쓰지 마세요. 한 곳에서 빠르게 해결하세요.
-        </p>
+  <!-- 추천 섹션 -->
+  <section id="popular" class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
+    <div class="rounded-2xl bg-gradient-to-r from-amber-400/10 to-white/0 border border-white/10 p-5 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="space-y-1">
+        <div class="text-sm text-white/60">이번 주 추천</div>
+        <div class="text-lg md:text-xl font-semibold">HTML 미리보기 · PDF 3대장 · URL 인코더</div>
+        <div class="text-xs text-white/50">누적 사용량을 기준으로 선정했어요.</div>
       </div>
-      <div>
-        <div class="font-semibold">리소스</div>
-        <ul class="mt-3 space-y-2 text-white/70">
-          <li><a href="#learn" class="hover:text-white">가이드 & 튜토리얼</a></li>
-          <li><a href="#changelog" class="hover:text-white">업데이트 로그</a></li>
-          <li><a href="#privacy" class="hover:text-white">개인정보 처리방침</a></li>
-        </ul>
-      </div>
-      <div>
-        <div class="font-semibold">연결</div>
-        <ul class="mt-3 space-y-2 text-white/70">
-          <li><a href="#blog" class="hover:text-white">블로그</a></li>
-          <li><a href="#contact" class="hover:text-white">Contact</a></li>
-          <li><a href="#donate" class="hover:text-white">후원</a></li>
-        </ul>
-      </div>
-      <div>
-        <div class="font-semibold">언어</div>
-        <div class="mt-3 flex flex-wrap gap-2">
-          <button class="px-3 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10">한국어</button>
-          <button class="px-3 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10">English</button>
-        </div>
+      <div class="flex flex-wrap gap-2 text-sm">
+        <a href="/tools/html-preview" class="px-3 py-1.5 rounded-xl bg-white text-black font-semibold hover:bg-white/90">HTML 미리보기</a>
+        <a href="/tools/pdf-suite" class="px-3 py-1.5 rounded-xl border border-white/10 hover:bg-white/5">PDF 3대장</a>
+        <a href="/tools/url-encoder" class="px-3 py-1.5 rounded-xl border border-white/10 hover:bg-white/5">URL 인코더</a>
       </div>
     </div>
-    <div class="border-t border-white/5 py-6 text-center text-xs text-white/50">© <span id="year"></span> Yuchani Tools pro • All rights reserved</div>
-  </footer>
+  </section>
 
-  <script>
-    // 년도 업데이트 + 검색 핫키
-    document.getElementById('year').textContent = new Date().getFullYear();
-    const search = document.getElementById('global-search');
-    window.addEventListener('keydown', (e) => {
-      if (e.key === '/' && !e.metaKey && !e.ctrlKey && !e.altKey) { e.preventDefault(); search?.focus(); }
-    });
-    document.getElementById('search-btn')?.addEventListener('click', () => {
-      document.getElementById('tools')?.scrollIntoView({behavior:'smooth'});
-    });
-  </script>
-</body>
-</html>
+  <!-- 모든 툴 (모바일 2열) -->
+  <section id="tools" class="mx-auto max-w-7xl px-4 sm:px-6
+

@@ -44,15 +44,17 @@
   }
   </script>
 
-  <!-- Tailwind & Icons -->
+  <!-- Tailwind & Icons (CDN 미로딩 시에도 기능 문제 없도록 작성) -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
 
   <style>
     :root{ color-scheme: dark }
-    body{ background:#0F1113 }
+    body{ background:#0F1113; padding-bottom: env(safe-area-inset-bottom) }
     .ring-soft{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08) }
-    .brand-grad{ background-image:linear-gradient(90deg,#34d399,#a3e635) }/* emerald→lime */
+    .brand-grad{ background-image:linear-gradient(90deg,#34d399,#a3e635) } /* emerald→lime */
+    .panel{ background:#0f1216 }
+    .input{ background:#fff; color:#000 }
   </style>
 </head>
 <body class="text-white">
@@ -69,7 +71,7 @@
     </header>
 
     <!-- 컨트롤 패널 -->
-    <section class="rounded-2xl border border-white/10 ring-soft p-3 bg-[#0f1216]">
+    <section class="rounded-2xl border border-white/10 ring-soft p-3 panel">
       <div class="flex flex-wrap items-center gap-2 text-sm">
         <label class="inline-flex items-center gap-2">
           <input type="radio" name="mode" value="encode" class="accent-emerald-400" checked>
@@ -105,10 +107,10 @@
           <i data-lucide="file-input" class="w-4 h-4"></i> 입력
           <span id="fileInfo" class="ml-auto text-white/40 hidden"></span>
         </div>
-        <div class="p-3 bg-[#0f1216]">
-          <textarea id="input" class="w-full h-64 md:h-[28rem] text-sm text-black outline-none resize-y bg-white rounded-lg border border-black/10 p-3" placeholder="여기에 텍스트 또는 Base64를 붙여넣거나, 아래에 파일을 업로드하세요."></textarea>
+        <div class="p-3 panel">
+          <textarea id="input" class="w-full h-56 md:h-[28rem] text-sm text-black outline-none resize-y bg-white rounded-lg border border-black/10 p-3" placeholder="여기에 텍스트 또는 Base64를 붙여넣거나, 아래에 파일을 업로드하세요."></textarea>
           <div class="mt-2 flex items-center justify-between gap-2">
-            <label class="inline-flex items-center gap-2 text-sm text-white/80 bg-white/10 px-3 py-1.5 rounded-lg border border-white/10 cursor-pointer">
+            <label class="inline-flex items-center gap-2 justify-center w-full sm:w-auto text-sm text-white/80 bg-white/10 px-3 py-2 rounded-lg border border-white/10 cursor-pointer">
               <i data-lucide="upload" class="w-4 h-4"></i>
               <input id="file" type="file" class="hidden"> 파일 업로드
             </label>
@@ -123,282 +125,12 @@
           <i data-lucide="file-output" class="w-4 h-4"></i> 결과
           <span id="outInfo" class="ml-auto text-white/40 hidden"></span>
         </div>
-        <div class="p-3 bg-[#0f1216]">
-          <textarea id="output" class="w-full h-64 md:h-[28rem] text-sm text-black outline-none resize-y bg-white rounded-lg border border-black/10 p-3" placeholder="결과가 여기에 표시됩니다." readonly></textarea>
+        <div class="p-3 panel">
+          <textarea id="output" class="w-full h-56 md:h-[28rem] text-sm text-black outline-none resize-y bg-white rounded-lg border border-black/10 p-3" placeholder="결과가 여기에 표시됩니다." readonly></textarea>
           <div class="mt-2 flex flex-wrap items-center justify-between gap-2">
-            <div class="flex flex-wrap gap-2">
-              <button id="btnEncode" class="px-3 py-1.5 text-sm rounded-xl border border-emerald-400/35 bg-emerald-400/15 text-emerald-700 hover:bg-emerald-400/25">인코드</button>
-              <button id="btnDecode" class="px-3 py-1.5 text-sm rounded-xl border border-cyan-400/35 bg-cyan-400/15 text-cyan-700 hover:bg-cyan-400/25">디코드</button>
-              <button id="btnSwap"   class="px-3 py-1.5 text-sm rounded-xl border border-white/20 hover:bg-white/10 text-white">입력↔결과 교체</button>
-              <button id="btnClear"  class="px-3 py-1.5 text-sm rounded-xl border border-white/20 hover:bg-white/10 text-white">초기화</button>
-            </div>
-            <div class="flex gap-2">
-              <button id="btnCopy"     class="px-3 py-1.5 text-sm rounded-xl border border-white/20 hover:bg-white/10 text-white">복사</button>
-              <button id="btnDownload" class="px-3 py-1.5 text-sm rounded-xl border border-white/20 hover:bg-white/10 text-white">다운로드</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+            <div class="flex flex-wrap gap-2 w-full sm:w-auto">
+              <button id="btnEncode" class="px-3 py-1.5 text-sm rounded-xl border border-emerald-400/35 bg-emerald-400/15 text-emerald-700 hover:bg-emerald-400/25 w-full sm:w-auto">인코드</button>
+              <button id="btnDecode" class="px-3 py-1.5 text-sm rounded-xl border border-cyan-400/35 bg-cyan-400/15 text-cyan-700 hover:bg-cyan-400/25 w-full sm:w-auto">디코드</button>
+              <button id="btnSwap"   class="px-3 py-1.5 text-sm rounded-xl border border-white/20 hover:bg-white/10 text-white w-full sm:w-auto">입력↔결과 교체</button>
+              <button id="btnClear"  class="px-3 py-1.5 text-sm rounded-xl border border-white/20 hover:bg-white/10 text-white w-full sm:w-aut
 
-    <!-- 오류 알림 -->
-    <div id="alert" class="mt-3 hidden rounded-xl border border-rose-400/30 bg-rose-400/10 text-rose-100 px-3 py-2 text-sm"></div>
-
-    <!-- 도움말 & 팁 -->
-    <section class="mt-6 grid gap-4 md:grid-cols-2">
-      <div class="rounded-2xl border border-white/10 ring-soft p-4">
-        <div class="flex items-center gap-2 text-sm text-white/80">
-          <i data-lucide="lightbulb" class="w-4 h-4 text-yellow-300"></i>
-          <div class="font-semibold">도움말 & 팁</div>
-        </div>
-        <ul class="mt-3 list-disc pl-5 text-sm text-white/70 space-y-1.5">
-          <li>텍스트는 UTF-8로 처리합니다. 한글 깨짐 없이 인/디코드됩니다.</li>
-          <li>파일은 브라우저 내에서만 처리되며 서버로 전송되지 않습니다.</li>
-          <li>Data URL(<code>data:mime/type;base64,....</code>)은 자동 인식합니다.</li>
-          <li>붙여넣기/드래그앤드롭/클립보드 이미지 붙여넣기를 지원합니다.</li>
-          <li>자동 처리(상단 체크)를 켜면 입력만으로 즉시 변환됩니다.</li>
-        </ul>
-      </div>
-
-      <div class="rounded-2xl border border-white/10 ring-soft p-4">
-        <div class="flex items-center gap-2 text-sm text-white/80">
-          <i data-lucide="help-circle" class="w-4 h-4 text-cyan-300"></i>
-          <div class="font-semibold">사용설명서 & FAQ</div>
-        </div>
-        <ol class="mt-3 list-decimal pl-5 text-sm text-white/70 space-y-1.5">
-          <li><strong>인코드</strong>: 텍스트 입력 또는 파일 업로드 → 인코드.</li>
-          <li><strong>디코드</strong>: Base64 붙여넣기 → 디코드 → 파일/텍스트 확인.</li>
-          <li><strong>교체</strong>: 입력과 결과를 한 번에 뒤바꿉니다.</li>
-          <li><strong>복사/다운로드</strong>: 결과를 클립보드로 복사하거나 파일로 저장합니다.</li>
-          <li><strong>오류</strong>: 아래 알림을 확인하고, 샘플(Base64 이미지 등)로 재시도하세요.</li>
-        </ol>
-      </div>
-    </section>
-  </main>
-
-  <!-- 공통 푸터 include -->
-  <div data-include="/partials/footer.html"></div>
-
-  <!-- include 스크립트 -->
-  <script defer src="/inject-layout.js"></script>
-
-  <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    window.lucide?.createIcons?.();
-
-    const $ = (s) => document.querySelector(s);
-    const inputEl = $('#input');
-    const outputEl = $('#output');
-    const fileEl = $('#file');
-    const fileInfo = $('#fileInfo');
-    const outInfo = $('#outInfo');
-    const alertBox = $('#alert');
-    const auto = $('#auto');
-
-    const btnEncode = $('#btnEncode');
-    const btnDecode = $('#btnDecode');
-    const btnSwap = $('#btnSwap');
-    const btnClear = $('#btnClear');
-    const btnCopy = $('#btnCopy');
-    const btnDownload = $('#btnDownload');
-
-    // Light self tests (fail silently in prod)
-    (function selfTest(){
-      const required = [inputEl, outputEl, fileEl, btnEncode, btnDecode, btnSwap, btnClear, btnCopy, btnDownload];
-      if (required.some(el => !el)) console.warn('필수 엘리먼트 확인 필요', required);
-      Promise.all([
-        encodeText('가나다ABC123').then(b64 => decodeText(b64)).then(txt => console.assert(txt === '가나다ABC123', 'UTF-8 라운드트립 실패', {txt})),
-        encodeText('🙂🔥🚀').then(b64 => decodeText(b64)).then(txt => console.assert(txt === '🙂🔥🚀', 'Emoji 라운드트립 실패', {txt}))
-      ]).catch(()=>{});
-    })();
-
-    function showAlert(msg){ alertBox.textContent = msg; alertBox.classList.remove('hidden'); }
-    function hideAlert(){ alertBox.classList.add('hidden'); }
-
-    function bytesToBase64(bytes){
-      let bin = '';
-      const chunk = 0x8000;
-      for (let i=0; i<bytes.length; i+=chunk){
-        bin += String.fromCharCode.apply(null, bytes.subarray(i, i+chunk));
-      }
-      return btoa(bin);
-    }
-    function base64ToBytes(b64){
-      const bin = atob(b64);
-      const len = bin.length;
-      const bytes = new Uint8Array(len);
-      for (let i=0; i<len; i++) bytes[i] = bin.charCodeAt(i);
-      return bytes;
-    }
-    async function encodeText(str){
-      const enc = new TextEncoder();
-      const bytes = enc.encode(str);
-      return bytesToBase64(bytes);
-    }
-    async function decodeText(b64){
-      const bytes = base64ToBytes(b64);
-      const dec = new TextDecoder();
-      return dec.decode(bytes);
-    }
-    async function encodeFile(file){
-      const buf = await file.arrayBuffer();
-      const b64 = bytesToBase64(new Uint8Array(buf));
-      const mime = file.type || 'application/octet-stream';
-      return `data:${mime};base64,${b64}`;
-    }
-    function inferDataUrlMeta(str){
-      const m = /^data:([^;]+);base64,(.*)$/s.exec(str.trim());
-      if (!m) return null;
-      return { mime:m[1], b64:m[2] };
-    }
-
-    async function doEncode(){
-      try {
-        hideAlert();
-        const kind = document.querySelector('input[name="kind"]:checked').value;
-        if (kind === 'text'){
-          const val = inputEl.value || '';
-          outputEl.value = await encodeText(val);
-          outInfo.textContent = `문자열 길이: ${val.length}`;
-          outInfo.classList.remove('hidden');
-        } else {
-          if (!fileEl.files[0]) throw new Error('파일을 선택하거나 드래그앤드롭/붙여넣기 해주세요.');
-          const file = fileEl.files[0];
-          const dataUrl = await encodeFile(file);
-          outputEl.value = dataUrl;
-          outInfo.textContent = `${file.name} (${file.type || 'application/octet-stream'})`;
-          outInfo.classList.remove('hidden');
-        }
-      } catch (e){ showAlert(e.message || String(e)); }
-    }
-
-    async function doDecode(){
-      try {
-        hideAlert();
-        const src = inputEl.value.trim();
-        if (!src) throw new Error('Base64 문자열을 입력하세요.');
-        const meta = inferDataUrlMeta(src);
-        if (meta){
-          const bytes = base64ToBytes(meta.b64);
-          const blob = new Blob([bytes], {type: meta.mime});
-          outputEl.value = `data:${meta.mime};base64,${meta.b64}`;
-          outInfo.textContent = `${meta.mime} • ${bytes.length.toLocaleString()} bytes`;
-          outInfo.classList.remove('hidden');
-          btnDownload.dataset.blobUrl = URL.createObjectURL(blob);
-          btnDownload.dataset.filename = `decoded.${meta.mime.split('/')[1] || 'bin'}`;
-        } else {
-          outputEl.value = await decodeText(src);
-          outInfo.textContent = `텍스트 • ${outputEl.value.length.toLocaleString()} chars`;
-          outInfo.classList.remove('hidden');
-          delete btnDownload.dataset.blobUrl;
-          delete btnDownload.dataset.filename;
-        }
-      } catch (e){ showAlert(e.message || String(e)); }
-    }
-
-    function swapIO(){ const a = inputEl.value; inputEl.value = outputEl.value; outputEl.value = a; }
-    function clearAll(){
-      inputEl.value = '';
-      outputEl.value = '';
-      fileEl.value = '';
-      fileInfo.classList.add('hidden');
-      outInfo.classList.add('hidden');
-      hideAlert();
-    }
-
-    // 이벤트
-    btnEncode?.addEventListener('click', doEncode);
-    btnDecode?.addEventListener('click', doDecode);
-    btnSwap  ?.addEventListener('click', swapIO);
-    btnClear ?.addEventListener('click', clearAll);
-
-    btnCopy?.addEventListener('click', async () => {
-      try {
-        await navigator.clipboard.writeText(outputEl.value || '');
-        btnCopy.textContent = '복사됨';
-        setTimeout(()=>btnCopy.textContent='복사', 1200);
-      } catch(e){ showAlert('클립보드 복사 실패: 권한을 확인하세요.'); }
-    });
-
-    btnDownload?.addEventListener('click', () => {
-      try {
-        if (btnDownload.dataset.blobUrl){
-          const url = btnDownload.dataset.blobUrl;
-          const filename = btnDownload.dataset.filename || 'download.bin';
-          const a = document.createElement('a'); a.href = url; a.download = filename; a.click();
-          setTimeout(()=>URL.revokeObjectURL(url), 1000);
-          return;
-        }
-        const blob = new Blob([outputEl.value || ''], {type:'text/plain;charset=utf-8'});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a'); a.href = url; a.download = 'base64.txt'; a.click();
-        setTimeout(()=>URL.revokeObjectURL(url), 1000);
-      } catch(e){ showAlert('다운로드 실패: '+(e.message||e)); }
-    });
-
-    // 파일 업로드 + 드롭 + 붙여넣기
-    fileEl?.addEventListener('change', () => {
-      const f = fileEl.files[0];
-      if (!f){ fileInfo.classList.add('hidden'); return; }
-      fileInfo.textContent = `${f.name} • ${(f.size/1024).toFixed(1)} KB`;
-      fileInfo.classList.remove('hidden');
-      const kind = document.querySelector('input[name="kind"]:checked').value;
-      if (auto.checked && kind === 'file') doEncode();
-    });
-
-    ['dragenter','dragover'].forEach(ev=>{
-      inputEl?.addEventListener(ev, e=>{ e.preventDefault(); e.stopPropagation(); });
-    });
-    inputEl?.addEventListener('drop', async (e) => {
-      e.preventDefault(); e.stopPropagation();
-      const f = e.dataTransfer?.files?.[0];
-      if (!f) return;
-      const dt = new DataTransfer();
-      dt.items.add(f);
-      fileEl.files = dt.files;
-      fileEl.dispatchEvent(new Event('change'));
-    });
-
-    inputEl?.addEventListener('paste', async (e) => {
-      const items = e.clipboardData?.items || [];
-      for (const it of items){
-        if (it.kind === 'file'){
-          const f = it.getAsFile();
-          if (!f) continue;
-          const dt = new DataTransfer();
-          dt.items.add(f);
-          fileEl.files = dt.files;
-          fileEl.dispatchEvent(new Event('change'));
-        }
-      }
-    });
-
-    // 자동 처리 (디바운스)
-    let t;
-    function schedule(fn){
-      if (!auto.checked) return;
-      clearTimeout(t); t = setTimeout(fn, 250);
-    }
-    inputEl?.addEventListener('input', ()=>{
-      const mode = document.querySelector('input[name="mode"]:checked').value;
-      schedule(mode === 'encode' ? doEncode : doDecode);
-    });
-    document.querySelectorAll('input[name="mode"]').forEach(r=> r.addEventListener('change', ()=>{
-      const mode = document.querySelector('input[name="mode"]:checked').value;
-      schedule(mode === 'encode' ? doEncode : doDecode);
-    }));
-
-    // 단축키
-    window.addEventListener('keydown', (e)=>{
-      if ((e.ctrlKey||e.metaKey) && e.key==='Enter'){
-        e.preventDefault();
-        const mode = document.querySelector('input[name="mode"]:checked').value;
-        (mode === 'encode' ? doEncode : doDecode)();
-      }
-    });
-
-    window.lucide?.createIcons?.();
-  });
-  </script>
-</body>
-</html>

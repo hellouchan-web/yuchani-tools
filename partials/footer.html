@@ -1,22 +1,24 @@
 <!-- /partials/footer.html -->
 <footer class="mt-10 border-t border-white/5">
-  <!-- 상단 4컬럼 -->
-  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 grid md:grid-cols-4 gap-8 text-sm">
-    <!-- 브랜드 -->
-    <div>
+  <!-- 상단 그리드: 모바일 2열, 데스크톱 4열 -->
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 grid grid-cols-2 md:grid-cols-4 gap-8 text-sm">
+    <!-- 브랜드: 모바일/태블릿에서 가로 전체, 데스크톱에선 1칸 -->
+    <div class="col-span-2 md:col-span-1">
       <div class="flex items-center gap-2">
-        <div class="w-7 h-7 rounded-lg bg-white/5 grid place-items-center ring-1 ring-white/10">
-          <i data-lucide="sparkles" class="w-4 h-4"></i>
+        <div class="w-8 h-8 rounded-lg bg-white/5 overflow-hidden ring-1 ring-white/10">
+          <!-- 로고 이미지로 교체: 경로 맞춰 주세요 -->
+          <img src="/assets/logo.webp" alt="Yuchani Tools pro" class="w-full h-full object-cover">
         </div>
         <div class="font-semibold">Yuchani Tools pro</div>
       </div>
       <p class="mt-3 text-white/60 leading-relaxed">
-        필요한 웹도구를 찾는 데 시간을 쓰지 마세요. 한 곳에서 빠르게 해결하세요.
+        필요한 웹도구를 찾는데 시간을 낭비하지마세요<br>
+        한 곳에서 빠르게 해결할수있습니다
       </p>
     </div>
 
-    <!-- 리소스 -->
-    <div>
+    <!-- 리소스 (모바일 좌) -->
+    <div class="col-span-1">
       <div class="font-semibold">리소스</div>
       <ul class="mt-3 space-y-2 text-white/70">
         <li><a href="#learn" class="hover:text-white">가이드 & 튜토리얼</a></li>
@@ -25,8 +27,8 @@
       </ul>
     </div>
 
-    <!-- 연결 -->
-    <div>
+    <!-- 연결 (모바일 우) -->
+    <div class="col-span-1">
       <div class="font-semibold">연결</div>
       <ul class="mt-3 space-y-2 text-white/80">
         <li>
@@ -58,8 +60,8 @@
       </ul>
     </div>
 
-    <!-- 언어 -->
-    <div>
+    <!-- 언어: 모바일/태블릿 가로 전체, 데스크톱에선 1칸 -->
+    <div class="col-span-2 md:col-span-1">
       <div class="font-semibold">언어</div>
       <div class="mt-3 flex flex-wrap gap-2">
         <button class="px-3 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10">한국어</button>
@@ -71,8 +73,18 @@
     </div>
   </div>
 
-  <!-- 하단 카피라이트 (한 번만) -->
+  <!-- 하단 카피라이트 -->
   <div class="border-t border-white/5 py-6 text-center text-xs text-white/50">
     © <span id="year"></span> Yuchani Tools pro • All rights reserved
   </div>
 </footer>
+
+<script>
+  // 연도 자동반영 (이미 있다면 중복실행 무해)
+  (function () {
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+    window.lucide?.createIcons?.();
+  })();
+</script>
+

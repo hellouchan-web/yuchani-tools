@@ -93,3 +93,6 @@
   bar.querySelector('#yt-cookie-accept').addEventListener('click', () => close(true));
   bar.querySelector('#yt-cookie-decline').addEventListener('click', () => close(false));
 })();
+
+<div data-include="/partials/footer.html"></div>
+<script src="/inject-layout.js" defer></script>

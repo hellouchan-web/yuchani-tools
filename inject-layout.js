@@ -54,8 +54,8 @@
       const nodes = document.querySelectorAll(sel);
       for (let i = 1; i < nodes.length; i++) nodes[i].remove();
     };
-    dedupe('footer');
-    dedupe('header');
+    dedupe('#yt-footer');
+    dedupe('#yt-header');
   });
 })();
 

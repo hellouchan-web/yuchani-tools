@@ -50,7 +50,7 @@
 
   <style>
     :root{ color-scheme: dark }
-    body{ background:#0F1113 }
+    body{ background:#0F1113; padding-bottom: env(safe-area-inset-bottom) }
     .ring-soft{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08) }
     .brand-grad{ background-image:linear-gradient(90deg,#34d399,#a3e635) }/* emerald→lime */
     .drop-mask{ border:1px dashed rgba(255,255,255,.2) }
@@ -78,8 +78,11 @@
           <input type="checkbox" id="accurate" class="accent-emerald-400"> 정확도 우선(느림)
         </label>
         <span class="mx-2 text-white/30">|</span>
-        <label class="inline-flex items-center gap-2">
-          언어
+        <div class="inline-flex items-center gap-2">
+          <span class="whitespace-nowrap">언어</span>
+          <button id="langToggle" type="button" class="px-2 py-1.5 rounded-md border border-white/10 bg-white/10 hover:bg-white/15 text-xs inline-flex items-center gap-1" aria-expanded="true" aria-controls="langGroup">
+            토글 <i data-lucide="chevron-down" class="w-4 h-4"></i>
+          </button>
           <div id="langGroup" class="flex flex-wrap gap-1">
             <button type="button" class="lang-btn px-2.5 py-1 rounded-md border border-white/10 bg-black text-white" data-lang="kor">한국어</button>
             <button type="button" class="lang-btn px-2.5 py-1 rounded-md border border-white/10 bg-white/10 text-white/80 hover:bg-white/15" data-lang="eng">영어</button>
@@ -87,7 +90,7 @@
             <button type="button" class="lang-btn px-2.5 py-1 rounded-md border border-white/10 bg-white/10 text-white/80 hover:bg-white/15" data-lang="chi_sim">中文(简体)</button>
             <button type="button" class="lang-btn px-2.5 py-1 rounded-md border border-white/10 bg-white/10 text-white/80 hover:bg-white/15" data-lang="kor+eng">한국어+영어</button>
           </div>
-        </label>
+        </div>
         <span class="mx-2 text-white/30">|</span>
         <label class="inline-flex items-center gap-2">
           <input type="checkbox" id="preserve" class="accent-emerald-400" checked> 줄바꿈 유지
@@ -105,15 +108,15 @@
           <span id="imgInfo" class="ml-auto text-white/40 hidden"></span>
         </div>
         <div class="p-3 bg-[#0f1216]">
-          <label class="inline-flex items-center gap-2 text-sm text-white/80 bg-white/10 px-3 py-1.5 rounded-lg border border-white/10 cursor-pointer">
+          <label class="inline-flex items-center gap-2 justify-center w-full sm:w-auto text-sm text-white/80 bg-white/10 px-3 py-2 rounded-lg border border-white/10 cursor-pointer">
             <span data-icon></span>
             <input id="file" type="file" accept="image/*" class="hidden"> 파일 선택
           </label>
           <div id="drop" class="mt-3 rounded-xl drop-mask p-4 text-sm text-white/60">
             여기에 이미지를 드롭하거나, 붙여넣기(Ctrl/⌘+V) 해도 됩니다.
           </div>
-          <div class="mt-3 rounded-xl overflow-hidden bg-black/40 grid place-items-center min-h-64">
-            <img id="preview" alt="미리보기" class="max-h-[24rem] object-contain hidden">
+          <div class="mt-3 rounded-xl overflow-hidden bg-black/40 grid place-items-center min-h-32 md:min-h-64">
+            <img id="preview" alt="미리보기" class="w-full md:w-auto max-h-[48vh] md:max-h-[24rem] object-contain hidden">
             <div id="noPreview" class="text-white/40 text-sm">미리보기가 여기 표시됩니다.</div>
           </div>
         </div>
@@ -126,15 +129,15 @@
           <span id="outInfo" class="ml-auto text-white/40 hidden"></span>
         </div>
         <div class="p-3 bg-[#0f1216]">
-          <textarea id="output" class="w-full h-64 md:h-[28rem] text-sm text-black outline-none resize-y bg-white rounded-lg border border-black/10 p-3" placeholder="추출된 텍스트가 여기에 표시됩니다." readonly></textarea>
+          <textarea id="output" class="w-full h-56 md:h-[28rem] text-sm text-black outline-none resize-y bg-white rounded-lg border border-black/10 p-3" placeholder="추출된 텍스트가 여기에 표시됩니다." readonly></textarea>
           <div class="mt-2 flex flex-wrap items-center justify-between gap-2">
             <div class="flex flex-wrap gap-2">
-              <button id="btnOcr" class="px-3 py-1.5 text-sm rounded-xl border border-emerald-400/35 bg-emerald-400/15 text-emerald-700 hover:bg-emerald-400/25">OCR 시작</button>
-              <button id="btnClear" class="px-3 py-1.5 text-sm rounded-xl border border-white/20 hover:bg-white/10 text-white">초기화</button>
+              <button id="btnOcr" class="px-3 py-1.5 text-sm rounded-xl border border-emerald-400/35 bg-emerald-400/15 text-emerald-700 hover:bg-emerald-400/25 w-full sm:w-auto">OCR 시작<\/button>
+              <button id="btnClear" class="px-3 py-1.5 text-sm rounded-xl border border-white/20 hover:bg-white/10 text-white w-full sm:w-auto">초기화<\/button>
             </div>
             <div class="flex gap-2">
-              <button id="btnCopy" class="px-3 py-1.5 text-sm rounded-xl border border-white/20 hover:bg-white/10 text-white">복사</button>
-              <button id="btnDownload" class="px-3 py-1.5 text-sm rounded-xl border border-white/20 hover:bg-white/10 text-white">다운로드</button>
+              <button id="btnCopy" class="px-3 py-1.5 text-sm rounded-xl border border-white/20 hover:bg-white/10 text-white w-full sm:w-auto">복사<\/button>
+              <button id="btnDownload" class="px-3 py-1.5 text-sm rounded-xl border border-white/20 hover:bg-white/10 text-white w-full sm:w-auto">다운로드<\/button>
             </div>
           </div>
           <div id="progressWrap" class="mt-3 hidden">
@@ -146,11 +149,11 @@
       </div>
     </section>
 
-    <!-- 도움말 & 팁 (5줄) -->
+    <!-- 도움말 & 팁 · 사용설명서 (5줄씩) -->
     <section class="mt-6 grid gap-4 md:grid-cols-2">
       <div class="rounded-2xl border border-white/10 ring-soft p-4">
         <div class="flex items-center gap-2 text-sm text-white/80">
-          <span data-icon></span>
+          <i data-lucide="lightbulb" class="w-4 h-4 text-yellow-300"></i>
           <div class="font-semibold">도움말 & 팁</div>
         </div>
         <ul class="mt-3 list-disc pl-5 text-sm text-white/70 space-y-1.5">
@@ -162,10 +165,9 @@
         </ul>
       </div>
 
-      <!-- 사용설명서 & FAQ (5줄) -->
       <div class="rounded-2xl border border-white/10 ring-soft p-4">
         <div class="flex items-center gap-2 text-sm text-white/80">
-          <span data-icon></span>
+          <i data-lucide="help-circle" class="w-4 h-4 text-cyan-300"></i>
           <div class="font-semibold">사용설명서 & FAQ</div>
         </div>
         <ol class="mt-3 list-decimal pl-5 text-sm text-white/70 space-y-1.5">
@@ -245,6 +247,7 @@
     const btnCopy = $('#btnCopy');
     const btnDownload = $('#btnDownload');
     const langGroup = document.getElementById('langGroup');
+    const langToggle = document.getElementById('langToggle');
     let currentLang = 'kor';
     const accurate = $('#accurate');
     const preserve = $('#preserve');
@@ -398,6 +401,17 @@
       });
     }
 
+    // 언어 영역 열기/닫기
+    if (langToggle && langGroup){
+      langToggle.addEventListener('click', ()=>{
+        const isHidden = langGroup.classList.toggle('hidden');
+        langToggle.setAttribute('aria-expanded', String(!isHidden));
+        // 아이콘 방향 업데이트 (단순 토글)
+        const icon = langToggle.querySelector('[data-lucide]');
+        if (icon){ icon.style.transform = isHidden ? 'rotate(-90deg)' : 'rotate(0deg)'; icon.style.transition = 'transform .15s ease'; }
+      });
+    }
+
     // --- 경량 셀프 테스트 (네트워크 없이 검증 가능) ---
     (function selfTest(){
       const must = [fileEl, dropEl, preview, outputEl, btnOcr, btnClear, btnCopy, btnDownload];
@@ -412,3 +426,4 @@
   </script>
 </body>
 </html>
+

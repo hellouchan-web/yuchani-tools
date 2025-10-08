@@ -3,6 +3,7 @@
   xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
 
+  <!-- 홈 -->
   <url>
     <loc>https://tools.yuchani.com/</loc>
     <lastmod>2025-10-09</lastmod>
@@ -10,7 +11,7 @@
     <priority>1.0</priority>
   </url>
 
-  <!-- 카테고리/모음 페이지(있다면) -->
+  <!-- 카테고리/모음 페이지 -->
   <url>
     <loc>https://tools.yuchani.com/tools/</loc>
     <lastmod>2025-10-09</lastmod>
@@ -18,13 +19,14 @@
     <priority>0.8</priority>
   </url>
 
-  <!-- 개별 툴 예시 -->
+  <!-- 개별 툴 페이지들 -->
   <url>
     <loc>https://tools.yuchani.com/tools/html-preview/</loc>
     <lastmod>2025-10-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
+
   <url>
     <loc>https://tools.yuchani.com/tools/base64/</loc>
     <lastmod>2025-10-09</lastmod>
@@ -39,5 +41,17 @@
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
+
+  <!-- 다국어가 생기면 아래 예시처럼 같은 url 블록 안에 hreflang 추가
+  <url>
+    <loc>https://tools.yuchani.com/tools/html-preview/</loc>
+    <lastmod>2025-10-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://tools.yuchani.com/ko/tools/html-preview/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.yuchani.com/en/tools/html-preview/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.yuchani.com/tools/html-preview/"/>
+  </url>
+  -->
 
 </urlset>

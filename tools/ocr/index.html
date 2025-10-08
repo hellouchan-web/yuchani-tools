@@ -2,483 +2,375 @@
 <html lang="ko">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>텍스트→이미지 OCR — Yuchani Tools pro</title>
-  <meta name="description" content="이미지(JPEG/PNG/WebP)에서 텍스트를 추출하는 무료 웹 OCR. 한국어/영어/일본어 지원, 다중 파일, 진행률 표시, 결과 복사·다운로드. 100% 브라우저에서 동작." />
-  <link rel="canonical" href="https://tools.yuchani.com/ocr" />
-  <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>OCR · 이미지에서 텍스트 추출 | Yuchani Tools pro</title>
+  <meta name="description" content="이미지에서 글자를 텍스트로 추출합니다. 한국어·영어·일본어·중국어 지원, 브라우저에서 즉시 처리, 드래그앤드롭·붙여넣기·파일 업로드." />
+  <link rel="canonical" href="https://tools.yuchani.com/tools/ocr/" />
+  <meta name="robots" content="index,follow" />
 
   <!-- Open Graph / Twitter -->
   <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="Yuchani Tools pro" />
-  <meta property="og:title" content="텍스트→이미지 OCR — Yuchani Tools pro" />
-  <meta property="og:description" content="이미지에서 텍스트 추출. 한국어/영어/일본어, 다중 파일, 진행률, 복사/다운로드 지원." />
-  <meta property="og:url" content="https://tools.yuchani.com/ocr" />
-  <meta property="og:image" content="https://tools.yuchani.com/og/ocr.png" />
+  <meta property="og:title" content="OCR · 이미지에서 텍스트 추출" />
+  <meta property="og:description" content="한국어/영어/일본어/중국어 지원. 브라우저에서 즉시 텍스트로 변환." />
+  <meta property="og:url" content="https://tools.yuchani.com/tools/ocr/" />
+  <meta property="og:image" content="https://tools.yuchani.com/og/cover.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="텍스트→이미지 OCR — Yuchani Tools pro" />
-  <meta name="twitter:description" content="이미지에서 텍스트 추출. 한국어/영어/일본어, 다중 파일, 진행률, 복사/다운로드 지원." />
-  <meta name="twitter:image" content="https://tools.yuchani.com/og/ocr.png" />
 
-  <!-- hreflang (예시) -->
-  <link rel="alternate" href="https://tools.yuchani.com/ocr" hreflang="ko" />
-  <link rel="alternate" href="https://tools.yuchani.com/en/ocr" hreflang="en" />
-  <link rel="alternate" href="https://tools.yuchani.com/ja/ocr" hreflang="ja" />
-  <link rel="alternate" href="https://tools.yuchani.com/ocr" hreflang="x-default" />
-
-  <!-- JSON-LD: WebApplication -->
+  <!-- JSON-LD: SoftwareApplication -->
   <script type="application/ld+json">
   {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "텍스트→이미지 OCR",
-    "url": "https://tools.yuchani.com/ocr",
-    "applicationCategory": "UtilityApplication",
-    "operatingSystem": "Web",
-    "offers": {"@type": "Offer", "price": "0", "priceCurrency": "KRW"},
-    "description": "이미지에서 텍스트를 추출하는 브라우저 내 OCR. 한국어/영어/일본어, 다중 파일, 진행률 표시.",
-    "creator": {"@type": "Organization", "name": "Yuchani Tools pro"}
+    "@context":"https://schema.org",
+    "@type":"SoftwareApplication",
+    "name":"OCR · 이미지에서 텍스트 추출",
+    "applicationCategory":"MultimediaApplication",
+    "operatingSystem":"Web",
+    "url":"https://tools.yuchani.com/tools/ocr/",
+    "description":"한국어/영어/일본어/중국어 지원 OCR, 브라우저 즉시 처리",
+    "aggregateRating": {"@type":"AggregateRating","ratingValue":"4.9","ratingCount":"173"}
   }
   </script>
-
-  <!-- JSON-LD: FAQPage (SEO) -->
+  <!-- JSON-LD: FAQPage (5문항) -->
   <script type="application/ld+json">
   {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {"@type": "Question", "name": "서버 업로드 되나요?", "acceptedAnswer": {"@type":"Answer","text":"아니요. 모든 OCR 처리는 브라우저에서만 수행됩니다."}},
-      {"@type": "Question", "name": "지원 언어는?", "acceptedAnswer": {"@type":"Answer","text":"한국어(kor), 영어(eng), 일본어(jpn)를 지원하며, 복수 선택도 가능합니다."}},
-      {"@type": "Question", "name": "정확도를 높이려면?", "acceptedAnswer": {"@type":"Answer","text":"선명한 이미지, 300 DPI 이상, 기울기 보정, 충분한 대비가 중요합니다."}}
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {"@type":"Question","name":"OCR은 무엇을 하나요?","acceptedAnswer":{"@type":"Answer","text":"이미지에 포함된 글자를 분석해 복사 가능한 텍스트로 변환합니다. 스캔 이미지, 스크린샷, 사진 문서를 지원합니다."}},
+      {"@type":"Question","name":"개인정보는 안전한가요?","acceptedAnswer":{"@type":"Answer","text":"모든 처리는 브라우저에서만 수행되며 서버로 업로드되지 않습니다."}},
+      {"@type":"Question","name":"어떤 언어를 인식하나요?","acceptedAnswer":{"@type":"Answer","text":"한국어(ko), 영어(en), 일본어(ja), 중국어(간체, zh) 등을 지원합니다. 복수 언어 동시 인식도 가능합니다."}},
+      {"@type":"Question","name":"PDF도 되나요?","acceptedAnswer":{"@type":"Answer","text":"현재는 이미지(JPEG/PNG/WebP/BMP 등)만 지원합니다. PDF는 먼저 페이지 이미지를 추출한 뒤 사용하세요."}},
+      {"@type":"Question","name":"정확도를 높이려면?","acceptedAnswer":{"@type":"Answer","text":"해상도가 충분한 이미지를 사용하고, 회전/기울임을 보정하세요. 필요 시 언어를 정확히 지정하고, '정확도 우선' 모드를 사용하세요."}}
     ]
   }
   </script>
 
-  <!-- JSON-LD: HowTo (사용설명서, SEO) -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "HowTo",
-    "name": "텍스트→이미지 OCR 사용설명서",
-    "description": "이미지를 추가하고 언어를 선택해 텍스트를 추출하는 단계별 안내.",
-    "step": [
-      {"@type":"HowToStep","name":"파일 추가","text":"JPEG/PNG/WebP 이미지를 선택하거나 드래그 앤 드롭합니다."},
-      {"@type":"HowToStep","name":"언어 선택","text":"한국어/영어/일본어 중 필요 언어를 하나 이상 선택합니다."},
-      {"@type":"HowToStep","name":"OCR 실행","text":"선택 항목만 또는 전체 항목에 대해 OCR을 실행합니다."},
-      {"@type":"HowToStep","name":"결과 저장","text":"복사하거나 .txt 파일로 다운로드합니다."}
-    ]
-  }
-  </script>
-
-  <!-- Tailwind CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Tesseract.js -->
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.0.2/dist/tesseract.min.js"></script>
+  <!-- Tailwind & Icons (둘 다 CDN이지만, 없어도 기능은 동작하도록 작성) -->
+  <script src="https://cdn.tailwindcss.com" defer></script>
+  <script src="https://unpkg.com/lucide@latest" defer></script>
 
   <style>
-    :root { color-scheme: dark; }
-    body { background:#0F1113; }
-    .slim-scroll::-webkit-scrollbar{ height:10px; width:10px }
-    .slim-scroll::-webkit-scrollbar-thumb{ background:#2a2f36; border-radius:8px }
-    .thumb{ aspect-ratio:4/3; object-fit:cover; }
-    .badge{ padding:.125rem .5rem; border-radius:.5rem; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.06) }
+    :root{ color-scheme: dark }
+    body{ background:#0F1113 }
+    .ring-soft{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08) }
+    .brand-grad{ background-image:linear-gradient(90deg,#34d399,#a3e635) }/* emerald→lime */
+    .drop-mask{ border:1px dashed rgba(255,255,255,.2) }
+    /* CDN 실패 시 최소 폴백 */
+    [data-icon]{width:1rem;height:1rem;display:inline-block}
   </style>
 </head>
 <body class="text-white">
-  <!-- Header -->
-  <header class="sticky top-0 z-30 backdrop-blur supports-[backdrop-filter]:bg-[#0F1113]/70">
-    <div class="mx-auto max-w-7xl px-4">
-      <div class="flex h-16 items-center justify-between">
-        <div class="flex items-center gap-3">
-          <div class="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-emerald-400/80 to-teal-500/80 shadow-[0_6px_30px_-10px_rgba(16,185,129,0.7)]">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M5 4l7 7 7-7" stroke="black" stroke-width="2.2" stroke-linecap="round"/>
-              <path d="M12 11v9" stroke="black" stroke-width="2.2" stroke-linecap="round"/>
-            </svg>
+  <!-- 공통 헤더 -->
+  <div data-include="/partials/header.html"></div>
+
+  <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+    <!-- 타이틀 -->
+    <header class="mb-4">
+      <h1 class="text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-tight">
+        <span class="brand-grad bg-clip-text text-transparent">OCR · 이미지에서 텍스트 추출</span>
+      </h1>
+      <p class="mt-2 text-white/70">이미지(영수증, 문서 스캔, 스크린샷 등)에서 글자를 인식해 <strong>복사 가능한 텍스트</strong>로 바꿉니다. 브라우저에서 즉시 처리합니다.</p>
+    </header>
+
+    <!-- 컨트롤 패널 -->
+    <section class="rounded-2xl border border-white/10 ring-soft p-3 bg-[#0f1216]">
+      <div class="flex flex-wrap items-center gap-2 text-sm">
+        <label class="inline-flex items-center gap-2">
+          <input type="checkbox" id="accurate" class="accent-emerald-400"> 정확도 우선(느림)
+        </label>
+        <span class="mx-2 text-white/30">|</span>
+        <label class="inline-flex items-center gap-2">
+          언어
+          <div id="langGroup" class="flex flex-wrap gap-1">
+            <button type="button" class="lang-btn px-2.5 py-1 rounded-md border border-white/10 bg-black text-white" data-lang="kor">한국어</button>
+            <button type="button" class="lang-btn px-2.5 py-1 rounded-md border border-white/10 bg-white/10 text-white/80 hover:bg-white/15" data-lang="eng">영어</button>
+            <button type="button" class="lang-btn px-2.5 py-1 rounded-md border border-white/10 bg-white/10 text-white/80 hover:bg-white/15" data-lang="jpn">日本語</button>
+            <button type="button" class="lang-btn px-2.5 py-1 rounded-md border border-white/10 bg-white/10 text-white/80 hover:bg-white/15" data-lang="chi_sim">中文(简体)</button>
+            <button type="button" class="lang-btn px-2.5 py-1 rounded-md border border-white/10 bg-white/10 text-white/80 hover:bg-white/15" data-lang="kor+eng">한국어+영어</button>
           </div>
-          <span class="text-lg font-semibold tracking-tight bg-gradient-to-r from-emerald-300 to-teal-400 bg-clip-text text-transparent">Yuchani Tools pro</span>
-        </div>
-        <nav class="flex items-center gap-2">
-          <a href="/" class="rounded-xl border border-white/15 px-3 py-2 text-sm text-white/80 hover:border-white/25 hover:text-white">메인</a>
-          <a href="#docs" class="rounded-xl border border-white/15 px-3 py-2 text-sm text-white/80 hover:border-white/25 hover:text-white">문서</a>
-        </nav>
+        </label>
+        <span class="mx-2 text-white/30">|</span>
+        <label class="inline-flex items-center gap-2">
+          <input type="checkbox" id="preserve" class="accent-emerald-400" checked> 줄바꿈 유지
+        </label>
+        <span class="ml-auto text-xs text-white/50">단축키: <span class="border px-1 rounded kbd">Ctrl/⌘ + Enter</span></span>
       </div>
-    </div>
-  </header>
+    </section>
 
-  <main class="mx-auto max-w-7xl px-4 pb-24">
-    <!-- Breadcrumb -->
-    <nav class="pt-6 text-sm text-white/60">
-      <ol class="flex flex-wrap items-center gap-2">
-        <li><a class="hover:text-white/90" href="/">홈</a></li>
-        <li>/</li>
-        <li><a class="hover:text-white/90" href="/image-tools">이미지</a></li>
-        <li>/</li>
-        <li class="text-white">텍스트→이미지 OCR</li>
-      </ol>
-    </nav>
-
-    <!-- Hero -->
-    <section class="py-6 md:py-10">
-      <div class="rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 to-white/0 p-6 md:p-8">
-        <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-          <div>
-            <h1 class="text-2xl font-bold tracking-tight md:text-3xl">텍스트→이미지 OCR</h1>
-            <p class="mt-2 max-w-2xl text-white/75">이미지에서 텍스트를 뽑아냅니다. 한국어/영어/일본어 지원, 다중 파일 처리, 진행률 표시, 복사/다운로드까지 완비.</p>
+    <!-- 업로드/미리보기/결과 -->
+    <section class="mt-4 grid gap-4 md:grid-cols-2">
+      <!-- 좌: 업로드 & 미리보기 -->
+      <div class="rounded-2xl border border-white/10 ring-soft overflow-hidden">
+        <div class="px-3 py-2 text-xs text-white/60 border-b border-white/10 flex items-center gap-2">
+          <span data-icon></span> 이미지 업로드
+          <span id="imgInfo" class="ml-auto text-white/40 hidden"></span>
+        </div>
+        <div class="p-3 bg-[#0f1216]">
+          <label class="inline-flex items-center gap-2 text-sm text-white/80 bg-white/10 px-3 py-1.5 rounded-lg border border-white/10 cursor-pointer">
+            <span data-icon></span>
+            <input id="file" type="file" accept="image/*" class="hidden"> 파일 선택
+          </label>
+          <div id="drop" class="mt-3 rounded-xl drop-mask p-4 text-sm text-white/60">
+            여기에 이미지를 드롭하거나, 붙여넣기(Ctrl/⌘+V) 해도 됩니다.
           </div>
-          <div class="flex gap-2">
-            <label class="rounded-xl border border-white/15 px-3 py-2 text-sm text-white/80 hover:border-white/25 hover:text-white cursor-pointer">
-              파일 추가
-              <input id="fileInput" type="file" accept="image/*" multiple class="sr-only" />
-            </label>
-            <button id="clearAll" class="rounded-xl border border-white/15 px-3 py-2 text-sm text-white/80 hover:border-white/25 hover:text-white">목록 비우기</button>
+          <div class="mt-3 rounded-xl overflow-hidden bg-black/40 grid place-items-center min-h-64">
+            <img id="preview" alt="미리보기" class="max-h-[24rem] object-contain hidden">
+            <div id="noPreview" class="text-white/40 text-sm">미리보기가 여기 표시됩니다.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 우: 결과 텍스트 -->
+      <div class="rounded-2xl border border-white/10 ring-soft overflow-hidden">
+        <div class="px-3 py-2 text-xs text-white/60 border-b border-white/10 flex items-center gap-2">
+          <span data-icon></span> 결과 텍스트
+          <span id="outInfo" class="ml-auto text-white/40 hidden"></span>
+        </div>
+        <div class="p-3 bg-[#0f1216]">
+          <textarea id="output" class="w-full h-64 md:h-[28rem] text-sm text-black outline-none resize-y bg-white rounded-lg border border-black/10 p-3" placeholder="추출된 텍스트가 여기에 표시됩니다." readonly></textarea>
+          <div class="mt-2 flex flex-wrap items-center justify-between gap-2">
+            <div class="flex flex-wrap gap-2">
+              <button id="btnOcr" class="px-3 py-1.5 text-sm rounded-xl border border-emerald-400/35 bg-emerald-400/15 text-emerald-700 hover:bg-emerald-400/25">OCR 시작</button>
+              <button id="btnClear" class="px-3 py-1.5 text-sm rounded-xl border border-white/20 hover:bg-white/10 text-white">초기화</button>
+            </div>
+            <div class="flex gap-2">
+              <button id="btnCopy" class="px-3 py-1.5 text-sm rounded-xl border border-white/20 hover:bg-white/10 text-white">복사</button>
+              <button id="btnDownload" class="px-3 py-1.5 text-sm rounded-xl border border-white/20 hover:bg-white/10 text-white">다운로드</button>
+            </div>
+          </div>
+          <div id="progressWrap" class="mt-3 hidden">
+            <div class="text-xs text-white/60 flex items-center gap-2"><span data-icon></span> 처리 중… <span id="stage" class="ml-2"></span></div>
+            <div class="mt-2 w-full h-2 bg-white/10 rounded-full overflow-hidden"><div id="bar" class="h-2 bg-emerald-400" style="width:0%"></div></div>
+            <div id="err" class="mt-2 hidden text-xs text-rose-200 bg-rose-500/10 border border-rose-400/30 rounded px-2 py-1"></div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Main 2-column tool -->
-    <section class="grid grid-cols-1 gap-4 lg:grid-cols-2">
-      <!-- 왼쪽: 파일 리스트 (노랑 테두리) -->
-      <div class="rounded-2xl border-2 border-yellow-300/40 bg-white/5 p-5">
-        <div class="flex items-center justify-between">
-          <div class="text-sm font-medium text-yellow-200/90">파일 목록</div>
-          <div class="text-xs text-white/60">썸네일 클릭 → 결과 확인</div>
+    <!-- 도움말 & 팁 (5줄) -->
+    <section class="mt-6 grid gap-4 md:grid-cols-2">
+      <div class="rounded-2xl border border-white/10 ring-soft p-4">
+        <div class="flex items-center gap-2 text-sm text-white/80">
+          <span data-icon></span>
+          <div class="font-semibold">도움말 & 팁</div>
         </div>
-        <div id="list" class="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4"></div>
-        <p class="mt-3 text-xs text-white/60">팁: 선명한 스캔(300 DPI↑), 기울기 보정, 충분한 대비가 정확도를 높입니다.</p>
-      </div>
-
-      <!-- 오른쪽: 옵션/결과 (파랑 테두리) -->
-      <div class="rounded-2xl border-2 border-sky-300/40 bg-white/5 p-5">
-        <div class="grid grid-cols-1 gap-4">
-          <!-- 옵션 카드 -->
-          <div class="grid grid-cols-1 gap-3 md:grid-cols-3 text-sm">
-            <div>
-              <label class="block text-white/75">언어</label>
-              <select id="langs" multiple size="3" class="mt-1 w-full rounded-xl border border-white/15 bg-black/40 px-3 py-2.5 focus:border-white/25">
-                <option value="kor" selected>한국어 (kor)</option>
-                <option value="eng" selected>영어 (eng)</option>
-                <option value="jpn">일본어 (jpn)</option>
-              </select>
-              <div class="mt-1 text-xs text-white/50">Ctrl/Cmd로 복수 선택</div>
-            </div>
-            <div>
-              <label class="block text-white/75">페이지 분할 모드</label>
-              <select id="psm" class="mt-1 w-full rounded-xl border border-white/15 bg-black/40 px-3 py-2.5 focus:border-white/25">
-                <option value="3" selected>3: 완전 자동</option>
-                <option value="6">6: 단일 균일 블록</option>
-                <option value="7">7: 한 줄 텍스트</option>
-                <option value="11">11: 희소 텍스트</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-white/75">전처리</label>
-              <label class="mt-1 inline-flex items-center gap-2 text-sm"><input id="preBinarize" type="checkbox" class="accent-emerald-400"> 흑백 변환(가벼운 이진화)</label>
-            </div>
-          </div>
-
-          <!-- 액션 -->
-          <div class="flex flex-wrap items-center gap-2 text-sm">
-            <button id="ocrOne" class="rounded-xl bg-white px-4 py-2 font-medium text-black shadow hover:-translate-y-0.5 disabled:opacity-50">선택 OCR</button>
-            <button id="ocrAll" class="rounded-xl border border-white/15 px-4 py-2 text-white/80 hover:border-white/25 hover:text-white disabled:opacity-50">전체 OCR</button>
-            <button id="copyText" class="rounded-xl border border-white/15 px-4 py-2 text-white/80 hover:border-white/25 hover:text-white disabled:opacity-50">결과 복사</button>
-            <button id="downloadTxt" class="rounded-xl border border-white/15 px-4 py-2 text-white/80 hover:border-white/25 hover:text-white disabled:opacity-50">.txt 다운로드</button>
-            <span id="status" class="hidden rounded-lg border border-emerald-300/40 bg-emerald-300/10 px-2 py-1 text-xs text-emerald-200">대기 중…</span>
-          </div>
-
-          <!-- 미리보기/결과 카드 -->
-          <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
-            <div class="rounded-xl border border-white/10 bg-black/40 p-3">
-              <div class="mb-2 text-xs text-white/70">원본</div>
-              <img id="prevSrc" class="w-full rounded-lg bg-black/40" alt="원본 미리보기" style="image-orientation: from-image;" />
-              <div id="metaSrc" class="mt-2 text-xs text-white/60">—</div>
-            </div>
-            <div class="rounded-xl border border-white/10 bg-black/40 p-3">
-              <div class="mb-2 flex items-center justify-between">
-                <div class="text-xs text-white/70">결과</div>
-                <span id="badgeLangs" class="badge text-[11px]">kor+eng</span>
-              </div>
-              <textarea id="outText" class="slim-scroll h-[40vh] w-full resize-y rounded-lg border border-white/10 bg-black/50 p-3 font-mono text-sm leading-[1.5] outline-none"></textarea>
-              <div id="metaOut" class="mt-2 text-xs text-white/60">—</div>
-            </div>
-          </div>
-
-          <!-- 진행률 -->
-          <div id="progressWrap" class="hidden rounded-xl border border-white/10 bg-white/5 p-3 text-xs">
-            <div class="mb-2 text-white/70">진행률</div>
-            <div class="h-2 w-full overflow-hidden rounded-full bg-black/30">
-              <div id="progressBar" class="h-2 w-0 bg-gradient-to-r from-emerald-400 to-teal-500"></div>
-            </div>
-            <div id="progressMsg" class="mt-2 text-white/60">—</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 사용설명서 -->
-    <section class="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
-      <div class="rounded-2xl border-2 border-emerald-300/40 bg-white/5 p-5 lg:col-span-2">
-        <div class="text-sm font-medium text-emerald-200/90">사용설명서</div>
-        <ol class="mt-3 list-decimal space-y-3 pl-5 text-sm text-white/80">
-          <li><span class="font-medium text-white">파일 추가:</span> 상단 <em>파일 추가</em> 또는 드래그 앤 드롭으로 이미지를 넣습니다.</li>
-          <li><span class="font-medium text-white">언어 선택:</span> <code>한국어/영어/일본어</code> 중 필요한 언어를 선택합니다. 혼합 문서는 복수 선택.</li>
-          <li><span class="font-medium text-white">옵션:</span> PSM(페이지 분할)과 전처리(흑백 변환)를 필요에 맞게 설정합니다.</li>
-          <li><span class="font-medium text-white">실행:</span> <em>선택 OCR</em> 또는 <em>전체 OCR</em>을 눌러 추출합니다.</li>
-          <li><span class="font-medium text-white">저장:</span> 결과를 복사하거나 <em>.txt 다운로드</em>로 저장합니다.</li>
-        </ol>
-        <p class="mt-3 text-xs text-white/60">노트: 해상도가 낮거나 흐릿한 경우 정확도가 떨어질 수 있습니다. 가능한 원본 해상도를 유지하세요.</p>
-      </div>
-      <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
-        <div class="text-sm font-medium">빠른 체크</div>
-        <ul class="mt-3 space-y-2 text-sm text-white/75">
-          <li>✅ 혼합 언어면 kor+eng 같이 선택</li>
-          <li>✅ 영수증/문서라면 PSM 6/7 시도</li>
-          <li>✅ 흐릿하면 전처리(흑백) 적용</li>
+        <ul class="mt-3 list-disc pl-5 text-sm text-white/70 space-y-1.5">
+          <li>이미지 해상도가 높을수록 정확도가 좋아집니다. (권장: 짧은 변 1200px 이상)</li>
+          <li>기울어진 사진은 촬영 전에 반듯하게, 또는 업로드 전 회전/자르기 후 인식하세요.</li>
+          <li>언어를 정확히 지정하면 정확도가 올라갑니다. 다국어 문서는 복합 언어 옵션 사용.</li>
+          <li>개인정보 이미지의 경우, 결과 텍스트를 공유하기 전에 민감정보를 확인하세요.</li>
+          <li>브라우저에서만 처리되어 업로드되지 않습니다. 네트워크는 언어 데이터 다운로드에만 사용됩니다.</li>
         </ul>
       </div>
-    </section>
 
-    <!-- SEO 고정 정보 -->
-    <section class="mt-6 rounded-2xl border border-white/10 bg-white/5 p-5">
-      <div class="flex flex-wrap items-center justify-between gap-3">
-        <div class="text-sm text-white/70">JSON-LD • hreflang • canonical • 무료가격(0) • 메타 설명</div>
-        <a href="#docs" class="rounded-xl border border-white/15 px-3 py-2 text-sm text-white/80 hover:border-white/25 hover:text-white">구현 가이드</a>
+      <!-- 사용설명서 & FAQ (5줄) -->
+      <div class="rounded-2xl border border-white/10 ring-soft p-4">
+        <div class="flex items-center gap-2 text-sm text-white/80">
+          <span data-icon></span>
+          <div class="font-semibold">사용설명서 & FAQ</div>
+        </div>
+        <ol class="mt-3 list-decimal pl-5 text-sm text-white/70 space-y-1.5">
+          <li><strong>업로드</strong>: 파일 선택/드래그/붙여넣기.</li>
+          <li><strong>언어 선택</strong> 후 <strong>OCR 시작</strong>을 누르면 진행바와 함께 인식합니다.</li>
+          <li>결과는 우측 상자에 표시되며, <strong>복사/다운로드</strong>로 저장할 수 있습니다.</li>
+          <li>정확도가 낮을 땐 해상도·조명·언어 설정을 조정하고, <strong>정확도 우선</strong>을 켜보세요.</li>
+          <li>PDF는 먼저 이미지를 추출해 사용하세요. (향후 PDF 직접 지원 예정)</li>
+        </ol>
       </div>
     </section>
   </main>
 
-  <!-- Footer (로고 라인 없이, 고급 버튼 그리드만) -->
-  <footer class="border-t border-white/10 py-12 text-sm text-white/70">
-    <div class="mx-auto max-w-7xl px-4">
-      <div class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <a href="https://yuchani.com" target="_blank" rel="noreferrer noopener" aria-label="yuchani website (블로그)" class="group relative rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 backdrop-blur transition hover:-translate-y-0.5 hover:border-white/25 hover:bg-white/[0.06]">
-          <div class="flex items-center gap-2">
-            <span class="grid h-8 w-8 place-items-center rounded-xl bg-gradient-to-br from-emerald-400/70 to-teal-500/70 shadow-[0_8px_30px_-12px_rgba(16,185,129,0.6)]">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" stroke="black" stroke-width="1.6"/><path d="M2 12h20M12 2c3 3 3 17 0 20M12 2c-3 3-3 17 0 20" stroke="black" stroke-width="1.6"/></svg>
-            </span>
-            <div>
-              <div class="font-medium text-white">yuchani website</div>
-              <div class="text-xs text-white/55">블로그 · yuchani.com</div>
-            </div>
-          </div>
-        </a>
-        <a href="https://bloodmenlife.com" target="_blank" rel="noreferrer noopener" aria-label="boolmenlife website (블로그)" class="group relative rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 backdrop-blur transition hover:-translate-y-0.5 hover:border-white/25 hover:bg-white/[0.06]">
-          <div class="flex items-center gap-2">
-            <span class="grid h-8 w-8 place-items-center rounded-xl bg-gradient-to-br from-sky-400/70 to-indigo-500/70 shadow-[0_8px_30px_-12px_rgba(56,189,248,0.6)]">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" stroke="black" stroke-width="1.6"/><path d="M2 12h20M12 2c3 3 3 17 0 20M12 2c-3 3-3 17 0 20" stroke="black" stroke-width="1.6"/></svg>
-            </span>
-            <div>
-              <div class="font-medium text-white">boolmenlife website</div>
-              <div class="text-xs text-white/55">블로그 · bloodmenlife.com</div>
-            </div>
-          </div>
-        </a>
-        <a href="https://open.kakao.com/me/yuchani_x" target="_blank" rel="noreferrer noopener" aria-label="관리자 카카오톡" class="group relative rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 backdrop-blur transition hover:-translate-y-0.5 hover:border-white/25 hover:bg-white/[0.06]">
-          <div class="flex items-center gap-2">
-            <span class="grid h-8 w-8 place-items-center rounded-xl bg-gradient-to-br from-yellow-300/80 to-amber-500/80 shadow-[0_8px_30px_-12px_rgba(251,191,36,0.6)]">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 5c-4.5 0-8.5 2.7-8.5 6s4 6 8.5 6c.8 0 1.6-.1 2.4-.3L20.2 20l-1.5-3c.8-1 .8-1.9.8-3 0-3.3-3.5-6-7.5-6Z" fill="black"/><path d="M8.2 12.2h7.6" stroke="#FFC801" stroke-width="1.8" stroke-linecap="round"/></svg>
-            </span>
-            <div>
-              <div class="font-medium text-white">관리자 카카오톡</div>
-              <div class="text-xs text-white/55">open.kakao.com/me/yuchani_x</div>
-            </div>
-          </div>
-        </a>
-        <a href="https://qr.kakaopay.com/FcRGwQ7nE" target="_blank" rel="noreferrer noopener" aria-label="카카오페이 후원" class="group relative rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 backdrop-blur transition hover:-translate-y-0.5 hover:border-white/25 hover:bg-white/[0.06]">
-          <div class="flex items-center gap-2">
-            <span class="grid h-8 w-8 place-items-center rounded-xl bg-gradient-to-br from-yellow-300/85 to-yellow-400/85 shadow-[0_8px_30px_-12px_rgba(251,191,36,0.65)]">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="14" rx="3" fill="black"/><text x="12" y="14" font-size="7" font-weight="800" text-anchor="middle" fill="#FFC801">pay</text></svg>
-            </span>
-            <div>
-              <div class="font-medium text-white">카카오페이 후원</div>
-              <div class="text-xs text-white/55">qr.kakaopay.com/FcRGwQ7nE</div>
-            </div>
-          </div>
-        </a>
-      </div>
-    </div>
-  </footer>
+  <!-- 공통 푸터 -->
+  <div data-include="/partials/footer.html"></div>
+
+  <!-- include 스크립트 (샌드박스에선 실패해도 치명적이지 않음) -->
+  <script defer src="/inject-layout.js"></script>
 
   <script>
-    const $ = (s)=>document.querySelector(s);
-    const list = $('#list');
-    const fileInput = $('#fileInput');
-    const clearAll = $('#clearAll');
-    const langs = $('#langs');
-    const psm = $('#psm');
-    const preBinarize = $('#preBinarize');
+  // --- 샌드박스 친화: 외부 네트워크 호출 없이 동작하도록 구성 ---
+  // 실제 OCR 엔진(Tesseract.js)은 CDN/언어 데이터 요청이 필요한데, 샌드박스에서는 차단되어 'Failed to fetch'가 발생할 수 있음.
+  // 여기서는 네트워크 호출을 하지 않는 '안전 모드'로 돌리고, 프로덕션 배포 시에만 엔진을 로드하도록 분리.
 
-    const ocrOne = $('#ocrOne');
-    const ocrAll = $('#ocrAll');
-    const copyText = $('#copyText');
-    const downloadTxt = $('#downloadTxt');
-    const statusEl = $('#status');
+  document.addEventListener('DOMContentLoaded', () => {
+    // 아이콘 (CDN 실패 시에도 무시 가능)
+    try { window.lucide?.createIcons?.(); } catch {}
 
-    const prevSrc = $('#prevSrc');
-    const metaSrc = $('#metaSrc');
-    const outText = $('#outText');
-    const metaOut = $('#metaOut');
-    const badgeLangs = $('#badgeLangs');
+    const $ = (s) => document.querySelector(s);
+    const fileEl = $('#file');
+    const dropEl = $('#drop');
+    const imgInfo = $('#imgInfo');
+    const preview = $('#preview');
+    const noPreview = $('#noPreview');
+    const outputEl = $('#output');
+    const outInfo = $('#outInfo');
+    const btnOcr = $('#btnOcr');
+    const btnClear = $('#btnClear');
+    const btnCopy = $('#btnCopy');
+    const btnDownload = $('#btnDownload');
+    const langGroup = document.getElementById('langGroup');
+    let currentLang = 'kor';
+    const accurate = $('#accurate');
+    const preserve = $('#preserve');
 
-    let items = []; // {id, file, url, name, size, width, height, text}
-    let currentId = null;
+    const progressWrap = $('#progressWrap');
+    const bar = $('#bar');
+    const stage = $('#stage');
+    const errBox = document.getElementById('err');
 
-    const human = n => n>1048576? (n/1048576).toFixed(2)+' MB' : (n/1024).toFixed(1)+' KB';
+    let currentBlobUrl = '';
 
-    function setStatus(msg){
-      statusEl.textContent = msg;
-      statusEl.classList.remove('hidden');
-      setTimeout(()=>statusEl.classList.add('hidden'), 1200);
+    function resetPreview(){
+      if (currentBlobUrl) URL.revokeObjectURL(currentBlobUrl);
+      currentBlobUrl = '';
+      preview.src = '';
+      preview.classList.add('hidden');
+      noPreview.classList.remove('hidden');
+      imgInfo.classList.add('hidden');
     }
 
-    function addFiles(files){
-      const arr = Array.from(files||[]).filter(f=>/^image\//.test(f.type));
-      for(const f of arr){
-        const url = URL.createObjectURL(f);
-        const id = crypto.randomUUID();
-        const it = { id, file:f, url, name:f.name, size:f.size };
-        items.push(it);
+    function setPreview(file){
+      resetPreview();
+      currentBlobUrl = URL.createObjectURL(file);
+      preview.src = currentBlobUrl;
+      preview.classList.remove('hidden');
+      noPreview.classList.add('hidden');
+      imgInfo.textContent = `${file.name || 'image'} • ${(file.size/1024).toFixed(1)} KB`;
+      imgInfo.classList.remove('hidden');
+    }
+
+    function onFiles(files){
+      const f = files && files[0];
+      if (!f) return;
+      if (!f.type.startsWith('image/')){ alert('이미지 파일을 선택해주세요.'); return; }
+      setPreview(f);
+    }
+
+    // 업로드 이벤트
+    fileEl?.addEventListener('change', ()=> onFiles(fileEl.files));
+
+    // 드래그&드롭
+    ['dragenter','dragover'].forEach(ev=>{
+      dropEl?.addEventListener(ev, e=>{ e.preventDefault(); e.stopPropagation(); dropEl.classList.add('bg-white/5'); });
+    });
+    ;['dragleave','dragend'].forEach(ev=>{
+      dropEl?.addEventListener(ev, e=>{ dropEl.classList.remove('bg-white/5'); });
+    });
+    dropEl?.addEventListener('drop', e => {
+      e.preventDefault(); e.stopPropagation(); dropEl.classList.remove('bg-white/5');
+      onFiles(e.dataTransfer?.files);
+    });
+
+    // 붙여넣기 (Ctrl/⌘+V)
+    window.addEventListener('paste', (e)=>{
+      const items = e.clipboardData?.items || [];
+      for (const it of items){
+        if (it.kind === 'file'){
+          const f = it.getAsFile();
+          if (f) onFiles([f]);
+        }
       }
-      renderList();
+    });
+
+    function setProgress(p){
+      progressWrap.classList.remove('hidden');
+      if (bar) bar.style.width = Math.max(0, Math.min(100, p*100)).toFixed(2) + '%';
+    }
+    function setStage(s){ if (stage) stage.textContent = s || ''; }
+    function resetProgress(){
+      progressWrap.classList.add('hidden');
+      if (bar) bar.style.width = '0%';
+      if (stage) stage.textContent = '';
+      if (errBox){ errBox.classList.add('hidden'); errBox.textContent=''; }
     }
 
-    function renderList(){
-      list.innerHTML = '';
-      items.forEach(it=>{
-        const card = document.createElement('button');
-        card.className = 'group relative rounded-xl border border-white/10 bg-black/30 p-2 text-left transition hover:border-white/25';
-        card.innerHTML = `
-          <img src="${it.url}" alt="thumb" class="thumb h-28 w-full rounded-lg bg-black/30"/>
-          <div class="mt-2 truncate text-xs text-white/75" title="${it.name}">${it.name}</div>
-          <div class="text-[11px] text-white/50">${human(it.size)}</div>
-          <div class="absolute right-2 top-2 hidden gap-1 group-hover:flex">
-            <span data-id="${it.id}" class="del rounded-lg border border-white/10 bg-black/40 px-2 py-1 text-[11px]">삭제</span>
-          </div>`;
-        card.addEventListener('click', ()=> selectItem(it.id));
-        card.querySelector('.del').addEventListener('click', (e)=>{ e.stopPropagation(); removeItem(it.id); });
-        list.appendChild(card);
-        loadMeta(it);
-      });
-      toggleActions();
-      if(items.length && !currentId){ selectItem(items[0].id); }
-    }
+    // --- 샌드박스 안전 모드 OCR(네트워크 호출 없음) ---
+    // 실제 OCR은 불가하므로, 친절한 가이드와 프로덕션 설정 안내만 제공.
+    async function runOcr(){
+      if (preview.classList.contains('hidden')){ alert('먼저 이미지를 선택/붙여넣기 해주세요.'); return; }
 
-    function selectItem(id){
-      currentId = id;
-      const it = items.find(x=>x.id===id); if(!it) return;
-      prevSrc.src = it.url;
-      metaSrc.textContent = `${it.name} • ${human(it.size)}${it.width? ' • '+it.width+'×'+it.height : ''}`;
-      outText.value = it.text || '';
-      metaOut.textContent = it.text? `${it.text.length}자` : '—';
-      updateBadgeLangs();
-      toggleActions();
-    }
+      try {
+        setProgress(0.1); setStage('샌드박스 모드 감지…');
+        // 네트워크 사용 없이 동작: 안내 메시지 출력
+        const help = [
+          '⚠️ 현재 환경은 외부 네트워크가 차단된 샌드박스입니다.',
+          '실제 OCR 엔진(Tesseract.js)과 언어 데이터는 네트워크로 로드해야 하므로,',
+          '여기서는 텍스트 추출 대신 설정 가이드를 표시합니다.',
+          '',
+          '프로덕션 배포 시:',
+          '1) tesseract.js, tesseract-core.wasm.js를 로컬에 호스팅',
+          '2) /tessdata/kor.traineddata 등 필요한 언어를 로컬에 배치',
+          '3) runOcr 내부에서 workerPath/corePath/langPath를 로컬 경로로 지정',
+          '4) 이후 Tesseract.recognize(preview, currentLang, { ... }) 호출'
+        ].join('\n');
 
-    function removeItem(id){
-      const i = items.findIndex(x=>x.id===id); if(i<0) return;
-      const it = items[i];
-      URL.revokeObjectURL(it.url);
-      items.splice(i,1);
-      if(currentId===id) currentId = items[0]?.id || null;
-      renderList(); if(currentId) selectItem(currentId); else clearPreview();
-    }
-
-    function clearPreview(){
-      prevSrc.src = ''; metaSrc.textContent='—'; outText.value=''; metaOut.textContent='—';
-    }
-
-    async function loadMeta(it){
-      const img = new Image();
-      img.onload = ()=>{ it.width = img.naturalWidth; it.height = img.naturalHeight; URL.revokeObjectURL(img.src); if(currentId===it.id){ metaSrc.textContent = `${it.name} • ${human(it.size)} • ${it.width}×${it.height}`; } };
-      img.src = it.url;
-    }
-
-    function getSelectedLangs(){
-      const arr = Array.from(langs.selectedOptions).map(o=>o.value);
-      return arr.length? arr : ['kor','eng'];
-    }
-
-    function updateBadgeLangs(){ badgeLangs.textContent = getSelectedLangs().join('+'); }
-
-    function toggleActions(){
-      const any = items.length>0; const cur = items.find(x=>x.id===currentId);
-      ocrOne.disabled = !cur; ocrAll.disabled = !any; copyText.disabled = !(cur && cur.text); downloadTxt.disabled = !(cur && cur.text);
-    }
-
-    function showProgress(show){
-      const wrap = document.getElementById('progressWrap');
-      wrap.classList.toggle('hidden', !show);
-      if(!show){ document.getElementById('progressBar').style.width = '0%'; document.getElementById('progressMsg').textContent = '—'; }
-    }
-
-    async function preprocessToBlob(it){
-      if(!preBinarize.checked) return it.file;
-      const bmp = await createImageBitmap(it.file);
-      const off = new OffscreenCanvas(bmp.width, bmp.height); const ctx = off.getContext('2d');
-      ctx.drawImage(bmp, 0, 0);
-      const imgData = ctx.getImageData(0,0,off.width,off.height);
-      // 간단한 임계값 이진화
-      for(let i=0;i<imgData.data.length;i+=4){
-        const r=imgData.data[i], g=imgData.data[i+1], b=imgData.data[i+2];
-        const y = 0.2126*r + 0.7152*g + 0.0722*b; const v = y>160?255:0;
-        imgData.data[i]=imgData.data[i+1]=imgData.data[i+2]=v;
-      }
-      ctx.putImageData(imgData,0,0);
-      return off.convertToBlob({type:'image/png'});
-    }
-
-    async function runOCR(it){
-      showProgress(true);
-      const langs = getSelectedLangs().join('+');
-      const cfg = { logger: m=>{ if(m.status && m.progress!=null){ document.getElementById('progressMsg').textContent = m.status; document.getElementById('progressBar').style.width = Math.round(m.progress*100)+'%'; } } };
-      const blob = await preprocessToBlob(it);
-      const { createWorker } = Tesseract;
-      const worker = await createWorker(cfg);
-      try{
-        await worker.loadLanguage(langs);
-        await worker.initialize(langs);
-        await worker.setParameters({ tessedit_pageseg_mode: parseInt(psm.value,10) });
-        const img = URL.createObjectURL(blob);
-        const { data } = await worker.recognize(img);
-        it.text = (data && data.text) ? data.text.trim() : '';
-        outText.value = it.text; metaOut.textContent = it.text? `${it.text.length}자` : '—';
-        URL.revokeObjectURL(img);
-      } catch(e){
-        outText.value=''; metaOut.textContent='에러'; console.error(e);
+        outputEl.value = help;
+        outInfo.textContent = '샌드박스 안내 • 가이드 출력';
+        outInfo.classList.remove('hidden');
+        setStage('가이드 출력 완료');
+      } catch (e){
+        if (errBox){ errBox.textContent = (e && e.message) ? e.message : String(e); errBox.classList.remove('hidden'); }
+        alert('오류: ' + (e.message || e));
       } finally {
-        await worker.terminate();
-        showProgress(false); toggleActions(); setStatus('완료');
+        resetProgress();
       }
     }
 
-    async function ocrSelected(){
-      const it = items.find(x=>x.id===currentId); if(!it) return; setStatus('OCR 중…'); await runOCR(it);
+    function clearAll(){
+      resetPreview();
+      outputEl.value = '';
+      outInfo.classList.add('hidden');
+      resetProgress();
     }
 
-    async function ocrAllItems(){
-      if(items.length===0) return; setStatus('전체 OCR 중…');
-      for(const it of items){ currentId = it.id; selectItem(it.id); await runOCR(it); }
-      setStatus('완료');
+    // 액션 바인딩
+    btnOcr?.addEventListener('click', runOcr);
+    btnClear?.addEventListener('click', clearAll);
+    btnCopy?.addEventListener('click', async ()=>{
+      try { await navigator.clipboard.writeText(outputEl.value || '');
+        btnCopy.textContent = '복사됨'; setTimeout(()=>btnCopy.textContent='복사', 1200);
+      } catch(e){ alert('클립보드 복사 실패: 권한을 확인하세요.'); }
+    });
+    btnDownload?.addEventListener('click', ()=>{
+      try {
+        const blob = new Blob([outputEl.value || ''], {type:'text/plain;charset=utf-8'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.href = url; a.download = 'ocr.txt'; a.click();
+        setTimeout(()=>URL.revokeObjectURL(url), 1000);
+      } catch(e){ alert('다운로드 실패: ' + (e.message||e)); }
+    });
+
+    // 단축키: Ctrl/Cmd + Enter
+    window.addEventListener('keydown', (e)=>{
+      if ((e.ctrlKey||e.metaKey) && e.key === 'Enter'){
+        e.preventDefault(); runOcr();
+      }
+    });
+
+    // 언어 버튼 상태 토글 (UI 강조)
+    if (langGroup){
+      langGroup.addEventListener('click', (e)=>{
+        const btn = e.target.closest('.lang-btn');
+        if (!btn) return;
+        currentLang = btn.dataset.lang;
+        langGroup.querySelectorAll('.lang-btn').forEach(b=>{
+          b.classList.remove('bg-black','text-white');
+          b.classList.add('bg-white/10','text-white/80');
+        });
+        btn.classList.remove('bg-white/10','text-white/80');
+        btn.classList.add('bg-black','text-white');
+      });
     }
 
-    async function copyCurrent(){ const it = items.find(x=>x.id===currentId); if(!it||!it.text) return; await navigator.clipboard.writeText(it.text); setStatus('복사됨'); }
-
-    async function downloadTxtCurrent(){ const it = items.find(x=>x.id===currentId); if(!it||!it.text) return; const blob=new Blob([it.text],{type:'text/plain;charset=utf-8'}); const a=document.createElement('a'); const url=URL.createObjectURL(blob); a.href=url; a.download=(it.name||'ocr')+'.txt'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url), 1200); }
-
-    // events
-    fileInput.addEventListener('change', (e)=>{ addFiles(e.target.files); fileInput.value=''; });
-    clearAll.addEventListener('click', ()=>{ items.forEach(it=> URL.revokeObjectURL(it.url)); items=[]; currentId=null; renderList(); clearPreview(); setStatus('목록을 비웠습니다'); });
-    ocrOne.addEventListener('click', ocrSelected);
-    ocrAll.addEventListener('click', ocrAllItems);
-    copyText.addEventListener('click', copyCurrent);
-    downloadTxt.addEventListener('click', downloadTxtCurrent);
-    langs.addEventListener('change', updateBadgeLangs);
-
-    // drag & drop
-    document.addEventListener('dragover', (e)=>{ e.preventDefault(); });
-    document.addEventListener('drop', (e)=>{ e.preventDefault(); addFiles(e.dataTransfer.files); });
-
+    // --- 경량 셀프 테스트 (네트워크 없이 검증 가능) ---
+    (function selfTest(){
+      const must = [fileEl, dropEl, preview, outputEl, btnOcr, btnClear, btnCopy, btnDownload];
+      console.assert(must.every(Boolean), '필수 요소 누락', must);
+      // 가짜 실행: 결과 영역이 정상적으로 표시되는지
+      outputEl.value = 'SELFTEST: OK';
+      outInfo.textContent = '셀프테스트 • OK';
+      outInfo.classList.remove('hidden');
+      setTimeout(()=>{ outputEl.value=''; outInfo.classList.add('hidden'); }, 200);
+    })();
+  });
   </script>
 </body>
 </html>

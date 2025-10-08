@@ -50,39 +50,8 @@
     <div class="absolute bottom-[-8rem] right-[-6rem] w-[36rem] h-[36rem] rounded-full bg-gradient-to-br from-amber-400/10 to-rose-400/5 blur-3xl"></div>
   </div>
 
-  <!-- 헤더 -->
-  <header class="sticky top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-[#0F1113]/70 bg-[#0F1113]/80 border-b border-white/5">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="w-8 h-8 rounded-xl grid place-items-center bg-gradient-to-br from-white/10 to-white/0 ring-soft">
-          <!-- 로고 있으면 표시 -->
-          <img src="/assets/logo.webp" alt="" class="w-5 h-5 object-contain" onerror="this.remove();document.getElementById('logo-fallback').style.display='grid'">
-          <div id="logo-fallback" style="display:none" class="place-items-center">
-            <i data-lucide="sparkles" class="w-4 h-4"></i>
-          </div>
-        </div>
-        <div class="flex items-center gap-1.5">
-          <span class="font-semibold tracking-tight brand-grad bg-clip-text text-transparent">Yuchani Tools</span>
-          <span class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-white text-black shadow-sm">PRO</span>
-        </div>
-        <span class="ml-2 text-xs text-white/50 hidden sm:inline">필요한 도구, 한 곳에.</span>
-      </div>
-      <nav class="hidden md:flex items-center gap-6 text-sm text-white/80">
-        <a href="#tools" class="hover:text-white">툴 모음</a>
-        <a href="#popular" class="hover:text-white">인기</a>
-        <a href="#learn" class="hover:text-white">가이드</a>
-        <a href="#donate" class="hover:text-white">후원</a>
-      </nav>
-      <div class="flex items-center gap-2">
-        <a href="#donate" class="inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm border bg-amber-400/15 border-amber-400/30 hover:bg-amber-400/20 text-amber-200">
-          <i data-lucide="handshake" class="w-4 h-4"></i>후원
-        </a>
-        <a href="#launch" class="hidden sm:inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm font-semibold hover:opacity-90 brand-grad text-black">
-          <i data-lucide="rocket" class="w-4 h-4"></i>바로 시작
-        </a>
-      </div>
-    </div>
-  </header>
+  <!-- 헤더 (공통 include) -->
+  <div data-include="/partials/header.html"></div>
 
   <!-- 히어로 -->
   <section class="relative border-b border-white/5">
@@ -471,5 +440,5 @@
 
   <div data-include="/partials/footer.html"></div>
 <script defer src="/inject-layout.js"></script>
-
-
+</body>
+</html>

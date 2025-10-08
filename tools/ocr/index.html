@@ -65,7 +65,7 @@
   <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
     <!-- 타이틀 -->
     <header class="mb-4">
-      <h1 class="text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-tight">
+      <h1 class="text-left text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-tight">
         <span class="brand-grad bg-clip-text text-transparent">OCR · 이미지에서 텍스트 추출</span>
       </h1>
       <p class="mt-2 text-white/70">이미지(영수증, 문서 스캔, 스크린샷 등)에서 글자를 인식해 <strong>복사 가능한 텍스트</strong>로 바꿉니다. 브라우저에서 즉시 처리합니다.</p>
@@ -183,7 +183,45 @@
   <div data-include="/partials/footer.html"></div>
 
   <!-- include 스크립트 (샌드박스에선 실패해도 치명적이지 않음) -->
-  <script defer src="/inject-layout.js"></script>
+  <script defer src="/inject-layout.js?v=7"></script>
+  <!-- Fallback include loader: 여러 경로를 순차 시도 (file://, 서브경로 호스팅 대응) -->
+  <script>
+    (function(){
+      async function injectOnce(sel, candidates){
+        const host = document.querySelector(sel);
+        if (!host) return;
+        if (host.getAttribute('data-injected') === '1') return;
+        for (const p of candidates){
+          try{
+            const res = await fetch(p, {cache:'no-store'});
+            if (!res.ok) continue;
+            const html = await res.text();
+            host.innerHTML = html; host.setAttribute('data-injected','1');
+            try{ window.lucide?.createIcons?.(); }catch{}
+            return;
+          }catch(_){ /* try next */ }
+        }
+        console.warn('partials include 실패:', sel, candidates);
+      }
+      function run(){
+        const headerPaths = [
+          '/partials/header.html',
+          'partials/header.html',
+          '/yuchani-tools/partials/header.html',
+          '../partials/header.html'
+        ];
+        const footerPaths = [
+          '/partials/footer.html',
+          'partials/footer.html',
+          '/yuchani-tools/partials/footer.html',
+          '../partials/footer.html'
+        ];
+        injectOnce('[data-include="/partials/header.html"]', headerPaths);
+        injectOnce('[data-include="/partials/footer.html"]', footerPaths);
+      }
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run); else run();
+    })();
+  </script>
 
   <script>
   // --- 샌드박스 친화: 외부 네트워크 호출 없이 동작하도록 구성 ---

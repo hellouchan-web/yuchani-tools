@@ -1,37 +1,91 @@
-<!-- /partials/header.html -->
-<header class="sticky top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-[#0F1113]/70 bg-[#0F1113]/80 border-b border-white/5">
-  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-[72px] flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-    <!-- 좌측: 로고 + 타이틀 -->
-    <div class="flex items-center gap-3">
-      <div
-        class="w-9 h-9 rounded-xl overflow-hidden grid place-items-center bg-gradient-to-br from-white/10 to-white/0 ring-1 ring-white/10"
-        style="box-shadow: inset 0 0 0 1px rgba(255,255,255,.12);"
-      >
-        <!-- 상대경로! (루트 슬래시 X) -->
-        <img src="assets/logo.webp" alt="Logo" class="w-full h-full object-contain p-0.5"
-             onerror="this.remove();document.getElementById('logo-fallback')?.style.setProperty('display','grid')">
-        <div id="logo-fallback" style="display:none" class="place-items-center text-white/80 text-xs">✨</div>
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>헤더 미리보기 · Yuchani Tools</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root{ color-scheme:dark }
+    body{ background:#0F1113 }
+    .ring-soft{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.1); }
+  .brand-grad{background-image:linear-gradient(90deg,#fbbf24,#67e8f9);} /* amber→cyan */
+  </style>
+</head>
+<body class="text-white">
+  <!-- ===== 복사하여 /partials/header.html 로 저장할 영역 시작 ===== -->
+  <header class="sticky top-0 z-40 border-b border-white/10 bg-[#0F1113]/90 backdrop-blur supports-[backdrop-filter]:bg-[#0F1113]/70">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3 space-y-3">
+      <!-- 1행: 좌측 로고+큰제목, 우측 외부 링크(이모티콘 포함) -->
+      <div class="flex items-center justify-between">
+        <!-- 좌측: 로고 + 타이틀 (왼쪽 정렬) -->
+        <div class="flex items-center gap-3">
+          <div class="w-14 h-14 md:w-16 md:h-16 rounded-2xl grid place-items-center bg-gradient-to-br from-white/10 to-white/0 ring-soft overflow-hidden">
+            <img src="/assets/logo.webp" alt="사이트 로고" class="w-10 h-10 md:w-12 md:h-12 object-contain" onerror="this.remove();document.getElementById('logo-fallback').style.display='grid'">
+            <div id="logo-fallback" style="display:none" class="place-items-center">
+              <i data-lucide="sparkles" class="w-6 h-6 text-emerald-300"></i>
+            </div>
+          </div>
+          <a href="/" class="brand-grad bg-clip-text text-transparent font-extrabold tracking-tight text-2xl md:text-3xl lg:text-4xl">Yuchani Tools <span class="opacity-70">pro</span></a>
+        </div>
+        <!-- 우측: 외부 링크 2개 (인터넷 아이콘 통일) -->
+        <div class="flex items-center gap-2 md:gap-3 text-sm">
+          <a href="https://yuchani.com" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-white/10 hover:bg-white/5">
+            <i data-lucide="globe" class="w-4 h-4"></i>
+            <span>Yuchani Web site</span>
+          </a>
+          <a href="https://b-man.site" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-white/10 hover:bg-white/5">
+            <i data-lucide="globe" class="w-4 h-4"></i>
+            <span>B-Men Web site</span>
+          </a>
+        </div>
       </div>
 
-      <div class="flex items-center gap-2">
-        <span class="font-extrabold tracking-tight bg-gradient-to-r from-emerald-400 to-lime-300 bg-clip-text text-transparent">
-          Yuchani Tools
-        </span>
-        <span class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-white text-black shadow-sm">PRO</span>
-      </div>
+      <!-- 2행: 홈, 인기, 가이드, 언어변경 (컬러 강조) -->
+      <nav class="flex flex-wrap items-center justify-center gap-2 md:gap-3 text-sm">
+        <a href="/" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-emerald-400/30 bg-emerald-400/15 text-emerald-200 hover:bg-emerald-400/20">
+          <i data-lucide="home" class="w-4 h-4"></i> 홈
+        </a>
+        <a href="/popular/" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-amber-400/30 bg-amber-400/15 text-amber-200 hover:bg-amber-400/20">
+          <i data-lucide="flame" class="w-4 h-4"></i> 인기
+        </a>
+        <a href="/guide/" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-sky-400/30 bg-sky-400/15 text-sky-200 hover:bg-sky-400/20">
+          <i data-lucide="book-open" class="w-4 h-4"></i> 가이드
+        </a>
+        <a href="/lang/" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-violet-400/30 bg-violet-400/15 text-violet-200 hover:bg-violet-400/20">
+          <i data-lucide="languages" class="w-4 h-4"></i> 언어변경
+        </a>
+      </nav>
+
+      
     </div>
+  </header>
 
-    <!-- 우측: 초록 버튼 네비 -->
-    <nav class="flex flex-wrap gap-2">
-      <a class="inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm border border-emerald-500/35 bg-emerald-500/15 text-emerald-100 hover:bg-emerald-500/25"
-         href="index.html">메인홈</a>
-      <a class="inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm border border-emerald-500/35 bg-emerald-500/15 text-emerald-100 hover:bg-emerald-500/25"
-         href="#popular">인기</a>
-      <a class="inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm border border-emerald-500/35 bg-emerald-500/15 text-emerald-100 hover:bg-emerald-500/25"
-         href="#learn">가이드</a>
-      <a class="inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm border border-emerald-500/35 bg-emerald-500/15 text-emerald-100 hover:bg-emerald-500/25"
-         href="#donate">후원</a>
-    </nav>
-  </div>
-</header>
+  <script>
+    // header partial 내부 전용 스크립트 (중복 호출 안전)
+    (function(){
+      try {
+        window.lucide?.createIcons?.();
+        const btn = document.querySelector('[data-js="menu-btn"]');
+        const panel = document.querySelector('[data-js="menu-panel"]');
+        if (btn && panel) btn.addEventListener('click', () => panel.classList.toggle('hidden'));
 
+        // 간단 테스트(변경 금지): 핵심 요소 유무
+        console.assert(document.querySelector('header'), 'header 존재해야 함');
+        const mustTexts = ['홈','인기','가이드','언어변경','Yuchani Web site','B-Men Web site'];
+        console.assert(mustTexts.every(t => document.body.textContent.includes(t)), '네비 텍스트 7종 확인');
+      } catch (e) {
+        console.warn('header partial error:', e);
+      }
+    })();
+  </script>
+  <!-- ===== 복사하여 /partials/header.html 로 저장할 영역 끝 ===== -->
+
+  <!-- 미리보기용 더미 섹션 (스크롤 확인) -->
+  <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 space-y-6">
+    <p class="text-white/70">이 영역은 미리보기를 위한 더미입니다. 상단 헤더의 sticky, 반응형, 모바일 메뉴 동작을 확인하세요.</p>
+    <div class="h-[1200px] rounded-2xl border border-white/10 bg-white/5 grid place-items-center text-white/50">스크롤 테스트</div>
+  </main>
+</body>
+</html>

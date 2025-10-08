@@ -1,12 +1,9 @@
 <!-- /partials/footer.html -->
 <footer id="yt-footer" class="mt-10 border-t border-white/5">
-  <!-- 상단 그리드: 모바일 2열, 데스크톱 4열 -->
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 grid grid-cols-2 md:grid-cols-4 gap-8 text-sm">
-    <!-- 브랜드: 모바일/태블릿에서 가로 전체, 데스크톱에선 1칸 -->
     <div class="col-span-2 md:col-span-1">
       <div class="flex items-center gap-2">
         <div class="w-8 h-8 rounded-lg bg-white/5 overflow-hidden ring-1 ring-white/10">
-          <!-- 로고 이미지로 교체: 경로 맞춰 주세요 -->
           <img src="/assets/logo.webp" alt="Yuchani Tools pro" class="w-full h-full object-cover">
         </div>
         <div class="font-semibold">Yuchani Tools pro</div>
@@ -17,7 +14,6 @@
       </p>
     </div>
 
-    <!-- 리소스 (모바일 좌) -->
     <div class="col-span-1">
       <div class="font-semibold">리소스</div>
       <ul class="mt-3 space-y-2 text-white/70">
@@ -29,40 +25,17 @@
       </ul>
     </div>
 
-    <!-- 연결 (모바일 우) -->
     <div class="col-span-1">
       <div class="font-semibold">연결</div>
       <ul class="mt-3 space-y-2 text-white/80">
-        <li>
-          <a href="https://yuchani.com" target="_blank" rel="noopener noreferrer" class="hover:text-white inline-flex items-center gap-2">
-            <i data-lucide="globe" class="w-4 h-4"></i><span>Yuchani Web site</span>
-          </a>
-        </li>
-        <li>
-          <a href="https://bloodmenlife.com" target="_blank" rel="noopener noreferrer" class="hover:text-white inline-flex items-center gap-2">
-            <i data-lucide="globe" class="w-4 h-4"></i><span>bloodmenlife Web site</span>
-          </a>
-        </li>
-        <li>
-          <a href="https://t.me/Yuchani_x" target="_blank" rel="noopener noreferrer" class="hover:text-white inline-flex items-center gap-2">
-            <i data-lucide="send" class="w-4 h-4"></i><span>텔레그램</span>
-          </a>
-        </li>
-        <li>
-          <a href="https://open.kakao.com/me/yuchani_x" target="_blank" rel="noopener noreferrer" class="hover:text-white inline-flex items-center gap-2">
-            <i data-lucide="message-circle" class="w-4 h-4"></i><span>카카오톡</span>
-          </a>
-        </li>
-        <li>
-          <a href="https://qr.kakaopay.com/FcRGwQ7nE" target="_blank" rel="noopener noreferrer" class="hover:text-white inline-flex items-center gap-2">
-            <i data-lucide="heart" class="w-4 h-4 text-rose-500"></i>
-            <span>후원은 사랑입니다</span>
-          </a>
-        </li>
+        <li><a href="https://yuchani.com" target="_blank" rel="noopener noreferrer" class="hover:text-white inline-flex items-center gap-2"><i data-lucide="globe" class="w-4 h-4"></i><span>Yuchani Web site</span></a></li>
+        <li><a href="https://bloodmenlife.com" target="_blank" rel="noopener noreferrer" class="hover:text-white inline-flex items-center gap-2"><i data-lucide="globe" class="w-4 h-4"></i><span>bloodmenlife Web site</span></a></li>
+        <li><a href="https://t.me/Yuchani_x" target="_blank" rel="noopener noreferrer" class="hover:text-white inline-flex items-center gap-2"><i data-lucide="send" class="w-4 h-4"></i><span>텔레그램</span></a></li>
+        <li><a href="https://open.kakao.com/me/yuchani_x" target="_blank" rel="noopener noreferrer" class="hover:text-white inline-flex items-center gap-2"><i data-lucide="message-circle" class="w-4 h-4"></i><span>카카오톡</span></a></li>
+        <li><a href="https://qr.kakaopay.com/FcRGwQ7nE" target="_blank" rel="noopener noreferrer" class="hover:text-white inline-flex items-center gap-2"><i data-lucide="heart" class="w-4 h-4 text-rose-500"></i><span>후원은 사랑입니다</span></a></li>
       </ul>
     </div>
 
-    <!-- 언어: 모바일/태블릿 가로 전체, 데스크톱에선 1칸 -->
     <div class="col-span-2 md:col-span-1">
       <div class="font-semibold">언어</div>
       <div class="mt-3 flex flex-wrap gap-2">
@@ -75,14 +48,12 @@
     </div>
   </div>
 
-  <!-- 하단 카피라이트 -->
   <div class="border-t border-white/5 py-6 text-center text-xs text-white/50">
     © <span id="year"></span> Yuchani Tools pro • All rights reserved
   </div>
 </footer>
 
 <script>
-  // 연도 자동반영 (이미 있다면 중복실행 무해)
   (function () {
     const y = document.getElementById('year');
     if (y) y.textContent = new Date().getFullYear();

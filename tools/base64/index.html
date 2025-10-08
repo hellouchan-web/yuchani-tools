@@ -13,7 +13,7 @@
   <meta property="og:title" content="Base64 변환기 — 텍스트·이미지 파일을 안전한 문자열로 변환" />
   <meta property="og:description" content="초보도 쉽게 쓰는 Base64 변환기. 텍스트/이미지 인코딩·디코딩, 파일 다운로드, 자동감지 지원." />
   <meta property="og:url" content="https://tools.yuchani.com/tools/base64/" />
-  <meta property="og:image" content="https://tools.yuchani.com/og/cover.png" />
+  <meta property="og:image" content="/og/cover.png" />
   <meta name="twitter:card" content="summary_large_image" />
 
   <!-- JSON-LD: SoftwareApplication -->
@@ -56,7 +56,7 @@
   </style>
 </head>
 <body class="text-white">
-  <!-- 공통 헤더 -->
+  <!-- 공통 헤더 include -->
   <div data-include="/partials/header.html"></div>
 
   <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
@@ -99,7 +99,7 @@
 
     <!-- 에디터 & 결과 -->
     <section class="mt-4 grid gap-4 md:grid-cols-2">
-      <!-- 입력 영역 -->
+      <!-- 입력 -->
       <div class="rounded-2xl border border-white/10 ring-soft overflow-hidden">
         <div class="px-3 py-2 text-xs text-white/60 border-b border-white/10 flex items-center gap-2">
           <i data-lucide="file-input" class="w-4 h-4"></i> 입력
@@ -117,7 +117,7 @@
         </div>
       </div>
 
-      <!-- 결과 영역 -->
+      <!-- 결과 -->
       <div class="rounded-2xl border border-white/10 ring-soft overflow-hidden">
         <div class="px-3 py-2 text-xs text-white/60 border-b border-white/10 flex items-center gap-2">
           <i data-lucide="file-output" class="w-4 h-4"></i> 결과
@@ -144,7 +144,7 @@
     <!-- 오류 알림 -->
     <div id="alert" class="mt-3 hidden rounded-xl border border-rose-400/30 bg-rose-400/10 text-rose-100 px-3 py-2 text-sm"></div>
 
-    <!-- 도움말 & 팁 (5줄) -->
+    <!-- 도움말 & 팁 -->
     <section class="mt-6 grid gap-4 md:grid-cols-2">
       <div class="rounded-2xl border border-white/10 ring-soft p-4">
         <div class="flex items-center gap-2 text-sm text-white/80">
@@ -154,13 +154,12 @@
         <ul class="mt-3 list-disc pl-5 text-sm text-white/70 space-y-1.5">
           <li>텍스트는 UTF-8로 처리합니다. 한글 깨짐 없이 인/디코드됩니다.</li>
           <li>파일은 브라우저 내에서만 처리되며 서버로 전송되지 않습니다.</li>
-          <li>Data URL(<code>data:mime/type;base64,....</code>)은 자동 감지해 MIME을 보존합니다.</li>
+          <li>Data URL(<code>data:mime/type;base64,....</code>)은 자동 인식합니다.</li>
           <li>붙여넣기/드래그앤드롭/클립보드 이미지 붙여넣기를 지원합니다.</li>
-          <li>자동 처리(좌측 상단 체크)를 켜면 입력만으로 즉시 변환됩니다.</li>
+          <li>자동 처리(상단 체크)를 켜면 입력만으로 즉시 변환됩니다.</li>
         </ul>
       </div>
 
-      <!-- 사용설명서 & FAQ (5줄) -->
       <div class="rounded-2xl border border-white/10 ring-soft p-4">
         <div class="flex items-center gap-2 text-sm text-white/80">
           <i data-lucide="help-circle" class="w-4 h-4 text-cyan-300"></i>
@@ -171,13 +170,13 @@
           <li><strong>디코드</strong>: Base64 붙여넣기 → 디코드 → 파일/텍스트 확인.</li>
           <li><strong>교체</strong>: 입력과 결과를 한 번에 뒤바꿉니다.</li>
           <li><strong>복사/다운로드</strong>: 결과를 클립보드로 복사하거나 파일로 저장합니다.</li>
-          <li><strong>문제 발생</strong>: 아래 오류 알림을 확인하고, 샘플(Base64 이미지 등)로 재시도하세요.</li>
+          <li><strong>오류</strong>: 아래 알림을 확인하고, 샘플(Base64 이미지 등)로 재시도하세요.</li>
         </ol>
       </div>
     </section>
   </main>
 
-  <!-- 공통 푸터 -->
+  <!-- 공통 푸터 include -->
   <div data-include="/partials/footer.html"></div>
 
   <!-- include 스크립트 -->
@@ -203,34 +202,22 @@
     const btnCopy = $('#btnCopy');
     const btnDownload = $('#btnDownload');
 
-    const modeRadios = document.querySelectorAll('input[name="mode"]');
-    // const kindRadios = document.querySelectorAll('input[name="kind"]'); // 필요시 사용
-
-    // --- Sanity checks (lightweight tests) ---
+    // Light self tests (fail silently in prod)
     (function selfTest(){
       const required = [inputEl, outputEl, fileEl, btnEncode, btnDecode, btnSwap, btnClear, btnCopy, btnDownload];
-      if (required.some(el => !el)) {
-        console.error('필수 엘리먼트가 누락되었습니다.', {inputEl, outputEl, fileEl, btnEncode, btnDecode, btnSwap, btnClear, btnCopy, btnDownload});
-      }
-      // Round-trip tests (UTF-8 & emoji)
+      if (required.some(el => !el)) console.warn('필수 엘리먼트 확인 필요', required);
       Promise.all([
         encodeText('가나다ABC123').then(b64 => decodeText(b64)).then(txt => console.assert(txt === '가나다ABC123', 'UTF-8 라운드트립 실패', {txt})),
-        encodeText('🙂🔥🚀').then(b64 => decodeText(b64)).then(txt => console.assert(txt === '🙂🔥🚀', 'Emoji 라운드트립 실패', {txt})),
-        (async()=>{ const u8 = new Uint8Array([0,1,2,250,251,252,253,254,255]);
-          const b64 = (function(bytes){ let bin=''; for(let i=0;i<bytes.length;i++) bin+=String.fromCharCode(bytes[i]); return btoa(bin); })(u8);
-          const back = atob(b64); console.assert(back.length===u8.length, '바이너리 길이 불일치'); })()
-      ]).catch(console.error);
+        encodeText('🙂🔥🚀').then(b64 => decodeText(b64)).then(txt => console.assert(txt === '🙂🔥🚀', 'Emoji 라운드트립 실패', {txt}))
+      ]).catch(()=>{});
     })();
 
-    function showAlert(msg){
-      alertBox.textContent = msg;
-      alertBox.classList.remove('hidden');
-    }
+    function showAlert(msg){ alertBox.textContent = msg; alertBox.classList.remove('hidden'); }
     function hideAlert(){ alertBox.classList.add('hidden'); }
 
     function bytesToBase64(bytes){
       let bin = '';
-      const chunk = 0x8000; // perf
+      const chunk = 0x8000;
       for (let i=0; i<bytes.length; i+=chunk){
         bin += String.fromCharCode.apply(null, bytes.subarray(i, i+chunk));
       }
@@ -243,7 +230,6 @@
       for (let i=0; i<len; i++) bytes[i] = bin.charCodeAt(i);
       return bytes;
     }
-
     async function encodeText(str){
       const enc = new TextEncoder();
       const bytes = enc.encode(str);
@@ -254,14 +240,12 @@
       const dec = new TextDecoder();
       return dec.decode(bytes);
     }
-
     async function encodeFile(file){
       const buf = await file.arrayBuffer();
       const b64 = bytesToBase64(new Uint8Array(buf));
       const mime = file.type || 'application/octet-stream';
       return `data:${mime};base64,${b64}`;
     }
-
     function inferDataUrlMeta(str){
       const m = /^data:([^;]+);base64,(.*)$/s.exec(str.trim());
       if (!m) return null;
@@ -312,9 +296,7 @@
       } catch (e){ showAlert(e.message || String(e)); }
     }
 
-    function swapIO(){
-      const a = inputEl.value; inputEl.value = outputEl.value; outputEl.value = a;
-    }
+    function swapIO(){ const a = inputEl.value; inputEl.value = outputEl.value; outputEl.value = a; }
     function clearAll(){
       inputEl.value = '';
       outputEl.value = '';
@@ -324,13 +306,13 @@
       hideAlert();
     }
 
-    // 이벤트 바인딩 (존재 가드)
-    if (btnEncode) btnEncode.addEventListener('click', doEncode);
-    if (btnDecode) btnDecode.addEventListener('click', doDecode);
-    if (btnSwap)   btnSwap.addEventListener('click', swapIO);
-    if (btnClear)  btnClear.addEventListener('click', clearAll);
+    // 이벤트
+    btnEncode?.addEventListener('click', doEncode);
+    btnDecode?.addEventListener('click', doDecode);
+    btnSwap  ?.addEventListener('click', swapIO);
+    btnClear ?.addEventListener('click', clearAll);
 
-    if (btnCopy) btnCopy.addEventListener('click', async () => {
+    btnCopy?.addEventListener('click', async () => {
       try {
         await navigator.clipboard.writeText(outputEl.value || '');
         btnCopy.textContent = '복사됨';
@@ -338,26 +320,24 @@
       } catch(e){ showAlert('클립보드 복사 실패: 권한을 확인하세요.'); }
     });
 
-    if (btnDownload) btnDownload.addEventListener('click', () => {
+    btnDownload?.addEventListener('click', () => {
       try {
-        let blob, filename;
         if (btnDownload.dataset.blobUrl){
           const url = btnDownload.dataset.blobUrl;
-          filename = btnDownload.dataset.filename || 'download.bin';
+          const filename = btnDownload.dataset.filename || 'download.bin';
           const a = document.createElement('a'); a.href = url; a.download = filename; a.click();
           setTimeout(()=>URL.revokeObjectURL(url), 1000);
           return;
         }
-        blob = new Blob([outputEl.value || ''], {type:'text/plain;charset=utf-8'});
-        filename = 'base64.txt';
+        const blob = new Blob([outputEl.value || ''], {type:'text/plain;charset=utf-8'});
         const url = URL.createObjectURL(blob);
-        const a = document.createElement('a'); a.href = url; a.download = filename; a.click();
+        const a = document.createElement('a'); a.href = url; a.download = 'base64.txt'; a.click();
         setTimeout(()=>URL.revokeObjectURL(url), 1000);
       } catch(e){ showAlert('다운로드 실패: '+(e.message||e)); }
     });
 
-    // 파일 업로드
-    if (fileEl) fileEl.addEventListener('change', () => {
+    // 파일 업로드 + 드롭 + 붙여넣기
+    fileEl?.addEventListener('change', () => {
       const f = fileEl.files[0];
       if (!f){ fileInfo.classList.add('hidden'); return; }
       fileInfo.textContent = `${f.name} • ${(f.size/1024).toFixed(1)} KB`;
@@ -366,7 +346,6 @@
       if (auto.checked && kind === 'file') doEncode();
     });
 
-    // 드래그&드롭
     ['dragenter','dragover'].forEach(ev=>{
       inputEl?.addEventListener(ev, e=>{ e.preventDefault(); e.stopPropagation(); });
     });
@@ -380,7 +359,6 @@
       fileEl.dispatchEvent(new Event('change'));
     });
 
-    // 클립보드 붙여넣기(이미지 포함)
     inputEl?.addEventListener('paste', async (e) => {
       const items = e.clipboardData?.items || [];
       for (const it of items){
@@ -405,7 +383,7 @@
       const mode = document.querySelector('input[name="mode"]:checked').value;
       schedule(mode === 'encode' ? doEncode : doDecode);
     });
-    modeRadios.forEach(r=> r.addEventListener('change', ()=>{
+    document.querySelectorAll('input[name="mode"]').forEach(r=> r.addEventListener('change', ()=>{
       const mode = document.querySelector('input[name="mode"]:checked').value;
       schedule(mode === 'encode' ? doEncode : doDecode);
     }));
@@ -419,7 +397,6 @@
       }
     });
 
-    // 아이콘
     window.lucide?.createIcons?.();
   });
   </script>

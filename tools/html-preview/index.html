@@ -61,7 +61,7 @@
 </head>
 <body class="text-white">
   <!-- 공통 헤더 -->
-  <div data-include="partials/header.html"></div>
+  <div data-include="/partials/header.html"></div>
 
   <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
     <!-- 타이틀 & 액션 -->
@@ -149,10 +149,43 @@
   </main>
 
   <!-- 공통 푸터 -->
-  <div data-include="partials/footer.html"></div>
+  <div data-include="/partials/footer.html"></div>
 
   <!-- include + 툴 스크립트 -->
   <script defer src="/inject-layout.js?v=6"></script>
+  <!-- Fallback include loader: 외부 스크립트 실패/미동작시 자동 실행 -->
+  <script>
+  (function(){
+    if (window.__ytIncludeFallbackLoaded) return; // 중복방지
+    window.__ytIncludeFallbackLoaded = true;
+    async function loadPartials(){
+      const nodes = document.querySelectorAll('[data-include]');
+      for (const el of nodes){
+        const raw = el.getAttribute('data-include') || '';
+        // 절대/상대 경로 안전 처리
+        let url = raw;
+        try { url = raw.startsWith('/') ? raw : new URL(raw, location.href).pathname; } catch(e) {}
+        try {
+          const res = await fetch(url, { credentials: 'same-origin', cache: 'no-cache' });
+          if (!res.ok) throw new Error('HTTP '+res.status);
+          const html = await res.text();
+          el.innerHTML = html;
+        } catch (err) {
+          console.warn('[include:fallback] 실패', url, err);
+          el.innerHTML = '<div style="padding:.75rem;border:1px solid #e5e7eb33;border-radius:.5rem;color:#fca5a5">include 실패: <code>'+url+'</code><br><small>'+String(err)+'</small></div>';
+        }
+      }
+      // 간단 테스트 케이스: 최소 하나라도 include 되었는지 점검 (디버그 용)
+      const anyIncluded = Array.from(document.querySelectorAll('[data-include]')).some(n => n.children.length>0);
+      console.assert(anyIncluded || Array.from(document.querySelectorAll('[data-include]')).length===0, 'include 결과가 비어 있습니다. 경로/서버 응답을 확인하세요.');
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadPartials, { once:true });
+    } else {
+      loadPartials();
+    }
+  })();
+  </script>
   <script>
   document.addEventListener('DOMContentLoaded', () => {
     // 아이콘
@@ -240,8 +273,8 @@
 
     // include 결과 간단 점검
     setTimeout(() => {
-      const hasHeader = document.querySelector('[data-include="partials/header.html"] header, [data-include="partials/header.html"] nav');
-      const hasFooter = document.querySelector('[data-include="partials/footer.html"] footer');
+      const hasHeader = document.querySelector('[data-include="/partials/header.html"] header, [data-include="/partials/header.html"] nav');
+      const hasFooter = document.querySelector('[data-include="/partials/footer.html"] footer');
       if (!hasHeader) console.warn('헤더 include가 비어있습니다. 경로나 응답을 확인하세요.');
       if (!hasFooter) console.warn('푸터 include가 비어있습니다. 경로나 응답을 확인하세요.');
     }, 500);

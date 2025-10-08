@@ -2,6 +2,7 @@
 <urlset
   xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
   <url>
     <loc>https://tools.yuchani.com/</loc>
     <lastmod>2025-10-09</lastmod>
@@ -9,7 +10,7 @@
     <priority>1.0</priority>
   </url>
 
-  <!-- 예: 카테고리 페이지 -->
+  <!-- 카테고리/모음 페이지(있다면) -->
   <url>
     <loc>https://tools.yuchani.com/tools/</loc>
     <lastmod>2025-10-09</lastmod>
@@ -17,7 +18,7 @@
     <priority>0.8</priority>
   </url>
 
-  <!-- 예: 개별 툴 페이지들 -->
+  <!-- 개별 툴 예시 -->
   <url>
     <loc>https://tools.yuchani.com/tools/html-preview/</loc>
     <lastmod>2025-10-09</lastmod>
@@ -31,11 +32,12 @@
     <priority>0.7</priority>
   </url>
 
-  <!-- 법적 문서 -->
+  <!-- 정책 문서 -->
   <url>
-    <loc>https://tools.yuchani.com/legal/cookie-policy.html</loc>
+    <loc>https://tools.yuchani.com/privacy/cookie-policy.html</loc>
     <lastmod>2025-10-09</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
+
 </urlset>

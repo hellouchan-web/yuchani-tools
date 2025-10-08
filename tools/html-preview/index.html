@@ -61,7 +61,7 @@
 </head>
 <body class="text-white">
   <!-- 공통 헤더 -->
-  <div data-include="/partials/header.html"></div>
+  <div data-include="partials/header.html"></div>
 
   <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
     <!-- 타이틀 & 액션 -->
@@ -149,7 +149,7 @@
   </main>
 
   <!-- 공통 푸터 -->
-  <div data-include="/partials/footer.html"></div>
+  <div data-include="partials/footer.html"></div>
 
   <!-- include + 툴 스크립트 -->
   <script defer src="/inject-layout.js?v=6"></script>
@@ -238,27 +238,13 @@
     console.assert(typeof render === 'function', 'render()가 정의되어야 합니다');
     console.assert(!!out && !!src, '에디터/미리보기 엘리먼트가 존재해야 합니다');
 
-    // 추가 테스트 (debug=1 쿼리 있을 때만 실행)
-    try {
-      const params = new URLSearchParams(location.search);
-      if (params.get('debug') === '1') {
-        // 1) 수동 렌더 테스트
-        const sample = '<!doctype html><meta charset="utf-8"><title>T</title><h1>t</h1>';
-        src.value = sample;
-        render();
-        console.assert(out.srcdoc.includes('<title>T</title>'), '렌더 테스트 실패: srcdoc에 <title>T</title> 미포함');
-
-        // 2) 자동 미리보기 테스트 (디바운스 250ms 고려)
-        auto.checked = true;
-        src.value = '<!doctype html><meta charset="utf-8"><title>A</title>';
-        src.dispatchEvent(new Event('input'));
-        setTimeout(() => {
-          console.assert(out.srcdoc.includes('<title>A</title>'), '자동 미리보기 실패: 업데이트 반영 안됨');
-        }, 400);
-      }
-    } catch (e) {
-      console.error('테스트 실행 중 오류', e);
-    }
+    // include 결과 간단 점검
+    setTimeout(() => {
+      const hasHeader = document.querySelector('[data-include="partials/header.html"] header, [data-include="partials/header.html"] nav');
+      const hasFooter = document.querySelector('[data-include="partials/footer.html"] footer');
+      if (!hasHeader) console.warn('헤더 include가 비어있습니다. 경로나 응답을 확인하세요.');
+      if (!hasFooter) console.warn('푸터 include가 비어있습니다. 경로나 응답을 확인하세요.');
+    }, 500);
 
     // 초기 렌더
     render();

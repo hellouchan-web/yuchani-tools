@@ -1,91 +1,37 @@
-<!doctype html>
-<html lang="ko">
-<head>
-  <header id="yt-header" class="...">...</header>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>헤더 미리보기 · Yuchani Tools</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <style>
-    :root{ color-scheme:dark }
-    body{ background:#0F1113 }
-    .ring-soft{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.1); }
-  .brand-grad{background-image:linear-gradient(90deg,#fbbf24,#67e8f9);} /* amber→cyan */
-  </style>
-</head>
-<body class="text-white">
-  <!-- ===== 복사하여 /partials/header.html 로 저장할 영역 시작 ===== -->
-  <header class="sticky top-0 z-40 border-b border-white/10 bg-[#0F1113]/90 backdrop-blur supports-[backdrop-filter]:bg-[#0F1113]/70">
-    <div class="mx-auto max-w-7xl px-3 sm:px-4 lg:px-8 py-4 space-y-4 md:py-6 md:space-y-6">
-      <!-- 1행: 좌측 로고+큰제목, 우측 외부 링크(이모티콘 포함) -->
-      <div class="flex items-center justify-center text-center">
-        <!-- 좌측: 로고 + 타이틀 (왼쪽 정렬) -->
-        <div class="flex items-center gap-3">
-          <div class="w-12 h-12 md:w-16 md:h-16 rounded-2xl overflow-hidden ring-soft bg-white/5">
-          <img src="/assets/logo.webp" alt="사이트 로고" class="w-full h-full object-cover" onerror="this.remove();document.getElementById('logo-fallback').style.display='grid'">
+<header class="sticky top-0 z-40 border-b border-white/10 bg-[#0F1113]/90 backdrop-blur supports-[backdrop-filter]:bg-[#0F1113]/70">
+  <div class="mx-auto max-w-7xl px-3 sm:px-4 lg:px-8 py-4 md:py-6">
+    <!-- 로고 + 타이틀만 중앙 정렬 -->
+    <div class="flex items-center justify-center">
+      <div class="flex items-center gap-3">
+        <!-- 로고 박스 -->
+        <div class="w-12 h-12 md:w-16 md:h-16 rounded-2xl overflow-hidden ring-1 ring-white/10 bg-white/5">
+          <img
+            src="https://yuchani.com/wp-content/uploads/2025/10/웹툴.webp"
+            alt="사이트 로고"
+            class="w-full h-full object-cover"
+            onerror="this.style.display='none';document.getElementById('logo-fallback').style.display='grid'">
           <div id="logo-fallback" style="display:none" class="w-full h-full grid place-items-center">
-            <i data-lucide="sparkles" class="w-7 h-7 text-emerald-300"></i>
+            <svg width="28" height="28" viewBox="0 0 24 24" aria-hidden="true" class="text-emerald-300">
+              <path fill="currentColor" d="M12 2l2.39 4.84L20 8l-4 3.9L17 18l-5-2.6L7 18l1-6.1L4 8l5.61-.16L12 2z"/>
+            </svg>
           </div>
         </div>
-          <div class="flex items-center gap-2 min-w-0">
-          <a href="/" class="brand-grad bg-clip-text text-transparent font-extrabold tracking-tight text-xl sm:text-2xl md:text-3xl truncate">Yuchani Tools</a>
-          <span class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-white text-black shadow-sm shrink-0">PRO</span>
+
+        <!-- 사이트 타이틀 -->
+        <div class="min-w-0">
+          <a href="/" class="bg-clip-text text-transparent font-extrabold tracking-tight text-xl sm:text-2xl md:text-3xl"
+             style="background-image:linear-gradient(90deg,#fbbf24,#67e8f9);">
+            Yuchani Tools
+          </a>
         </div>
       </div>
-      </div>
-
-      <!-- 2행: 사이트 2개 중앙정렬 (아이콘 좌측, 라이트그레이 버튼) -->
-      <nav class="flex flex-wrap items-center justify-center gap-2 md:gap-3 text-sm mt-2">
-        <a href="https://yuchani.com" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-white/15 bg-white/5 text-white/80 hover:bg-white/10">
-          <i data-lucide="globe" class="w-4 h-4"></i>
-          <span>Yuchani Site</span>
-        </a>
-        <a href="https://bloodmenlife.com" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-white/15 bg-white/5 text-white/80 hover:bg-white/10">
-          <i data-lucide="globe" class="w-4 h-4"></i>
-          <span>B-Men Site</span>
-        </a>
-      </nav>
-
-      
-    <!-- 3행: 홈, 인기, 가이드, 언어변경 (컬러 강조) -->
-      <nav class="flex flex-wrap items-center justify-center gap-2 md:gap-3 text-sm mt-2">
-        <a href="/" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-emerald-400/30 bg-emerald-400/15 text-emerald-200 hover:bg-emerald-400/20">
-          <i data-lucide="home" class="w-4 h-4"></i> 홈
-        </a>
-        <a href="/popular/" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-amber-400/30 bg-amber-400/15 text-amber-200 hover:bg-amber-400/20">
-          <i data-lucide="flame" class="w-4 h-4"></i> 인기
-        </a>
-        <a href="/guide/" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-sky-400/30 bg-sky-400/15 text-sky-200 hover:bg-sky-400/20">
-          <i data-lucide="book-open" class="w-4 h-4"></i> 가이드
-        </a>
-        <a href="/lang/" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-violet-400/30 bg-violet-400/15 text-violet-200 hover:bg-violet-400/20">
-          <i data-lucide="languages" class="w-4 h-4"></i> 언어변경
-        </a>
-      </nav>
     </div>
-  </header>
+  </div>
 
+  <!-- 필요 스크립트: 아이콘 초기화 등 (메뉴 제거했으니 최소만 유지) -->
   <script>
-    // header partial 내부 전용 스크립트 (중복 호출 안전)
     (function(){
-      try {
-        window.lucide?.createIcons?.();
-        const btn = document.querySelector('[data-js="menu-btn"]');
-        const panel = document.querySelector('[data-js="menu-panel"]');
-        if (btn && panel) btn.addEventListener('click', () => panel.classList.toggle('hidden'));
-
-        // 간단 테스트(변경 금지): 핵심 요소 유무
-        console.assert(document.querySelector('header'), 'header 존재해야 함');
-        const mustTexts = ['홈','인기','가이드','언어변경','Yuchani Site','B-Men Site'];
-        console.assert(mustTexts.every(t => document.body.textContent.includes(t)), '네비 텍스트 7종 확인');
-      } catch (e) {
-        console.warn('header partial error:', e);
-      }
+      try { window.lucide?.createIcons?.(); } catch(e){}
     })();
   </script>
-  <!-- ===== 복사하여 /partials/header.html 로 저장할 영역 끝 ===== -->
-
-  
-</body>
-</html>
+</header>

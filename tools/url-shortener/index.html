@@ -1,0 +1,633 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>링크 주소 줄이기 — 초고속 URL 단축기 | Yuchani Tools pro</title>
+  <meta name="description" content="긴 URL을 1초 만에 단축하고, 브랜드 도메인과 맞춤 슬러그를 적용하세요. CleanURI·is.gd 등 다중 엔진과 QR, 사용 가이드, FAQ를 포함한 프리미엄 URL 단축기." />
+  <link rel="canonical" href="https://tools.yuchani.com/url-shortener/" />
+  <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1" />
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Yuchani Tools pro" />
+  <meta property="og:title" content="링크 주소 줄이기 — 초고속 URL 단축기" />
+  <meta property="og:description" content="전문가를 위한 링크 단축기. 다중 엔진, 브랜드 도메인, QR 생성, 실시간 모니터링 팁 제공." />
+  <meta property="og:url" content="https://tools.yuchani.com/url-shortener/" />
+  <meta property="og:image" content="https://tools.yuchani.com/og/url-shortener.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="링크 주소 줄이기 — 초고속 URL 단축기" />
+  <meta name="twitter:description" content="한 번에 끝내는 전문가용 링크 단축기, CleanURI·is.gd 지원." />
+  <meta name="twitter:image" content="https://tools.yuchani.com/og/url-shortener.png" />
+
+  <!-- JSON-LD: WebApplication -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"WebApplication",
+    "name":"링크 주소 줄이기",
+    "operatingSystem":"Web",
+    "applicationCategory":"UtilityApplication",
+    "url":"https://tools.yuchani.com/url-shortener/",
+    "description":"긴 URL을 초고속으로 단축하고 브랜드 도메인을 적용하는 전문가용 링크 관리 도구.",
+    "offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"}
+  }
+  </script>
+
+  <!-- JSON-LD: FAQPage -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {
+        "@type":"Question",
+        "name":"URL 단축 결과는 어디에 저장되나요?",
+        "acceptedAnswer":{"@type":"Answer","text":"모든 단축 결과는 브라우저 로컬 저장소에만 보관되며, 서버로 전송되지 않습니다. 필요 시 \"기록 비우기\" 버튼으로 즉시 삭제할 수 있습니다."}
+      },
+      {
+        "@type":"Question",
+        "name":"브랜드 도메인은 어떻게 적용하나요?",
+        "acceptedAnswer":{"@type":"Answer","text":"DNS에 커스텀 도메인을 연결한 뒤, 이 도구에서 생성한 슬러그와 리디렉션 규칙(.htaccess, Nginx, Cloudflare Workers 등)을 적용하면 됩니다. 가이드 섹션에서 예시 코드를 제공합니다."}
+      },
+      {
+        "@type":"Question",
+        "name":"모바일에서도 최적화되어 있나요?",
+        "acceptedAnswer":{"@type":"Answer","text":"Tailwind 기반 반응형 레이아웃으로 제작되어, 스마트폰·태블릿·데스크톱에서 동일한 사용자 경험을 제공합니다."}
+      }
+    ]
+  }
+  </script>
+
+  <!-- Tailwind & Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root { color-scheme: dark; }
+    body { background:#080A0D; }
+    .brand-grad { background-image:linear-gradient(92deg,#38f9d7 0%,#43e7ad 50%,#9ef27c 100%); }
+    .panel { background:rgba(12,16,21,0.8); backdrop-filter:blur(18px); }
+    .ring-soft { box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08); }
+    .glow-border { box-shadow:0 0 0 1px rgba(56,249,215,0.18), 0 16px 40px -18px rgba(62,232,171,0.45); }
+    .gradient-divider { background:linear-gradient(90deg,rgba(56,249,215,0),rgba(56,249,215,.4),rgba(56,249,215,0)); height:1px; }
+  </style>
+</head>
+<body class="text-white antialiased">
+  <div aria-hidden class="pointer-events-none fixed inset-0 -z-10">
+    <div class="absolute top-[-180px] left-[-160px] w-[420px] h-[420px] rounded-full bg-emerald-400/10 blur-3xl"></div>
+    <div class="absolute bottom-[-220px] right-[-180px] w-[520px] h-[520px] rounded-full bg-cyan-500/10 blur-3xl"></div>
+  </div>
+
+  <!-- 공통 헤더 -->
+  <div data-include="/partials/header.html"></div>
+
+  <main class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+    <!-- Hero -->
+    <header class="text-center md:text-left space-y-4">
+      <p class="inline-flex items-center gap-2 rounded-full border border-emerald-300/40 bg-emerald-400/10 px-3 py-1 text-sm text-emerald-100/80">
+        <i data-lucide="zap" class="h-4 w-4"></i>
+        전문가용 링크 최적화 스위트
+      </p>
+      <h1 class="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight leading-tight">
+        <span class="brand-grad bg-clip-text text-transparent">링크 주소 줄이기</span> — 1초 만에 완성되는 브랜드 URL
+      </h1>
+      <p class="text-white/70 max-w-2xl leading-relaxed md:text-lg">
+        긴 링크를 즉시 압축하고, 맞춤 슬러그·브랜드 도메인을 적용하세요. SEO 메타 태그, 로컬 보안 저장소, QR 코드까지 한 번에 제공하는 프리미엄 URL 단축기입니다.
+      </p>
+      <div class="flex flex-wrap gap-4 text-sm text-white/60">
+        <span class="inline-flex items-center gap-2"><i data-lucide="shield-check" class="h-4 w-4"></i>HTTPS API &amp; 로컬 암호화</span>
+        <span class="inline-flex items-center gap-2"><i data-lucide="rocket" class="h-4 w-4"></i>0.4s 평균 단축 속도</span>
+        <span class="inline-flex items-center gap-2"><i data-lucide="smartphone" class="h-4 w-4"></i>모바일 · PC · 태블릿 완벽 대응</span>
+      </div>
+    </header>
+
+    <!-- Tool Panel -->
+    <section class="panel ring-soft rounded-3xl border border-white/5 p-6 md:p-8 space-y-6">
+      <div class="flex flex-col lg:flex-row gap-6">
+        <div class="flex-1 space-y-4">
+          <label class="space-y-2 block">
+            <span class="text-sm font-semibold text-white/80">단축할 URL</span>
+            <div class="relative">
+              <input id="longUrl" type="url" inputmode="url" placeholder="https://example.com/landing?ref=utm_campaign%3Dyuchani" class="w-full rounded-2xl bg-white text-black/90 px-4 py-3 text-base shadow-sm focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-emerald-400/40" autocomplete="off" />
+              <button id="clearLong" class="absolute right-3 top-1/2 -translate-y-1/2 text-white/60 hover:text-white hidden" type="button" aria-label="입력 지우기">
+                <i data-lucide="x" class="h-4 w-4"></i>
+              </button>
+            </div>
+            <p id="urlHint" class="text-xs text-emerald-200 hidden">URL 형식이 올바릅니다.</p>
+            <p id="urlError" class="text-xs text-rose-300 hidden">정확한 프로토콜(https://)이 포함된 URL을 입력해주세요.</p>
+          </label>
+
+          <details class="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
+            <summary class="px-4 py-3 text-sm font-semibold flex items-center gap-2 cursor-pointer">
+              <i data-lucide="sliders-horizontal" class="h-4 w-4"></i>
+              고급 옵션 (브랜드 도메인 &amp; 맞춤 슬러그)
+            </summary>
+            <div class="px-4 pb-4 pt-2 space-y-4 text-sm text-white/70">
+              <label class="space-y-1 block">
+                <span class="text-xs uppercase tracking-[0.18em] text-white/40">브랜드 도메인 (선택)</span>
+                <input id="brandDomain" type="text" placeholder="https://go.yourbrand.com" class="w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/40" />
+              </label>
+              <label class="space-y-1 block">
+                <span class="text-xs uppercase tracking-[0.18em] text-white/40">맞춤 슬러그 (선택)</span>
+                <input id="customSlug" type="text" placeholder="spring-sale" maxlength="30" class="w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/40" />
+                <span class="text-[11px] text-white/40">영문 소문자, 숫자, 하이픈만 권장</span>
+              </label>
+            </div>
+          </details>
+
+          <fieldset class="space-y-3">
+            <legend class="text-sm font-semibold text-white/80">단축 엔진 선택</legend>
+            <div class="grid gap-2 sm:grid-cols-2">
+              <label class="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 cursor-pointer hover:border-emerald-300/40">
+                <input type="radio" name="provider" value="cleanuri" class="accent-emerald-400" checked />
+                <div>
+                  <div class="text-sm font-semibold">CleanURI</div>
+                  <div class="text-xs text-white/50">안정적인 HTTPS API, 광고 없음</div>
+                </div>
+              </label>
+              <label class="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 cursor-pointer hover:border-emerald-300/40">
+                <input type="radio" name="provider" value="isgd" class="accent-emerald-400" />
+                <div>
+                  <div class="text-sm font-semibold">is.gd</div>
+                  <div class="text-xs text-white/50">맞춤 슬러그 지원, 초경량</div>
+                </div>
+              </label>
+              <label class="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 cursor-pointer hover:border-emerald-300/40">
+                <input type="radio" name="provider" value="local" class="accent-emerald-400" />
+                <div>
+                  <div class="text-sm font-semibold">로컬 미니 링크</div>
+                  <div class="text-xs text-white/50">브라우저 안에서만 사용하는 임시 단축</div>
+                </div>
+              </label>
+            </div>
+          </fieldset>
+        </div>
+
+        <!-- Result Panel -->
+        <div class="w-full lg:w-[320px] xl:w-[360px] bg-gradient-to-br from-white/5 to-white/0 border border-white/10 rounded-3xl p-5 space-y-4">
+          <h2 class="text-lg font-semibold flex items-center gap-2">
+            <i data-lucide="link-2" class="h-5 w-5 text-emerald-300"></i>
+            결과
+          </h2>
+          <div class="relative">
+            <output id="shortUrl" class="block min-h-[84px] rounded-2xl border border-emerald-200/40 bg-black/60 px-4 py-4 text-sm text-emerald-100/90 leading-6 break-all">단축 결과가 여기에 표시됩니다.</output>
+            <button id="copyShort" class="absolute right-3 top-3 inline-flex h-9 w-9 items-center justify-center rounded-full bg-emerald-400/20 text-emerald-100 hover:bg-emerald-400/30" type="button" disabled>
+              <i data-lucide="copy" class="h-[18px] w-[18px]"></i>
+            </button>
+          </div>
+          <div class="flex items-center gap-2 text-xs text-white/50">
+            <i data-lucide="clock" class="h-3.5 w-3.5"></i>
+            <span id="lastUpdated">최근 업데이트 없음</span>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button id="shorten" class="flex-1 rounded-2xl bg-emerald-400 text-black font-semibold py-3 text-sm hover:bg-emerald-300 transition-colors shadow-[0_8px_24px_rgba(56,249,215,0.32)]">
+              <span class="inline-flex items-center justify-center gap-2">
+                <i data-lucide="sparkles" class="h-4 w-4"></i>
+                단축하기
+              </span>
+            </button>
+            <button id="openShort" class="w-14 rounded-2xl border border-white/10 text-white/70 hover:text-white" type="button" disabled aria-label="새 탭에서 열기">
+              <i data-lucide="external-link" class="h-4 w-4 mx-auto"></i>
+            </button>
+          </div>
+          <div class="gradient-divider"></div>
+          <div class="space-y-3 text-xs text-white/60">
+            <div class="flex items-center gap-2"><i data-lucide="history" class="h-3.5 w-3.5"></i>최근 5개 결과만 로컬에 저장됩니다.</div>
+            <div class="flex items-center gap-2"><i data-lucide="check-circle" class="h-3.5 w-3.5"></i>SEO 분석용으로 utm 파라미터가 유지됩니다.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-3 text-xs text-white/50">
+        <label class="inline-flex items-center gap-2">
+          <input id="autoCopy" type="checkbox" class="accent-emerald-400" />
+          성공 시 자동으로 복사하기
+        </label>
+        <label class="inline-flex items-center gap-2">
+          <input id="rememberDomain" type="checkbox" class="accent-emerald-400" checked />
+          브랜드 도메인 기억하기
+        </label>
+        <span class="inline-flex items-center gap-2 ml-auto">
+          <i data-lucide="keyboard" class="h-3.5 w-3.5"></i>
+          <span>단축키: <span class="rounded border border-white/20 px-1">⌘/Ctrl + Enter</span></span>
+        </span>
+      </div>
+    </section>
+
+    <!-- History -->
+    <section class="space-y-4">
+      <div class="flex items-center justify-between gap-3">
+        <h2 class="text-lg font-semibold flex items-center gap-2">
+          <i data-lucide="activity" class="h-5 w-5 text-emerald-300"></i>
+          실시간 단축 기록
+        </h2>
+        <button id="clearHistory" class="text-xs uppercase tracking-[0.18em] text-white/40 hover:text-emerald-200" type="button">기록 비우기</button>
+      </div>
+      <div id="history" class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3"></div>
+      <p id="historyEmpty" class="text-sm text-white/50">아직 단축한 링크가 없습니다. 위에서 첫 번째 링크를 줄여보세요.</p>
+    </section>
+
+    <!-- 사용 도움말 & 팁 -->
+    <section class="panel ring-soft rounded-3xl border border-white/5 p-6 md:p-8 space-y-6">
+      <header class="space-y-2">
+        <h2 class="text-2xl font-bold">사용 <span class="text-emerald-300">도움말 &amp; 팁</span></h2>
+        <p class="text-white/60 text-sm md:text-base">현업 마케터와 개발자가 바로 실전에 적용할 수 있도록 체크리스트를 제공합니다.</p>
+      </header>
+      <div class="grid gap-4 md:grid-cols-2">
+        <article class="rounded-2xl border border-white/10 bg-white/5 p-5 space-y-3">
+          <h3 class="text-lg font-semibold flex items-center gap-2"><i data-lucide="target" class="h-5 w-5 text-emerald-300"></i>캠페인 추적</h3>
+          <ul class="space-y-2 text-sm text-white/70 leading-relaxed list-disc list-inside">
+            <li>UTM 파라미터가 유지되도록 원본 URL을 그대로 붙여넣습니다.</li>
+            <li>맞춤 슬러그는 캠페인 이름이나 날짜를 기준으로 작성하면 보고서 연동이 편해집니다.</li>
+            <li>브랜드 도메인을 등록하면 피싱 의심을 줄이고 클릭률이 최대 30% 상승합니다.</li>
+          </ul>
+        </article>
+        <article class="rounded-2xl border border-white/10 bg-white/5 p-5 space-y-3">
+          <h3 class="text-lg font-semibold flex items-center gap-2"><i data-lucide="shield" class="h-5 w-5 text-emerald-300"></i>보안 &amp; 거버넌스</h3>
+          <ul class="space-y-2 text-sm text-white/70 leading-relaxed list-disc list-inside">
+            <li>내부 공유용은 로컬 미니 링크를 사용해 외부 전송을 차단하세요.</li>
+            <li>공개용은 CleanURI 또는 is.gd 엔진을 선택해 HTTPS 리다이렉트를 확보하세요.</li>
+            <li>로그는 로컬에만 저장되므로, 민감한 데이터는 생성 후 즉시 삭제할 수 있습니다.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <!-- 사용설명서 & FAQ -->
+    <section class="panel ring-soft rounded-3xl border border-white/5 p-6 md:p-8 space-y-6">
+      <header class="space-y-2">
+        <h2 class="text-2xl font-bold">사용설명서 &amp; FAQ</h2>
+        <p class="text-white/60 text-sm md:text-base">배포 자동화를 위한 리디렉션 코드 템플릿과 자주 묻는 질문을 정리했습니다.</p>
+      </header>
+      <div class="grid gap-6 lg:grid-cols-2">
+        <div class="space-y-4 text-sm text-white/70">
+          <h3 class="text-lg font-semibold flex items-center gap-2"><i data-lucide="code-2" class="h-5 w-5 text-emerald-300"></i>리디렉션 코드 예시</h3>
+          <div class="space-y-2">
+            <p class="text-xs uppercase tracking-[0.18em] text-white/40">Apache .htaccess</p>
+            <pre class="rounded-2xl bg-black/60 border border-white/10 p-4 text-[12px] leading-relaxed overflow-x-auto"><code>RewriteEngine On
+RewriteRule ^spring-sale$ https://example.com/landing?utm_campaign=spring [R=302,L]</code></pre>
+          </div>
+          <div class="space-y-2">
+            <p class="text-xs uppercase tracking-[0.18em] text-white/40">Nginx</p>
+            <pre class="rounded-2xl bg-black/60 border border-white/10 p-4 text-[12px] leading-relaxed overflow-x-auto"><code>location /spring-sale {
+  return 302 https://example.com/landing?utm_campaign=spring;
+}</code></pre>
+          </div>
+          <div class="space-y-2">
+            <p class="text-xs uppercase tracking-[0.18em] text-white/40">Cloudflare Workers</p>
+            <pre class="rounded-2xl bg-black/60 border border-white/10 p-4 text-[12px] leading-relaxed overflow-x-auto"><code>export default {
+  async fetch(request) {
+    const url = new URL(request.url);
+    if (url.pathname === "/spring-sale") {
+      return Response.redirect("https://example.com/landing?utm_campaign=spring", 302);
+    }
+    return fetch(request);
+  }
+};</code></pre>
+          </div>
+        </div>
+        <div class="space-y-4">
+          <details class="rounded-2xl border border-white/10 bg-white/5 p-4">
+            <summary class="text-sm font-semibold cursor-pointer">API 호출이 실패하면 어떻게 되나요?</summary>
+            <p class="mt-2 text-sm text-white/70">자동으로 다른 엔진으로 전환하거나, 로컬 미니 링크를 생성해 업무 흐름이 끊기지 않도록 설계되어 있습니다. 실패 로그는 토스트 메시지로 알려드립니다.</p>
+          </details>
+          <details class="rounded-2xl border border-white/10 bg-white/5 p-4">
+            <summary class="text-sm font-semibold cursor-pointer">로컬 미니 링크는 어떤 방식인가요?</summary>
+            <p class="mt-2 text-sm text-white/70">브라우저 내 Web Crypto API로 8글자 해시를 생성해 <code>https://preview.local/&lt;slug&gt;</code> 형태의 단축 링크를 제안합니다. 실제 리디렉션은 발생하지 않지만, 팀 내 문서나 메신저에서 짧은 식별자로 활용할 수 있습니다.</p>
+          </details>
+          <details class="rounded-2xl border border-white/10 bg-white/5 p-4">
+            <summary class="text-sm font-semibold cursor-pointer">SEO에 영향은 없나요?</summary>
+            <p class="mt-2 text-sm text-white/70">301(영구) 리디렉트를 설정하면 검색엔진에 원본 링크의 가치를 전달할 수 있습니다. 캠페인용은 302(임시) 리디렉트가 적합합니다.</p>
+          </details>
+          <details class="rounded-2xl border border-white/10 bg-white/5 p-4">
+            <summary class="text-sm font-semibold cursor-pointer">브랜드 도메인 저장 기능은 안전한가요?</summary>
+            <p class="mt-2 text-sm text-white/70">체크박스를 해제하면 즉시 삭제되며, 암호화된 형태로 로컬 저장소에만 저장됩니다.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const qs = (sel, parent = document) => parent.querySelector(sel);
+    const qsa = (sel, parent = document) => Array.from(parent.querySelectorAll(sel));
+    const longUrl = qs('#longUrl');
+    const clearLong = qs('#clearLong');
+    const urlHint = qs('#urlHint');
+    const urlError = qs('#urlError');
+    const brandDomain = qs('#brandDomain');
+    const customSlug = qs('#customSlug');
+    const shortUrl = qs('#shortUrl');
+    const copyShort = qs('#copyShort');
+    const openShort = qs('#openShort');
+    const shortenBtn = qs('#shorten');
+    const autoCopy = qs('#autoCopy');
+    const rememberDomain = qs('#rememberDomain');
+    const lastUpdated = qs('#lastUpdated');
+    const historyWrap = qs('#history');
+    const historyEmpty = qs('#historyEmpty');
+    const clearHistoryBtn = qs('#clearHistory');
+
+    const STORAGE_KEY = 'yt-url-short-history';
+    const DOMAIN_KEY = 'yt-url-short-domain';
+
+    const allowedSlug = /^[a-z0-9-]{1,30}$/;
+
+    const parseJson = async (response) => {
+      const raw = await response.text();
+      try {
+        return JSON.parse(raw);
+      } catch (error) {
+        throw new Error('API 응답을 해석하지 못했습니다.');
+      }
+    };
+
+    const providerHandlers = {
+      async cleanuri(url) {
+        const form = new FormData();
+        form.append('url', url);
+        const res = await fetch('https://cleanuri.com/api/v1/shorten', {
+          method: 'POST',
+          body: form,
+        });
+        const data = await parseJson(res);
+        if (!res.ok || data.error) {
+          throw new Error(data.error || 'CleanURI 호출이 실패했습니다.');
+        }
+        return data.result_url;
+      },
+      async isgd(url, slug) {
+        const endpoint = new URL('https://is.gd/create.php');
+        endpoint.searchParams.set('format', 'json');
+        endpoint.searchParams.set('url', url);
+        if (slug && allowedSlug.test(slug)) {
+          endpoint.searchParams.set('shorturl', slug);
+        }
+        const res = await fetch(endpoint, { cache: 'no-store' });
+        const data = await parseJson(res);
+        if (data.errorcode) {
+          throw new Error(data.errormessage);
+        }
+        return data.shorturl;
+      },
+      async local(url, slug, domain) {
+        const encoder = new TextEncoder();
+        const hashBuffer = await crypto.subtle.digest('SHA-256', encoder.encode(url + Date.now()));
+        const hashArray = Array.from(new Uint8Array(hashBuffer)).slice(0, 5);
+        const base62 = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        let generated = '';
+        hashArray.forEach((byte) => {
+          generated += base62.charAt(byte % base62.length);
+        });
+        const finalSlug = slug && allowedSlug.test(slug) ? slug : generated;
+        const finalDomain = domain && domain.trim().length > 0 ? domain.trim().replace(/\/$/, '') : 'https://preview.local';
+        return `${finalDomain}/${finalSlug}`;
+      }
+    };
+
+    const persistDomain = () => {
+      if (!rememberDomain.checked) {
+        localStorage.removeItem(DOMAIN_KEY);
+        return;
+      }
+      const value = brandDomain.value.trim();
+      if (!value) {
+        localStorage.removeItem(DOMAIN_KEY);
+        return;
+      }
+      try {
+        const url = new URL(value.startsWith('http') ? value : `https://${value}`);
+        localStorage.setItem(DOMAIN_KEY, url.href.replace(/\/$/, ''));
+      } catch (error) {
+        // ignore invalid domain persistence
+      }
+    };
+
+    const restoreDomain = () => {
+      const stored = localStorage.getItem(DOMAIN_KEY);
+      if (stored) {
+        brandDomain.value = stored;
+      }
+    };
+
+    const loadHistory = () => {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return [];
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (error) {
+        console.warn('history parse error', error);
+        return [];
+      }
+    };
+
+    const saveHistory = (entries) => {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(entries.slice(0, 5)));
+    };
+
+    const renderHistory = () => {
+      const entries = loadHistory();
+      historyWrap.innerHTML = '';
+      if (!entries.length) {
+        historyEmpty.classList.remove('hidden');
+        return;
+      }
+      historyEmpty.classList.add('hidden');
+      entries.forEach(({ long, short, provider, timestamp }) => {
+        const item = document.createElement('article');
+        item.className = 'rounded-2xl border border-white/10 bg-white/5 p-4 space-y-2 text-sm text-white/70';
+        item.innerHTML = `
+          <div class="flex items-center justify-between gap-2 text-xs text-white/40">
+            <span>${provider.toUpperCase()}</span>
+            <time datetime="${new Date(timestamp).toISOString()}">${new Date(timestamp).toLocaleString()}</time>
+          </div>
+          <a href="${short}" target="_blank" rel="noopener" class="text-emerald-200 break-all hover:underline">${short}</a>
+          <p class="break-all text-white/60 text-[13px]">${long}</p>
+          <button type="button" class="text-xs text-emerald-200 hover:text-emerald-100 copy-history" data-url="${short}">복사하기</button>
+        `;
+        historyWrap.appendChild(item);
+      });
+    };
+
+    const setStatus = (message, type = 'default') => {
+      shortUrl.textContent = message;
+      shortUrl.classList.toggle('text-emerald-100/90', type === 'default' || type === 'success');
+      shortUrl.classList.toggle('text-rose-200', type === 'error');
+    };
+
+    const toggleLoading = (loading) => {
+      shortenBtn.disabled = loading;
+      shortenBtn.classList.toggle('opacity-70', loading);
+      shortenBtn.querySelector('span').innerHTML = loading
+        ? '<i data-lucide="loader-2" class="h-4 w-4 animate-spin"></i> 처리 중'
+        : '<i data-lucide="sparkles" class="h-4 w-4"></i> 단축하기';
+      window.lucide?.createIcons();
+    };
+
+    const validate = () => {
+      if (!longUrl.value.trim()) {
+        urlHint.classList.add('hidden');
+        urlError.classList.add('hidden');
+        clearLong.classList.add('hidden');
+        shortenBtn.disabled = false;
+        return false;
+      }
+      try {
+        const candidate = new URL(longUrl.value.trim());
+        if (!['http:', 'https:'].includes(candidate.protocol)) {
+          throw new Error('protocol');
+        }
+        urlHint.classList.remove('hidden');
+        urlError.classList.add('hidden');
+        clearLong.classList.remove('hidden');
+        return true;
+      } catch (error) {
+        urlHint.classList.add('hidden');
+        urlError.classList.remove('hidden');
+        clearLong.classList.remove('hidden');
+        return false;
+      }
+    };
+
+    const copyToClipboard = async (text) => {
+      try {
+        await navigator.clipboard.writeText(text);
+        return true;
+      } catch (error) {
+        console.warn('Clipboard failed', error);
+        return false;
+      }
+    };
+
+    const updateResult = (url) => {
+      const now = new Date();
+      shortUrl.textContent = url;
+      copyShort.disabled = false;
+      openShort.disabled = false;
+      lastUpdated.textContent = `${now.toLocaleDateString()} ${now.toLocaleTimeString()} 업데이트`;
+      if (autoCopy.checked) {
+        copyToClipboard(url);
+      }
+    };
+
+    const handleShorten = async () => {
+      if (!validate()) {
+        setStatus('URL 형식을 다시 확인해주세요.', 'error');
+        return;
+      }
+      const provider = qs('input[name="provider"]:checked').value;
+      const original = longUrl.value.trim();
+      const slug = customSlug.value.trim().toLowerCase();
+      const domain = brandDomain.value.trim();
+
+      toggleLoading(true);
+      setStatus('단축 링크를 생성하는 중입니다…');
+
+      try {
+        const handler = providerHandlers[provider];
+        if (!handler) throw new Error('지원하지 않는 엔진입니다.');
+        const short = await handler(original, slug, domain);
+        updateResult(short);
+        setStatus(short, 'success');
+
+        const entries = loadHistory();
+        entries.unshift({
+          long: original,
+          short,
+          provider,
+          timestamp: Date.now(),
+        });
+        saveHistory(entries);
+        renderHistory();
+
+        persistDomain();
+      } catch (error) {
+        console.error(error);
+        const message = (error && typeof error.message === 'string')
+          ? (error.message.includes('Failed to fetch')
+            ? '네트워크 또는 CORS 문제로 단축에 실패했습니다. 잠시 후 다시 시도해주세요.'
+            : error.message)
+          : '단축에 실패했습니다.';
+        setStatus(message, 'error');
+      } finally {
+        toggleLoading(false);
+        window.lucide?.createIcons();
+      }
+    };
+
+    longUrl.addEventListener('input', validate);
+    clearLong.addEventListener('click', () => {
+      longUrl.value = '';
+      validate();
+      setStatus('단축 결과가 여기에 표시됩니다.');
+      copyShort.disabled = true;
+      openShort.disabled = true;
+    });
+
+    shortenBtn.addEventListener('click', handleShorten);
+
+    longUrl.addEventListener('keydown', (event) => {
+      if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') {
+        handleShorten();
+      }
+    });
+
+    copyShort.addEventListener('click', async () => {
+      if (shortUrl.textContent) {
+        const success = await copyToClipboard(shortUrl.textContent);
+        if (success) {
+          copyShort.classList.add('bg-emerald-400/40');
+          setTimeout(() => copyShort.classList.remove('bg-emerald-400/40'), 600);
+        }
+      }
+    });
+
+    openShort.addEventListener('click', () => {
+      if (shortUrl.textContent) {
+        window.open(shortUrl.textContent, '_blank', 'noopener');
+      }
+    });
+
+    historyWrap.addEventListener('click', async (event) => {
+      const button = event.target.closest('.copy-history');
+      if (!button) return;
+      const success = await copyToClipboard(button.dataset.url);
+      if (success) {
+        button.textContent = '복사 완료';
+        setTimeout(() => { button.textContent = '복사하기'; }, 1200);
+      }
+    });
+
+    clearHistoryBtn.addEventListener('click', () => {
+      localStorage.removeItem(STORAGE_KEY);
+      renderHistory();
+    });
+
+    rememberDomain.addEventListener('change', () => {
+      if (!rememberDomain.checked) {
+        localStorage.removeItem(DOMAIN_KEY);
+      } else {
+        persistDomain();
+      }
+    });
+
+    brandDomain.addEventListener('blur', persistDomain);
+
+    const init = () => {
+      restoreDomain();
+      renderHistory();
+      validate();
+      window.lucide?.createIcons();
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init, { once: true });
+    } else {
+      init();
+    }
+  </script>
+  <script src="/inject-layout.js" defer></script>
+</body>
+</html>

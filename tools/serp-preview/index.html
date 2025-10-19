@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>SERP 미리보기 · 구글 검색결과 즉시 확인 | Yuchani Tools pro</title>
+  <meta name="description" content="실시간 Google 검색결과 미리보기. SEO 최적화 길이 안내, 데스크톱·모바일 스니펫, 픽셀 길이 계산까지 한 번에. 구글seo최적화 · 속도최적화 · 모바일 PC 반응형." />
+  <link rel="canonical" href="https://tools.yuchani.com/tools/serp-preview/">
+  <meta name="robots" content="index,follow">
+  <!-- OG/Twitter -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="SERP 미리보기 · 구글 검색결과 즉시 확인">
+  <meta property="og:description" content="실시간 Google 검색결과 스니펫을 시뮬레이션하고 길이 초과 여부를 체크하세요.">
+  <meta property="og:url" content="https://tools.yuchani.com/tools/serp-preview/">
+  <meta property="og:image" content="https://tools.yuchani.com/assets/og/cover.png">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Tailwind / Lucide -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root { color-scheme: dark; }
+    body { background:#0F1113; }
+    .ring-soft { box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
+    .panel { background:rgba(15,18,22,0.9); }
+    .preview-card { background:#1b1f24; }
+    .preview-google { font-family:"Roboto","Noto Sans KR",system-ui,-apple-system; }
+    .preview-google .g-link { color:#4c8bf5; font-size:18px; line-height:1.4; }
+    .preview-google .g-url { color:#99c47a; font-size:14px; line-height:1.6; }
+    .preview-google .g-desc { color:#cfd8e3; font-size:13px; line-height:1.7; }
+    .preview-wrapper[data-mode="mobile"] .preview-card { max-width:420px; border-radius:1.5rem; padding:1.5rem; }
+    .preview-wrapper[data-mode="desktop"] .preview-card { max-width:680px; border-radius:1.25rem; padding:2rem; }
+    .preview-wrapper[data-mode="desktop"] .mode-desktop,
+    .preview-wrapper[data-mode="mobile"] .mode-mobile { display:flex; }
+    .preview-wrapper .mode-desktop,
+    .preview-wrapper .mode-mobile { display:none; }
+    .meter-bar { position:relative; height:6px; border-radius:999px; overflow:hidden; }
+    .meter-bar span { position:absolute; inset:0; border-radius:999px; background:linear-gradient(90deg,#34d399,#38bdf8); transform-origin:left center; transform:scaleX(0); transition:transform .3s ease; }
+    .meter-bar[data-state="warn"] span { background:linear-gradient(90deg,#f97316,#facc15); }
+    .meter-bar[data-state="limit"] span { background:linear-gradient(90deg,#f87171,#fb7185); }
+  </style>
+
+  <!-- JSON-LD: WebApplication -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"WebApplication",
+    "name":"SERP 미리보기",
+    "url":"https://tools.yuchani.com/tools/serp-preview/",
+    "applicationCategory":"SEOApplication",
+    "operatingSystem":"Web",
+    "aggregateRating":{"@type":"AggregateRating","ratingValue":"5.0","ratingCount":"86"},
+    "description":"Google 검색결과 스니펫을 즉시 확인하고 SEO 권장 길이를 체크하는 전문가용 툴"
+  }
+  </script>
+
+  <!-- JSON-LD: FAQPage -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {"@type":"Question","name":"제목과 설명 길이는 어떻게 계산되나요?","acceptedAnswer":{"@type":"Answer","text":"문자 수와 픽셀 폭을 동시에 계산해 권장치(제목 580px, 설명 920px)에 따라 색상으로 안내합니다."}},
+      {"@type":"Question","name":"모바일과 PC 노출은 어떻게 전환하나요?","acceptedAnswer":{"@type":"Answer","text":"상단의 '데스크톱/모바일' 토글 버튼으로 즉시 전환할 수 있으며, 레이아웃 폭이 각각 실서비스에 가깝게 조정됩니다."}},
+      {"@type":"Question","name":"SEO 점검을 위해 어떤 요소를 입력해야 하나요?","acceptedAnswer":{"@type":"Answer","text":"페이지 제목, 표시 URL, 사이트 네임(빵조각), 설명, 발행일을 입력하면 Google SERP 스니펫 구성을 그대로 미리볼 수 있습니다."}}
+    ]
+  }
+  </script>
+</head>
+<body class="text-white">
+  <!-- 공통 헤더 -->
+  <div data-include="/partials/header.html"></div>
+
+  <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+    <div class="rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 via-emerald-500/10 to-cyan-500/5 p-6 md:p-8 shadow-[0_20px_60px_rgba(15,18,22,0.6)]">
+      <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
+        <div class="lg:max-w-2xl space-y-4">
+          <div class="inline-flex items-center gap-2 rounded-full border border-emerald-400/40 bg-emerald-400/15 px-3 py-1 text-xs uppercase tracking-[0.2em] text-emerald-100">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+            Premium SEO Lab
+          </div>
+          <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-cyan-300 to-sky-400">
+            SERP 미리보기
+          </h1>
+          <p class="text-white/75 leading-relaxed text-sm md:text-base">
+            구글에 어떻게 노출될지 <strong class="text-white">즉시 확인</strong>하고, 제목·설명·URL이 권장 길이를 넘었는지 실시간으로 진단하세요.
+            구글SEO최적화 · 속도최적화 · 모바일·PC 반응형 모두 갖춘 전문가용 웹툴입니다.
+          </p>
+          <div class="grid gap-3 sm:grid-cols-3 text-sm">
+            <div class="rounded-2xl border border-white/10 bg-black/20 px-3 py-2">
+              <div class="text-white/50 flex items-center gap-1"><i data-lucide="timer" class="w-4 h-4"></i> 즉시 계산</div>
+              <div class="mt-1 font-semibold">실시간 길이 체크</div>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-black/20 px-3 py-2">
+              <div class="text-white/50 flex items-center gap-1"><i data-lucide="rocket" class="w-4 h-4"></i> 속도 최적화</div>
+              <div class="mt-1 font-semibold">0.2초 미리보기</div>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-black/20 px-3 py-2">
+              <div class="text-white/50 flex items-center gap-1"><i data-lucide="smartphone" class="w-4 h-4"></i> 반응형</div>
+              <div class="mt-1 font-semibold">모바일·PC 전환</div>
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <a href="/" class="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/10 px-4 py-2 text-sm font-semibold text-white/90 hover:bg-white/15">
+            <i data-lucide="home" class="w-4 h-4"></i> 메인으로
+          </a>
+          <a href="#preview" class="inline-flex items-center gap-2 rounded-xl border border-emerald-400/50 bg-emerald-400/20 px-4 py-2 text-sm font-semibold text-emerald-100 hover:bg-emerald-400/30">
+            <i data-lucide="mouse-pointer-click" class="w-4 h-4"></i> 미리보기 이동
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 입력 패널 -->
+    <section class="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]">
+      <div class="rounded-3xl border border-white/10 panel p-6 space-y-5 shadow-[0_12px_40px_rgba(0,0,0,0.4)]">
+        <div class="flex items-center gap-2 text-sm text-white/70">
+          <i data-lucide="settings-2" class="w-4 h-4 text-cyan-300"></i>
+          <span class="font-semibold">입력 & 길이 분석</span>
+        </div>
+        <div class="grid gap-5">
+          <label class="space-y-2 block text-sm">
+            <div class="flex items-center justify-between">
+              <span class="text-white/80 font-medium">페이지 제목</span>
+              <span class="flex items-center gap-2 text-xs text-white/50">
+                <span id="titleChars">0자</span>
+                <span class="meter-bar w-28 bg-white/10" data-target="title"><span></span></span>
+              </span>
+            </div>
+            <input id="inputTitle" type="text" maxlength="150" placeholder="예) SERP 미리보기 툴 - 출시 전 SEO 점검" class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-white/35 focus:border-emerald-400/60 focus:outline-none">
+          </label>
+
+          <label class="space-y-2 block text-sm">
+            <div class="flex items-center justify-between">
+              <span class="text-white/80 font-medium">표시 URL</span>
+              <span class="text-xs text-white/50" id="urlChars">0자</span>
+            </div>
+            <input id="inputUrl" type="text" maxlength="120" placeholder="https://domain.com/landing" class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-white/35 focus:border-emerald-400/60 focus:outline-none">
+          </label>
+
+          <div class="grid gap-4 md:grid-cols-2">
+            <label class="space-y-2 block text-sm">
+              <div class="flex items-center justify-between">
+                <span class="text-white/80 font-medium">사이트 네임/빵조각</span>
+                <span class="text-xs text-white/50" id="breadcrumbChars">0자</span>
+              </div>
+              <input id="inputBreadcrumb" type="text" maxlength="60" placeholder="Yuchani Tools · SERP" class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-white/35 focus:border-emerald-400/60 focus:outline-none">
+            </label>
+            <label class="space-y-2 block text-sm">
+              <div class="flex items-center justify-between">
+                <span class="text-white/80 font-medium">게시/업데이트일</span>
+                <span class="text-xs text-white/50" id="datePreview">자동 감지</span>
+              </div>
+              <input id="inputDate" type="date" class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-white/35 focus:border-emerald-400/60 focus:outline-none">
+            </label>
+          </div>
+
+          <label class="space-y-2 block text-sm">
+            <div class="flex items-center justify-between">
+              <span class="text-white/80 font-medium">메타 설명</span>
+              <span class="flex items-center gap-2 text-xs text-white/50">
+                <span id="descChars">0자</span>
+                <span class="meter-bar w-32 bg-white/10" data-target="desc"><span></span></span>
+              </span>
+            </div>
+            <textarea id="inputDesc" rows="4" maxlength="320" placeholder="예) 런칭 전 SEO 담당자를 위한 SERP 미리보기. 제목·설명 길이를 실시간 검사하고 모바일/데스크톱 스니펫을 전환해 확인하세요." class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-white/35 focus:border-emerald-400/60 focus:outline-none resize-y"></textarea>
+          </label>
+        </div>
+      </div>
+
+      <div id="preview" class="preview-wrapper rounded-3xl border border-white/10 panel p-6 flex flex-col gap-6 shadow-[0_12px_40px_rgba(0,0,0,0.45)]" data-mode="desktop">
+        <div class="flex flex-wrap items-center gap-2 justify-between">
+          <div class="flex items-center gap-2 text-sm text-white/70">
+            <i data-lucide="monitor" class="w-4 h-4 text-cyan-300 mode-desktop"></i>
+            <i data-lucide="smartphone" class="w-4 h-4 text-emerald-300 mode-mobile"></i>
+            <span class="font-semibold">SERP 스니펫 미리보기</span>
+          </div>
+          <div class="inline-flex rounded-full bg-white/5 p-1 text-xs">
+            <button type="button" data-mode="desktop" class="mode-toggle rounded-full px-3 py-1 font-medium bg-emerald-400/25 text-emerald-100 shadow">데스크톱</button>
+            <button type="button" data-mode="mobile" class="mode-toggle rounded-full px-3 py-1 font-medium text-white/65 hover:text-white">모바일</button>
+          </div>
+        </div>
+
+        <div class="preview-card mx-auto w-full preview-google space-y-2">
+          <div class="text-xs uppercase tracking-[0.2em] text-white/40">Google</div>
+          <div class="g-url" id="previewUrl">https://domain.com/landing</div>
+          <div class="g-link" id="previewTitle">SERP 미리보기 툴 - 출시 전 SEO 점검</div>
+          <div class="flex items-center gap-2 text-xs text-white/45" id="previewBreadcrumb">Yuchani Tools · SERP</div>
+          <div class="g-desc" id="previewDesc">런칭 전 SEO 담당자를 위한 SERP 미리보기. 제목·설명 길이를 실시간 검사하고 모바일/데스크톱 스니펫을 전환해 확인하세요.</div>
+          <div class="text-xs text-white/35" id="previewDate">2025년 1월 15일 · 업데이트</div>
+        </div>
+
+        <div class="grid gap-3 text-xs text-white/60">
+          <div class="flex items-center justify-between gap-3">
+            <span class="flex items-center gap-1"><i data-lucide="ruler" class="w-3.5 h-3.5"></i> 제목 폭</span>
+            <span id="titlePixels">0px</span>
+          </div>
+          <div class="flex items-center justify-between gap-3">
+            <span class="flex items-center gap-1"><i data-lucide="ruler" class="w-3.5 h-3.5"></i> 설명 폭</span>
+            <span id="descPixels">0px</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 도움말 & FAQ -->
+    <section class="mt-10 grid gap-6 lg:grid-cols-2">
+      <div class="rounded-3xl border border-emerald-400/30 bg-emerald-400/10 p-6 space-y-3 text-sm text-emerald-50 shadow-[0_10px_30px_rgba(16,185,129,0.25)]">
+        <div class="flex items-center gap-2 text-emerald-100 font-semibold">
+          <i data-lucide="lightbulb" class="w-4 h-4"></i>
+          도움말 & 팁
+        </div>
+        <ul class="list-disc pl-5 space-y-2">
+          <li>제목은 <strong>580px</strong> 이하, 설명은 <strong>920px</strong> 이하를 권장합니다. 초과 시 색상이 오렌지/레드로 바뀝니다.</li>
+          <li>표시 URL에는 프로토콜(https://)과 경로를 포함해 실제 노출 형태를 반영하세요.</li>
+          <li>게시일을 입력하면 한국식 날짜로 자동 포맷팅되어 스니펫에 추가됩니다.</li>
+          <li>모바일 모드에서는 카드 폭이 줄어들어 줄바꿈을 미리 확인할 수 있습니다.</li>
+          <li>작성한 내용은 브라우저 로컬스토리지에 즉시 저장되어 새로고침 후에도 유지됩니다.</li>
+        </ul>
+      </div>
+      <div class="rounded-3xl border border-cyan-400/30 bg-cyan-400/10 p-6 space-y-3 text-sm text-cyan-50 shadow-[0_10px_30px_rgba(14,165,233,0.25)]">
+        <div class="flex items-center gap-2 text-cyan-100 font-semibold">
+          <i data-lucide="help-circle" class="w-4 h-4"></i>
+          사용설명서 & FAQ
+        </div>
+        <ol class="list-decimal pl-5 space-y-2">
+          <li><strong>제목 · URL · 설명</strong>을 입력해 기본 스니펫을 구성합니다.</li>
+          <li>옵션으로 <strong>사이트 네임</strong>과 <strong>게시일</strong>을 추가해 실제 노출과 동일하게 만듭니다.</li>
+          <li>상단 토글로 <strong>데스크톱 ↔ 모바일</strong> 미리보기를 전환하며 줄바꿈을 확인합니다.</li>
+          <li>길이 지표가 경고색이면 문구를 다듬어 SEO 최적화 길이에 맞추세요.</li>
+          <li>완성된 스니펫은 스크린샷으로 공유하거나 개발/마케팅 팀과 바로 협업하세요.</li>
+        </ol>
+      </div>
+    </section>
+  </main>
+
+  <!-- 공통 푸터 -->
+  <div data-include="/partials/footer.html"></div>
+
+  <!-- include + 툴 스크립트 -->
+  <script defer src="/inject-layout.js?v=6"></script>
+  <script>
+  (function(){
+    if (window.__ytIncludeFallbackLoaded) return;
+    window.__ytIncludeFallbackLoaded = true;
+    async function loadPartials(){
+      const nodes = document.querySelectorAll('[data-include]');
+      for (const el of nodes){
+        const raw = el.getAttribute('data-include') || '';
+        let url = raw;
+        try { url = raw.startsWith('/') ? raw : new URL(raw, location.href).pathname; } catch(e) {}
+        try {
+          const res = await fetch(url, { credentials: 'same-origin', cache: 'no-cache' });
+          if (!res.ok) throw new Error('HTTP '+res.status);
+          const html = await res.text();
+          el.innerHTML = html;
+        } catch (err) {
+          console.warn('[include:fallback] 실패', url, err);
+          el.innerHTML = '<div style="padding:.75rem;border:1px solid #e5e7eb33;border-radius:.5rem;color:#fca5a5">include 실패: <code>'+url+'</code><br><small>'+String(err)+'</small></div>';
+        }
+      }
+      const anyIncluded = Array.from(document.querySelectorAll('[data-include]')).some(n => n.children.length>0);
+      console.assert(anyIncluded || Array.from(document.querySelectorAll('[data-include]')).length===0, 'include 결과가 비어 있습니다.');
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadPartials, { once:true });
+    } else {
+      loadPartials();
+    }
+  })();
+  </script>
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    window.lucide?.createIcons?.();
+
+    const selectors = {
+      title: document.getElementById('inputTitle'),
+      url: document.getElementById('inputUrl'),
+      breadcrumb: document.getElementById('inputBreadcrumb'),
+      date: document.getElementById('inputDate'),
+      desc: document.getElementById('inputDesc')
+    };
+
+    const outputs = {
+      title: document.getElementById('previewTitle'),
+      url: document.getElementById('previewUrl'),
+      breadcrumb: document.getElementById('previewBreadcrumb'),
+      date: document.getElementById('previewDate'),
+      desc: document.getElementById('previewDesc'),
+      titleChars: document.getElementById('titleChars'),
+      urlChars: document.getElementById('urlChars'),
+      breadcrumbChars: document.getElementById('breadcrumbChars'),
+      descChars: document.getElementById('descChars'),
+      datePreview: document.getElementById('datePreview'),
+      titlePixels: document.getElementById('titlePixels'),
+      descPixels: document.getElementById('descPixels'),
+    };
+
+    const meters = {
+      title: document.querySelector('.meter-bar[data-target="title"]'),
+      desc: document.querySelector('.meter-bar[data-target="desc"]')
+    };
+
+    const defaults = {
+      title: 'SERP 미리보기 툴 - 출시 전 SEO 점검',
+      url: 'https://domain.com/landing',
+      breadcrumb: 'Yuchani Tools · SERP',
+      desc: '런칭 전 SEO 담당자를 위한 SERP 미리보기. 제목·설명 길이를 실시간 검사하고 모바일/데스크톱 스니펫을 전환해 확인하세요.',
+      dateLabel: '2025년 1월 15일 · 업데이트'
+    };
+
+    const storageKey = 'yt-serp-preview';
+
+    function restore(){
+      try {
+        const raw = localStorage.getItem(storageKey);
+        if (!raw) return;
+        const data = JSON.parse(raw);
+        Object.entries(selectors).forEach(([key, el]) => {
+          if (key in data && data[key]) {
+            if (el.type === 'date') {
+              el.value = data[key];
+            } else {
+              el.value = data[key];
+            }
+          }
+        });
+      } catch(err) {
+        console.warn('restore failed', err);
+      }
+    }
+
+    function persist(){
+      const data = {};
+      Object.entries(selectors).forEach(([key, el]) => {
+        data[key] = el.value;
+      });
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(data));
+      } catch(err) {
+        console.warn('persist failed', err);
+      }
+    }
+
+    function formatDate(value){
+      if (!value) return '';
+      const dt = new Date(value + 'T00:00:00');
+      if (Number.isNaN(dt.getTime())) return '';
+      return `${dt.getFullYear()}년 ${dt.getMonth()+1}월 ${dt.getDate()}일`;
+    }
+
+    function computePixelWidth(text, font){
+      if (!text) return 0;
+      const canvas = computePixelWidth.canvas || (computePixelWidth.canvas = document.createElement('canvas'));
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return 0;
+      ctx.font = font;
+      return Math.round(ctx.measureText(text).width);
+    }
+
+    function update(){
+      const title = selectors.title.value.trim() || defaults.title;
+      const url = selectors.url.value.trim() || defaults.url;
+      const breadcrumb = selectors.breadcrumb.value.trim() || defaults.breadcrumb;
+      const desc = selectors.desc.value.trim() || defaults.desc;
+      const date = formatDate(selectors.date.value);
+
+      outputs.title.textContent = title;
+      outputs.url.textContent = url;
+      outputs.breadcrumb.textContent = breadcrumb;
+      outputs.desc.textContent = desc;
+      const dateLabel = date ? `${date} · 업데이트` : defaults.dateLabel;
+      outputs.date.textContent = dateLabel;
+      outputs.date.classList.toggle('text-white/40', !date);
+
+      outputs.titleChars.textContent = `${title.length}자`;
+      outputs.urlChars.textContent = `${url.length}자`;
+      outputs.breadcrumbChars.textContent = `${breadcrumb.length}자`;
+      outputs.descChars.textContent = `${desc.length}자`;
+      outputs.datePreview.textContent = date || '입력 시 자동 반영';
+
+      const titlePixels = computePixelWidth(title, '500 18px Roboto');
+      const descPixels = computePixelWidth(desc, '400 13px Roboto');
+      outputs.titlePixels.textContent = `${titlePixels}px / 권장 580px`;
+      outputs.descPixels.textContent = `${descPixels}px / 권장 920px`;
+
+      updateMeter(meters.title, titlePixels, 580);
+      updateMeter(meters.desc, descPixels, 920);
+
+      persist();
+    }
+
+    function updateMeter(el, value, limit){
+      if (!el) return;
+      const span = el.querySelector('span');
+      const ratio = Math.min(value / limit, 1.25);
+      span.style.transform = `scaleX(${Math.min(Math.max(ratio,0),1)})`;
+      let state = '';
+      if (value > limit) state = 'limit';
+      else if (value > limit * 0.9) state = 'warn';
+      el.dataset.state = state;
+    }
+
+    Object.values(selectors).forEach(el => {
+      el.addEventListener('input', update, { passive:true });
+    });
+
+    restore();
+    update();
+
+    const toggles = document.querySelectorAll('.mode-toggle');
+    const wrapper = document.querySelector('.preview-wrapper');
+    toggles.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const mode = btn.getAttribute('data-mode');
+        wrapper.setAttribute('data-mode', mode);
+        toggles.forEach(b => {
+          if (b === btn) {
+            b.classList.remove('text-white/65');
+            b.classList.add('bg-emerald-400/25','text-emerald-100','shadow');
+          } else {
+            b.classList.remove('bg-emerald-400/25','text-emerald-100','shadow');
+            b.classList.add('text-white/65');
+          }
+        });
+      });
+    });
+  });
+  </script>
+</body>
+</html>

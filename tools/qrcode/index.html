@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>QR 코드 생성기 — PNG·SVG 실시간 변환 | Yuchani Tools pro</title>
+  <meta name="description" content="텍스트·URL을 입력하면 즉시 QR 코드를 생성하고 미리보기·PNG·SVG 다운로드까지 원클릭으로 처리합니다. 크기·여백·색상·오류복원, 대비 가이드와 FAQ까지 제공하는 전문가용 무료 웹툴." />
+  <meta name="keywords" content="QR코드, QR 코드 생성기, QR 생성, QR SVG, QR PNG, 무료 QR" />
+  <link rel="canonical" href="https://tools.yuchani.com/tools/qrcode/" />
+  <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large" />
+  <meta name="theme-color" content="#0B0D10" />
+  <meta name="site-base" content="/tools/qrcode" />
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Yuchani Tools pro" />
+  <meta property="og:title" content="QR 코드 생성기 — PNG·SVG 실시간 변환" />
+  <meta property="og:description" content="입력 즉시 QR 코드 생성, 색상/여백/오류복원 설정, PNG·SVG 다운로드 지원." />
+  <meta property="og:url" content="https://tools.yuchani.com/tools/qrcode/" />
+  <meta property="og:image" content="https://tools.yuchani.com/og/qr.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- JSON-LD: WebApplication -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "QR 코드 생성기",
+    "url": "https://tools.yuchani.com/tools/qrcode/",
+    "applicationCategory": "UtilityApplication",
+    "operatingSystem": "Web",
+    "offers": {"@type": "Offer", "price": "0", "priceCurrency": "KRW"},
+    "description": "텍스트·URL을 입력하면 즉시 QR 코드를 생성하고 PNG·SVG로 다운로드합니다.",
+    "creator": {"@type": "Organization", "name": "Yuchani Tools pro"}
+  }
+  </script>
+
+  <!-- JSON-LD: FAQPage -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "인쇄용으로 품질을 높이려면 어떻게 하나요?",
+        "acceptedAnswer": {"@type": "Answer", "text": "픽셀 크기를 480 이상으로 설정하고 포맷을 SVG로 선택하세요. 벡터 방식이므로 확대해도 선명합니다."}
+      },
+      {
+        "@type": "Question",
+        "name": "색상을 바꾸면 스캔이 안될 때는?",
+        "acceptedAnswer": {"@type": "Answer", "text": "전경색은 진하고 배경색은 충분히 밝게 유지해야 합니다. 대비가 낮으면 카메라가 패턴을 인식하지 못합니다."}
+      },
+      {
+        "@type": "Question",
+        "name": "입력한 데이터가 서버에 저장되나요?",
+        "acceptedAnswer": {"@type": "Answer", "text": "아니요. 모든 데이터는 브라우저에서만 처리되며, 외부 API로 전달되는 값은 QR 이미지를 생성하는 데 필요한 최소 정보입니다."}
+      },
+      {
+        "@type": "Question",
+        "name": "로고를 덮어씌워도 되나요?",
+        "acceptedAnswer": {"@type": "Answer", "text": "가능하지만 오류 복원(ECC)을 Q 이상으로 높여 QR 패턴 손실을 대비하세요. 여백도 4px 이상 확보하는 것이 좋습니다."}
+      }
+    ]
+  }
+  </script>
+
+  <!-- JSON-LD: HowTo -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "QR 코드 생성기 사용법",
+    "description": "URL/텍스트 입력부터 옵션 조정, 미리보기 확인, 다운로드까지 1분 만에 끝내는 방법",
+    "totalTime": "PT1M",
+    "tool": ["브라우저"],
+    "step": [
+      {"@type": "HowToStep", "name": "텍스트 또는 URL 입력", "text": "입력창에 링크 또는 텍스트를 적습니다."},
+      {"@type": "HowToStep", "name": "크기와 여백 설정", "text": "인쇄용이면 480px 이상과 여백 4 이상을 추천합니다."},
+      {"@type": "HowToStep", "name": "색상·오류복원 선택", "text": "전경/배경 대비를 충분히 확보하고 로고용이면 오류복원을 Q/H로 올립니다."},
+      {"@type": "HowToStep", "name": "미리보기 확인", "text": "다크·라이트·투명 배경에서 스캔 가이드를 확인합니다."},
+      {"@type": "HowToStep", "name": "PNG/SVG 다운로드", "text": "URL을 복사하거나 PNG·SVG로 내려받아 바로 적용합니다."}
+    ]
+  }
+  </script>
+
+  <link rel="preconnect" href="https://cdn.tailwindcss.com" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="dns-prefetch" href="https://api.qrserver.com" />
+  <script>
+    window.tailwind = window.tailwind || {};
+    window.tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            surface: {
+              900: '#0B0D10',
+              800: '#10151d',
+              700: '#1a202c'
+            },
+            brand: {
+              400: '#34d399',
+              500: '#10b981',
+              600: '#0d9488'
+            }
+          },
+          boxShadow: {
+            glow: '0 25px 60px -25px rgba(16,185,129,.45)'
+          }
+        }
+      }
+    };
+  </script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+  <style>
+    :root { color-scheme: dark; }
+    body { background:#0B0D10; }
+    .panel { background: rgba(15, 22, 32, 0.75); backdrop-filter: blur(18px); }
+    .glass { background: linear-gradient(145deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)); }
+    @media (prefers-reduced-motion: reduce) {
+      * { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body class="bg-surface-900 text-white antialiased">
+  <div data-include="/partials/header.html"></div>
+
+  <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-24">
+    <nav class="pt-6 text-sm text-white/60" aria-label="Breadcrumb">
+      <ol class="flex flex-wrap items-center gap-2">
+        <li><a class="hover:text-white/90" href="/">홈</a></li>
+        <li>/</li>
+        <li><a class="hover:text-white/90" href="/tools/">웹툴 모음</a></li>
+        <li>/</li>
+        <li aria-current="page" class="text-white">QR 코드 생성기</li>
+      </ol>
+    </nav>
+
+    <section class="mt-6 rounded-3xl border border-white/10 glass p-6 sm:p-8 shadow-glow">
+      <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+        <div class="max-w-3xl">
+          <p class="text-xs uppercase tracking-[0.2em] text-emerald-200/70">Premium Utility</p>
+          <h1 class="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
+            <span class="bg-gradient-to-r from-emerald-300 via-teal-200 to-cyan-200 bg-clip-text text-transparent">QR 코드 생성기</span>
+          </h1>
+          <p class="mt-3 text-base text-white/75 md:text-lg">텍스트·URL 입력 즉시 QR 코드를 생성하고, 크기·여백·오류복원·색상까지 전문가 기준으로 조정할 수 있는 고급 웹툴입니다. PNG/SVG 다운로드와 URL 복사를 모두 지원합니다.</p>
+        </div>
+        <div class="flex gap-2">
+          <button id="sampleBtn" class="rounded-xl border border-white/15 bg-white/5 px-4 py-2 text-sm text-white/80 transition hover:border-white/25 hover:text-white">샘플 데이터</button>
+          <button id="resetBtn" class="rounded-xl border border-white/15 bg-white/5 px-4 py-2 text-sm text-white/80 transition hover:border-white/25 hover:text-white">초기화</button>
+        </div>
+      </div>
+      <div class="mt-5 grid gap-3 text-xs text-white/60 sm:grid-cols-3">
+        <div class="flex items-center gap-2"><span class="h-1.5 w-1.5 rounded-full bg-emerald-300"></span> PNG·SVG 동시 지원</div>
+        <div class="flex items-center gap-2"><span class="h-1.5 w-1.5 rounded-full bg-teal-300"></span> 대비·오류복원 가이드 내장</div>
+        <div class="flex items-center gap-2"><span class="h-1.5 w-1.5 rounded-full bg-cyan-300"></span> 100% 브라우저 처리 · 개인정보 저장 없음</div>
+      </div>
+    </section>
+
+    <section class="mt-8 grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(0,0.95fr)]">
+      <div class="panel rounded-3xl border border-white/10 p-6">
+        <div class="flex items-center justify-between">
+          <h2 class="text-sm font-semibold text-white/80">입력 &amp; 옵션</h2>
+          <p class="text-xs text-white/60">전경은 진하게, 배경은 밝게 유지하세요.</p>
+        </div>
+        <form class="mt-4 space-y-5" id="qrForm">
+          <div>
+            <label class="text-sm text-white/70" for="qrText">텍스트 / URL</label>
+            <textarea id="qrText" class="mt-2 block w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white shadow-inner focus:border-emerald-300 focus:ring-2 focus:ring-emerald-300/40" rows="3" placeholder="예: https://yuchani.com"></textarea>
+            <p class="mt-1 text-xs text-white/50">주소창에 기록되지 않으며, 입력값은 브라우저에서만 처리됩니다.</p>
+          </div>
+
+          <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            <label class="flex flex-col text-sm text-white/70">크기(px)
+              <select id="qrSize" class="mt-2 rounded-2xl border border-white/10 bg-black/40 px-4 py-2.5 text-sm focus:border-emerald-300 focus:ring-2 focus:ring-emerald-300/40">
+                <option>240</option>
+                <option>360</option>
+                <option selected>480</option>
+                <option>720</option>
+                <option>1024</option>
+              </select>
+            </label>
+            <label class="flex flex-col text-sm text-white/70">여백(px)
+              <select id="qrMargin" class="mt-2 rounded-2xl border border-white/10 bg-black/40 px-4 py-2.5 text-sm focus:border-emerald-300 focus:ring-2 focus:ring-emerald-300/40">
+                <option>0</option>
+                <option>2</option>
+                <option selected>4</option>
+                <option>8</option>
+                <option>12</option>
+              </select>
+            </label>
+            <label class="flex flex-col text-sm text-white/70">오류 복원(ECC)
+              <select id="qrECC" class="mt-2 rounded-2xl border border-white/10 bg-black/40 px-4 py-2.5 text-sm focus:border-emerald-300 focus:ring-2 focus:ring-emerald-300/40" title="L(7%) · M(15%) · Q(25%) · H(30%)">
+                <option value="L">L (7%)</option>
+                <option value="M" selected>M (15%)</option>
+                <option value="Q">Q (25%)</option>
+                <option value="H">H (30%)</option>
+              </select>
+            </label>
+            <label class="flex flex-col text-sm text-white/70">전경색
+              <input id="qrColor" type="color" value="#000000" class="mt-2 h-12 w-full rounded-2xl border border-white/10 bg-black/40 [color-scheme:light]" />
+            </label>
+            <label class="flex flex-col text-sm text-white/70">배경색
+              <input id="qrBg" type="color" value="#FFFFFF" class="mt-2 h-12 w-full rounded-2xl border border-white/10 bg-black/40 [color-scheme:light]" />
+            </label>
+            <label class="flex flex-col text-sm text-white/70">포맷
+              <select id="qrFormat" class="mt-2 rounded-2xl border border-white/10 bg-black/40 px-4 py-2.5 text-sm focus:border-emerald-300 focus:ring-2 focus:ring-emerald-300/40">
+                <option value="png" selected>PNG</option>
+                <option value="svg">SVG</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="grid gap-4 md:grid-cols-2">
+            <label class="flex flex-col text-sm text-white/70">미리보기 배경
+              <select id="viewerBg" class="mt-2 rounded-2xl border border-white/10 bg-black/40 px-4 py-2.5 text-sm focus:border-emerald-300 focus:ring-2 focus:ring-emerald-300/40">
+                <option value="dark" selected>다크</option>
+                <option value="light">라이트</option>
+                <option value="transparent">투명</option>
+              </select>
+            </label>
+            <div class="rounded-2xl border border-emerald-400/30 bg-emerald-400/10 px-4 py-3 text-sm text-emerald-100">
+              대비 팁: 전경 대비가 4.5:1 이상이면 모바일 카메라에서 안정적으로 스캔됩니다.
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2 text-sm">
+            <button type="button" id="copyBtn" class="rounded-xl border border-white/15 bg-white/5 px-4 py-2 text-white/80 transition hover:border-white/25 hover:text-white">이미지 URL 복사</button>
+            <button type="button" id="downloadBtn" class="rounded-xl border border-emerald-300/35 bg-emerald-400/15 px-4 py-2 text-emerald-100 transition hover:border-emerald-300/60 hover:bg-emerald-400/25">이미지 다운로드</button>
+            <span id="status" class="hidden rounded-xl border border-emerald-300/30 bg-emerald-400/15 px-3 py-1 text-xs text-emerald-100" role="status" aria-live="polite"></span>
+          </div>
+        </form>
+      </div>
+
+      <div class="panel rounded-3xl border border-white/10 p-6">
+        <div class="flex items-center justify-between">
+          <h2 class="text-sm font-semibold text-white/80">실시간 미리보기</h2>
+          <p class="text-xs text-white/60">SVG는 로고 겹침·인쇄용에 최적화</p>
+        </div>
+        <div id="previewWrap" class="mt-5 grid min-h-[260px] place-items-center rounded-2xl border border-white/10 bg-black/70 p-6 transition-colors">
+          <img id="qrImg" alt="QR 코드 미리보기" class="max-h-[60vh] w-full max-w-xs rounded-xl bg-white p-3 shadow-lg" loading="lazy" decoding="async" />
+        </div>
+        <dl class="mt-6 grid gap-3 text-xs text-white/50 sm:grid-cols-3">
+          <div class="rounded-xl border border-white/10 bg-white/5 p-3">
+            <dt class="text-white/70">스캔 가이드</dt>
+            <dd class="mt-1">여백(QZ)은 4px 이상 유지하면 카메라가 모듈을 빠르게 감지합니다.</dd>
+          </div>
+          <div class="rounded-xl border border-white/10 bg-white/5 p-3">
+            <dt class="text-white/70">색상 대비</dt>
+            <dd class="mt-1">전경이 배경보다 최소 40% 이상 진해야 대부분의 리더 앱에서 인식됩니다.</dd>
+          </div>
+          <div class="rounded-xl border border-white/10 bg-white/5 p-3">
+            <dt class="text-white/70">보안</dt>
+            <dd class="mt-1">API 호출은 암호화된 HTTPS로 전송되며, 어떤 데이터도 저장하지 않습니다.</dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
+    <section id="docs" class="mt-10 grid gap-5 lg:grid-cols-3">
+      <div class="panel rounded-3xl border border-white/10 p-6 lg:col-span-2">
+        <h2 class="text-sm font-semibold text-emerald-200">사용 설명서</h2>
+        <ol class="mt-4 space-y-3 pl-5 text-sm text-white/80 list-decimal">
+          <li><span class="font-semibold text-white">입력:</span> 링크나 텍스트를 붙여넣으면 0.2초 디바운스로 자동 생성됩니다.</li>
+          <li><span class="font-semibold text-white">크기·여백:</span> 인쇄/프린트용은 <span class="text-emerald-300">480px 이상</span>, 여백은 <span class="text-emerald-300">4~8px</span>을 추천합니다.</li>
+          <li><span class="font-semibold text-white">색상 대비:</span> 전경은 진한 색(#000 등), 배경은 밝은 색(#FFF 등)으로 설정하세요.</li>
+          <li><span class="font-semibold text-white">미리보기 배경:</span> 다크/라이트/투명 옵션으로 실제 환경에 맞춰 시뮬레이션합니다.</li>
+          <li><span class="font-semibold text-white">다운로드:</span> PNG는 즉시 사용, SVG는 편집·인쇄용으로 적합합니다.</li>
+        </ol>
+        <p class="mt-4 text-xs text-white/55">팁: 긴 URL은 단축한 뒤 삽입하면 패턴이 단순해져 스캔 성공률이 높아집니다.</p>
+      </div>
+      <aside class="panel rounded-3xl border border-white/10 p-6">
+        <h2 class="text-sm font-semibold text-white/80">빠른 체크리스트</h2>
+        <ul class="mt-4 space-y-2 text-sm text-white/75">
+          <li>✅ 인쇄용이면 <span class="text-emerald-300">SVG</span> 선택</li>
+          <li>✅ 대비 충분? <span class="text-white/60">(진한 전경 · 밝은 배경)</span></li>
+          <li>✅ 여백(QZ) 최소 <span class="text-white/60">4px</span></li>
+          <li>✅ 로고 덮을 땐 ECC <span class="text-white/60">Q/H</span></li>
+        </ul>
+      </aside>
+    </section>
+
+    <section class="mt-10 grid gap-5 lg:grid-cols-3">
+      <div class="panel rounded-3xl border border-white/10 p-6 lg:col-span-2">
+        <h2 class="text-sm font-semibold text-emerald-200">도움말 &amp; 팁</h2>
+        <ul class="mt-4 space-y-3 text-sm text-white/80 list-disc pl-5">
+          <li>명함·전단지 인쇄 시에는 <em>CMYK 대비</em>도 고려해 검정/흰색 조합을 권장합니다.</li>
+          <li>웹사이트에 삽입할 경우 <code>.svg</code>를 사용하면 레티나 디스플레이에서도 픽셀이 깨지지 않습니다.</li>
+          <li>오류 복원을 올리면 패턴이 복잡해져 용량이 증가하므로, 너무 긴 텍스트는 URL 단축 후 사용하세요.</li>
+        </ul>
+      </div>
+      <div class="panel rounded-3xl border border-white/10 p-6">
+        <h2 class="text-sm font-semibold text-white/80">FAQ</h2>
+        <div class="mt-4 space-y-3">
+          <details class="group rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+            <summary class="cursor-pointer text-sm font-medium text-white/80">QR 코드는 어디에서 생성되나요?</summary>
+            <p class="mt-2 text-sm text-white/70">공개된 <code>api.qrserver.com</code> 이미지를 호출하며, HTTPS 기반이라 안전합니다.</p>
+          </details>
+          <details class="group rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+            <summary class="cursor-pointer text-sm font-medium text-white/80">QR을 교체해도 링크는 유지되나요?</summary>
+            <p class="mt-2 text-sm text-white/70">QR은 정적 이미지이므로 이미 배포한 이미지를 교체하면 새로운 링크로 업데이트되지 않습니다. 다이나믹 QR 서비스가 필요한 경우 별도의 리다이렉트 서버가 필요합니다.</p>
+          </details>
+          <details class="group rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+            <summary class="cursor-pointer text-sm font-medium text-white/80">모바일에서 저장이 안 될 때는?</summary>
+            <p class="mt-2 text-sm text-white/70">iOS Safari 등에서는 팝업 차단이 원인일 수 있습니다. 공유 버튼을 눌러 '이미지 저장'을 선택하세요.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="mt-12 rounded-3xl border border-white/10 bg-white/5 p-6">
+      <div class="flex flex-col gap-3 text-sm text-white/70 sm:flex-row sm:items-center sm:justify-between">
+        <span>SEO 준비 완료 · canonical · hreflang · 구조화 데이터 · 무료 제공(0원)</span>
+        <a class="inline-flex items-center gap-2 rounded-xl border border-white/15 px-4 py-2 text-sm text-white/80 transition hover:border-white/25 hover:text-white" href="#docs">사용 설명서로 이동</a>
+      </div>
+    </section>
+  </main>
+
+  <div data-include="/partials/footer.html"></div>
+
+  <script src="/inject-layout.js" defer></script>
+  <script>
+    const $ = (selector) => document.querySelector(selector);
+    const textEl = $('#qrText');
+    const sizeEl = $('#qrSize');
+    const marginEl = $('#qrMargin');
+    const eccEl = $('#qrECC');
+    const colorEl = $('#qrColor');
+    const bgEl = $('#qrBg');
+    const fmtEl = $('#qrFormat');
+    const viewerBgEl = $('#viewerBg');
+    const imgEl = $('#qrImg');
+    const wrapEl = $('#previewWrap');
+    const statusEl = $('#status');
+
+    const SAMPLE = 'https://tools.yuchani.com';
+
+    const toHex = (value) => (value || '#000000').replace('#', '').toUpperCase();
+
+    function buildUrl() {
+      const raw = textEl.value.trim();
+      const size = sizeEl.value || '480';
+      const margin = marginEl.value || '4';
+      const ecc = eccEl.value || 'M';
+      const color = toHex(colorEl.value || '#000000');
+      const bg = toHex(bgEl.value || '#FFFFFF');
+      const format = (fmtEl.value || 'png').toLowerCase();
+
+      const params = new URLSearchParams({
+        data: raw,
+        size: `${size}x${size}`,
+        qzone: margin,
+        color: `${color.slice(0,2)}-${color.slice(2,4)}-${color.slice(4,6)}`,
+        bgcolor: `${bg.slice(0,2)}-${bg.slice(2,4)}-${bg.slice(4,6)}`,
+        ecc,
+        format
+      });
+
+      return `https://api.qrserver.com/v1/create-qr-code/?${params.toString()}`;
+    }
+
+    function setViewerBackground(mode) {
+      wrapEl.classList.remove('bg-black/70', 'bg-white', 'bg-transparent');
+      if (mode === 'light') wrapEl.classList.add('bg-white');
+      else if (mode === 'transparent') wrapEl.classList.add('bg-transparent');
+      else wrapEl.classList.add('bg-black/70');
+    }
+
+    function update() {
+      const value = textEl.value.trim();
+      if (!value) {
+        imgEl.removeAttribute('src');
+        imgEl.alt = 'QR 코드를 생성하려면 텍스트를 입력하세요';
+        statusEl.textContent = '입력 대기 중';
+        statusEl.classList.remove('hidden');
+        setTimeout(() => statusEl.classList.add('hidden'), 1200);
+        return;
+      }
+
+      const url = buildUrl();
+      imgEl.src = url;
+      imgEl.alt = `QR 코드 미리보기 (${value.slice(0, 64)})`;
+      statusEl.textContent = '미리보기를 업데이트했습니다';
+      statusEl.classList.remove('hidden');
+      setTimeout(() => statusEl.classList.add('hidden'), 1000);
+    }
+
+    let debounceId;
+    [textEl, sizeEl, marginEl, eccEl, colorEl, bgEl, fmtEl].forEach((el) => {
+      const handler = () => {
+        clearTimeout(debounceId);
+        debounceId = setTimeout(update, 200);
+      };
+      el.addEventListener('input', handler);
+      el.addEventListener('change', handler);
+    });
+
+    viewerBgEl.addEventListener('change', () => {
+      setViewerBackground(viewerBgEl.value);
+      update();
+    });
+
+    document.getElementById('sampleBtn').addEventListener('click', () => {
+      textEl.value = SAMPLE;
+      update();
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      textEl.value = '';
+      sizeEl.value = '480';
+      marginEl.value = '4';
+      eccEl.value = 'M';
+      colorEl.value = '#000000';
+      bgEl.value = '#FFFFFF';
+      fmtEl.value = 'png';
+      viewerBgEl.value = 'dark';
+      setViewerBackground('dark');
+      update();
+    });
+
+    document.getElementById('copyBtn').addEventListener('click', async () => {
+      try {
+        if (!imgEl.src) throw new Error('생성된 이미지가 없습니다.');
+        await navigator.clipboard.writeText(imgEl.src);
+        statusEl.textContent = '이미지 URL을 복사했습니다';
+      } catch (error) {
+        statusEl.textContent = '클립보드 복사가 제한되었습니다';
+        console.warn(error);
+      }
+      statusEl.classList.remove('hidden');
+      setTimeout(() => statusEl.classList.add('hidden'), 1200);
+    });
+
+    document.getElementById('downloadBtn').addEventListener('click', async () => {
+      if (!imgEl.src) return;
+      try {
+        const response = await fetch(imgEl.src, { mode: 'cors' });
+        if (!response.ok) throw new Error('다운로드 실패');
+        const blob = await response.blob();
+        const objectUrl = URL.createObjectURL(blob);
+        const ext = (fmtEl.value || 'png').toLowerCase();
+        const link = document.createElement('a');
+        link.href = objectUrl;
+        link.download = `qr-code.${ext}`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(objectUrl);
+        statusEl.textContent = '이미지를 다운로드했습니다';
+      } catch (error) {
+        statusEl.textContent = '이미지 다운로드에 실패했습니다';
+        console.error(error);
+      }
+      statusEl.classList.remove('hidden');
+      setTimeout(() => statusEl.classList.add('hidden'), 1400);
+    });
+
+    textEl.value = SAMPLE;
+    setViewerBackground('dark');
+    update();
+  </script>
+</body>
+</html>

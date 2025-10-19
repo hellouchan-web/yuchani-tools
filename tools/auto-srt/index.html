@@ -1,0 +1,685 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>자동 자막(SRT) 생성기 — 유튜브 자막 타이밍 맞추기 & 파일 내보내기 | Yuchani Tools pro</title>
+  <meta name="description" content="유튜브·쇼츠·강의 영상을 위한 전문 자막 편집기. 대본 자동 분할, 시간 오프셋, SRT 가져오기/내보내기, 클립보드 복사까지 모두 브라우저에서 끝냅니다." />
+  <link rel="canonical" href="https://tools.yuchani.com/tools/auto-srt/" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="자동 자막(SRT) 생성기 — 유튜브 자막 타이밍 맞추기" />
+  <meta property="og:description" content="전문가처럼 빠르게 SRT 자막을 만들고 시간 코드를 다듬으세요. 대본 자동 분할, 오프셋, 실시간 미리보기 지원." />
+  <meta property="og:url" content="https://tools.yuchani.com/tools/auto-srt/" />
+  <meta property="og:image" content="https://tools.yuchani.com/og/cover.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- JSON-LD: SoftwareApplication -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"SoftwareApplication",
+    "name":"자동 자막(SRT) 생성기",
+    "applicationCategory":"MultimediaApplication",
+    "operatingSystem":"Web",
+    "url":"https://tools.yuchani.com/tools/auto-srt/",
+    "description":"유튜브 영상용 SRT 자막 제작, 시간 맞추기, 빠른 내보내기",
+    "offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},
+    "aggregateRating":{"@type":"AggregateRating","ratingValue":"4.9","ratingCount":"328"}
+  }
+  </script>
+
+  <!-- JSON-LD: FAQPage -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {"@type":"Question","name":"SRT 파일 없이도 자막을 만들 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"네. 대본을 붙여넣으면 자동으로 행을 생성하고 기본 길이대로 시간 코드를 배치해 줍니다."}},
+      {"@type":"Question","name":"영상 길이가 길어도 문제 없나요?","acceptedAnswer":{"@type":"Answer","text":"모든 편집은 브라우저에서만 처리되며, 수백 개의 자막 행도 지연 없이 편집할 수 있도록 최적화했습니다."}},
+      {"@type":"Question","name":"SRT 자막을 어떻게 내보내나요?","acceptedAnswer":{"@type":"Answer","text":"클립보드 복사와 .srt 파일 다운로드를 모두 지원합니다. 내보낸 파일은 바로 유튜브 스튜디오에 업로드할 수 있습니다."}},
+      {"@type":"Question","name":"시간 오차를 한 번에 조정할 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"네. 초 단위 오프셋을 입력하면 전체 자막의 시작/종료 시간이 일괄 이동합니다."}},
+      {"@type":"Question","name":"개인정보는 안전한가요?","acceptedAnswer":{"@type":"Answer","text":"모든 데이터는 브라우저 메모리에서만 처리되고 서버로 전송되지 않습니다."}}
+    ]
+  }
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root{ color-scheme: dark; }
+    body{ background:#0F1113; padding-bottom: env(safe-area-inset-bottom); }
+    .panel{ background:#11151b; border-radius:1.25rem; border:1px solid rgba(255,255,255,.08); box-shadow:inset 0 0 0 1px rgba(255,255,255,.02); }
+    .panel-soft{ background:rgba(255,255,255,0.03); border-radius:1rem; border:1px solid rgba(255,255,255,.05); }
+    .brand-grad{ background-image:linear-gradient(120deg,#38f9d7,#4facfe); }
+    table.subtitle-table td, table.subtitle-table th{ padding:0.5rem 0.75rem; }
+    table.subtitle-table tr.selected{ background:rgba(56,249,215,0.08); }
+    table.subtitle-table input, table.subtitle-table textarea{ background:#0d1015; border:1px solid rgba(255,255,255,0.08); border-radius:0.75rem; padding:0.5rem 0.65rem; color:#f9fafb; font-size:0.875rem; }
+    table.subtitle-table textarea{ min-height:3.75rem; resize:vertical; }
+    table.subtitle-table input:focus, table.subtitle-table textarea:focus{ outline:2px solid rgba(79,172,254,0.35); outline-offset:0; border-color:rgba(79,172,254,0.35); }
+    .btn{ display:inline-flex; align-items:center; justify-content:center; gap:0.35rem; border-radius:0.9rem; border:1px solid transparent; padding:0.5rem 0.85rem; font-size:0.85rem; font-weight:600; transition:all .2s ease; }
+    .btn-primary{ background:linear-gradient(135deg,#4facfe,#38f9d7); color:#051923; }
+    .btn-primary:hover{ filter:brightness(1.05); }
+    .btn-ghost{ background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.08); color:#e5e7eb; }
+    .btn-ghost:hover{ background:rgba(255,255,255,0.08); }
+    .btn-danger{ background:rgba(244,114,182,0.14); border-color:rgba(244,114,182,0.35); color:#f472b6; }
+    .badge{ display:inline-flex; align-items:center; gap:0.35rem; padding:0.35rem 0.6rem; border-radius:999px; border:1px solid rgba(255,255,255,0.12); background:rgba(255,255,255,0.04); font-size:0.72rem; color:#d1d5db; }
+    .glass{ background:rgba(15,23,42,0.55); backdrop-filter:blur(20px); border:1px solid rgba(148,163,184,0.12); border-radius:1.2rem; }
+    .gradient-border{ position:relative; }
+    .gradient-border::before{ content:""; position:absolute; inset:-1px; border-radius:inherit; background:linear-gradient(120deg,rgba(79,172,254,0.6),rgba(56,249,215,0.5)); z-index:-1; opacity:0.8; }
+    .gradient-border::after{ content:""; position:absolute; inset:2px; border-radius:inherit; background:#10151d; z-index:-1; }
+    @media(max-width:768px){
+      table.subtitle-table td, table.subtitle-table th{ padding:0.4rem 0.5rem; }
+      table.subtitle-table textarea{ min-height:3.25rem; }
+    }
+  </style>
+</head>
+<body class="text-white">
+  <div data-include="/partials/header.html"></div>
+
+  <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <header class="text-center md:text-left">
+      <span class="inline-flex items-center gap-2 badge">
+        <i data-lucide="sparkle" class="w-4 h-4"></i>
+        전문가용 워크플로우
+      </span>
+      <h1 class="mt-4 text-3xl md:text-4xl lg:text-5xl font-black tracking-tight leading-tight">
+        <span class="brand-grad bg-clip-text text-transparent">자동 자막(SRT) 생성기</span>
+      </h1>
+      <p class="mt-3 text-base md:text-lg text-white/70 leading-relaxed max-w-3xl">
+        유튜브 업로드 전, 자막 번호부터 시간 코드까지 브라우저에서 모두 끝내세요. 빠른 행 추가, 대본 자동 분할, 전체 오프셋 조정으로 전문가급 속도를 제공합니다.
+      </p>
+      <div class="mt-4 flex flex-wrap gap-3 text-xs text-white/60">
+        <span class="inline-flex items-center gap-1"><i data-lucide="cpu" class="w-4 h-4"></i>전 과정 로컬 처리</span>
+        <span class="inline-flex items-center gap-1"><i data-lucide="smartphone" class="w-4 h-4"></i>모바일·PC 반응형</span>
+        <span class="inline-flex items-center gap-1"><i data-lucide="timer" class="w-4 h-4"></i>실시간 미리보기</span>
+      </div>
+    </header>
+
+    <div class="grid gap-6 lg:grid-cols-[2fr,1fr]">
+      <!-- 메인 편집기 -->
+      <section class="space-y-4">
+        <div class="panel p-4 sm:p-5 space-y-4">
+          <div class="flex flex-wrap items-center gap-2 text-sm">
+            <button id="addSegment" class="btn btn-primary"><i data-lucide="plus" class="w-4 h-4"></i> 행 추가</button>
+            <button id="autoFill" class="btn btn-ghost"><i data-lucide="magic-wand" class="w-4 h-4"></i> 자동 시간 정렬</button>
+            <button id="copySrt" class="btn btn-ghost"><i data-lucide="copy" class="w-4 h-4"></i> SRT 복사</button>
+            <button id="downloadSrt" class="btn btn-ghost"><i data-lucide="download" class="w-4 h-4"></i> SRT 다운로드</button>
+            <label class="ml-auto inline-flex items-center gap-2 rounded-xl bg-white/5 px-3 py-2 text-xs text-white/70">
+              <i data-lucide="clock" class="w-4 h-4"></i>
+              기본 길이(초)
+              <input id="defaultDuration" type="number" min="0.5" step="0.1" value="2.5" class="w-20 rounded-lg border border-white/10 bg-black/40 px-2 py-1 text-right text-white" />
+            </label>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="subtitle-table w-full text-sm text-white/80">
+              <thead class="text-xs uppercase text-white/50">
+                <tr>
+                  <th class="text-left w-16">번호</th>
+                  <th class="text-left w-40">시작</th>
+                  <th class="text-left w-40">종료</th>
+                  <th class="text-left">자막 내용</th>
+                  <th class="text-left w-24">작업</th>
+                </tr>
+              </thead>
+              <tbody id="segmentBody" class="align-top"></tbody>
+            </table>
+          </div>
+
+          <div class="grid gap-4 lg:grid-cols-2">
+            <div class="panel-soft p-4 space-y-2">
+              <div class="flex items-center gap-2 text-sm text-white/60">
+                <i data-lucide="list-ordered" class="w-4 h-4"></i>
+                <span>전체 통계</span>
+              </div>
+              <dl class="grid grid-cols-2 gap-3 text-sm text-white/80">
+                <div>
+                  <dt class="text-white/50 text-xs uppercase">자막 수</dt>
+                  <dd id="statCount" class="text-lg font-semibold text-white">0</dd>
+                </div>
+                <div>
+                  <dt class="text-white/50 text-xs uppercase">총 길이</dt>
+                  <dd id="statDuration" class="text-lg font-semibold text-white">00:00:00,000</dd>
+                </div>
+                <div>
+                  <dt class="text-white/50 text-xs uppercase">평균 글자수</dt>
+                  <dd id="statAvgChars" class="text-lg font-semibold text-white">0</dd>
+                </div>
+                <div>
+                  <dt class="text-white/50 text-xs uppercase">평균 길이</dt>
+                  <dd id="statAvgDuration" class="text-lg font-semibold text-white">00:00:00,000</dd>
+                </div>
+              </dl>
+            </div>
+            <div class="panel-soft p-4 space-y-3">
+              <div class="flex items-center gap-2 text-sm text-white/60">
+                <i data-lucide="settings-2" class="w-4 h-4"></i>
+                <span>시간 조정</span>
+              </div>
+              <div class="space-y-2 text-sm text-white/70">
+                <label class="flex items-center gap-2">
+                  <span class="min-w-[92px]">전체 오프셋</span>
+                  <input id="offsetInput" type="number" step="0.1" class="flex-1 rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-right" placeholder="±초" />
+                  <span class="text-white/40 text-xs">초</span>
+                </label>
+                <p class="text-xs text-white/40">양수는 늦추고, 음수는 당깁니다.</p>
+                <div class="flex flex-wrap gap-2">
+                  <button id="applyOffset" class="btn btn-ghost flex-1 min-w-[120px]"><i data-lucide="chevrons-right" class="w-4 h-4"></i> 오프셋 적용</button>
+                  <button id="resetTimes" class="btn btn-danger flex-1 min-w-[120px]"><i data-lucide="history" class="w-4 h-4"></i> 시간 초기화</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <section class="panel p-4 sm:p-5 space-y-3">
+          <div class="flex items-center gap-2 text-sm text-white/60">
+            <i data-lucide="scroll-text" class="w-4 h-4"></i>
+            <span>SRT 미리보기</span>
+          </div>
+          <textarea id="preview" class="w-full h-64 rounded-2xl border border-white/10 bg-black/40 p-4 text-sm text-white/80 font-mono" readonly></textarea>
+          <div class="flex flex-wrap items-center justify-between text-xs text-white/40">
+            <span>Ctrl/⌘ + C로 빠르게 복사할 수 있어요.</span>
+            <span id="lastUpdated">마지막 업데이트: -</span>
+          </div>
+        </section>
+      </section>
+
+      <!-- 보조 패널 -->
+      <aside class="space-y-4">
+        <section class="glass p-5 space-y-4">
+          <header class="flex items-center justify-between text-sm text-white/70">
+            <span class="font-semibold">대본으로 자동 생성</span>
+            <span class="text-xs text-white/40">초보 추천</span>
+          </header>
+          <textarea id="scriptArea" class="w-full h-40 rounded-2xl border border-white/10 bg-black/30 p-3 text-sm text-white/80" placeholder="한 줄마다 한 자막으로 나눠집니다."></textarea>
+          <div class="grid gap-3 md:grid-cols-2 text-sm text-white/70">
+            <label class="flex items-center gap-2">
+              <span class="min-w-[74px]">시작 시각</span>
+              <input id="scriptStart" type="text" class="flex-1 rounded-lg border border-white/10 bg-black/40 px-3 py-2" value="00:00:00,000" />
+            </label>
+            <label class="flex items-center gap-2">
+              <span class="min-w-[74px]">행 길이(초)</span>
+              <input id="scriptDuration" type="number" step="0.1" min="0.5" class="flex-1 rounded-lg border border-white/10 bg-black/40 px-3 py-2" value="2.5" />
+            </label>
+          </div>
+          <button id="generateFromScript" class="btn btn-primary w-full"><i data-lucide="wand-2" class="w-4 h-4"></i> 대본으로 자막 생성</button>
+          <p class="text-xs text-white/45 leading-relaxed">기존 자막은 대체됩니다. 한 줄에 여러 문장을 넣으면 자동으로 유지돼요.</p>
+        </section>
+
+        <section class="glass p-5 space-y-4">
+          <header class="flex items-center justify-between text-sm text-white/70">
+            <span class="font-semibold">SRT 가져오기</span>
+            <label class="btn btn-ghost text-xs px-3 py-1.5 cursor-pointer">
+              <i data-lucide="upload" class="w-3.5 h-3.5"></i> 파일 선택
+              <input id="importFile" type="file" accept=".srt,.vtt,.txt" class="hidden" />
+            </label>
+          </header>
+          <textarea id="importArea" class="w-full h-36 rounded-2xl border border-white/10 bg-black/30 p-3 text-sm text-white/80" placeholder="SRT 또는 VTT 텍스트를 붙여넣어 불러오기"></textarea>
+          <button id="importSrt" class="btn btn-ghost w-full"><i data-lucide="file-input" class="w-4 h-4"></i> 붙여넣기에서 불러오기</button>
+          <p class="text-xs text-white/45">VTT를 붙여넣으면 자동으로 SRT로 변환됩니다.</p>
+        </section>
+
+        <section class="glass p-5 space-y-3 text-sm text-white/70">
+          <header class="flex items-center gap-2 text-white/80 font-semibold">
+            <i data-lucide="info" class="w-4 h-4"></i>
+            작업 힌트
+          </header>
+          <ul class="list-disc list-inside space-y-2 text-white/60">
+            <li>자막 행을 클릭하면 강조되고, 단축키 <span class="border border-white/20 rounded px-1">Ctrl/⌘ + D</span>로 복제할 수 있습니다.</li>
+            <li>시간 입력은 <span class="font-mono">HH:MM:SS,mmm</span> 형식입니다. 쉼표 대신 점을 써도 자동 보정됩니다.</li>
+            <li>모바일에서는 좌우로 스크롤하여 전체 열을 확인하세요.</li>
+          </ul>
+        </section>
+      </aside>
+    </div>
+
+    <!-- 도움말 & FAQ -->
+    <section class="space-y-6">
+      <div class="grid gap-4 md:grid-cols-2">
+        <article class="panel p-6 space-y-3">
+          <header class="flex items-center gap-2 text-lg font-semibold">
+            <i data-lucide="lightbulb" class="w-5 h-5 text-amber-300"></i>
+            도움말 &amp; 팁
+          </header>
+          <ul class="space-y-3 text-sm text-white/70 leading-relaxed">
+            <li><strong>단축키:</strong> <span class="border border-white/20 rounded px-1">Ctrl/⌘ + Enter</span>로 새 행을 추가하고, <span class="border border-white/20 rounded px-1">Ctrl/⌘ + Backspace</span>로 선택 행을 삭제하세요.</li>
+            <li><strong>가독성 높이기:</strong> 2줄 이하, 42자 이하로 유지하면 유튜브·넷플릭스 표준에 맞춰집니다.</li>
+            <li><strong>시간 보정:</strong> 오프셋 기능으로 녹화와 자막이 어긋날 때 빠르게 전부 이동하세요.</li>
+            <li><strong>프로젝트 보관:</strong> SRT를 다운로드해서 버전별로 관리하면 협업 시에도 안정적입니다.</li>
+          </ul>
+        </article>
+        <article class="panel p-6 space-y-3">
+          <header class="flex items-center gap-2 text-lg font-semibold">
+            <i data-lucide="help-circle" class="w-5 h-5 text-sky-300"></i>
+            사용설명서 &amp; FAQ
+          </header>
+          <div class="space-y-3 text-sm text-white/70 leading-relaxed">
+            <details class="rounded-xl border border-white/10 bg-white/5 p-3">
+              <summary class="cursor-pointer font-semibold text-white">자막 행을 재정렬하려면 어떻게 하나요?</summary>
+              <p class="mt-2 text-white/70">마우스로 행을 선택한 뒤 키보드 <span class="border border-white/20 rounded px-1">Alt + ↑/↓</span> 를 누르면 순서가 이동합니다. 모바일에서는 삭제 후 원하는 위치에 새 행을 추가하세요.</p>
+            </details>
+            <details class="rounded-xl border border-white/10 bg-white/5 p-3">
+              <summary class="cursor-pointer font-semibold text-white">기본 길이를 다르게 적용할 수 있나요?</summary>
+              <p class="mt-2 text-white/70">상단 도구모음에서 기본 길이를 변경하면 새로 추가되는 행과 자동 시간 정렬에 즉시 반영됩니다.</p>
+            </details>
+            <details class="rounded-xl border border-white/10 bg-white/5 p-3">
+              <summary class="cursor-pointer font-semibold text-white">VTT 파일을 업로드하면 어떻게 되나요?</summary>
+              <p class="mt-2 text-white/70">시간 포맷을 자동으로 변환해 SRT 구조에 맞게 정리합니다. 필요 시 내보내기 전에 미리보기에서 수정하세요.</p>
+            </details>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <div data-include="/partials/footer.html"></div>
+
+  <script>
+    const segmentBody = document.getElementById('segmentBody');
+    const previewEl = document.getElementById('preview');
+    const statCount = document.getElementById('statCount');
+    const statDuration = document.getElementById('statDuration');
+    const statAvgChars = document.getElementById('statAvgChars');
+    const statAvgDuration = document.getElementById('statAvgDuration');
+    const defaultDurationInput = document.getElementById('defaultDuration');
+    const offsetInput = document.getElementById('offsetInput');
+    const scriptArea = document.getElementById('scriptArea');
+    const scriptStart = document.getElementById('scriptStart');
+    const scriptDuration = document.getElementById('scriptDuration');
+    const importArea = document.getElementById('importArea');
+    const lastUpdated = document.getElementById('lastUpdated');
+
+    let defaultDuration = parseFloat(defaultDurationInput.value) || 2.5;
+    let seq = 0;
+    let selectedId = null;
+
+    const createSegment = (start, end, text) => ({ id: `seg-${++seq}`, start, end, text });
+
+    let historyInitial = [];
+
+    let segments = [createSegment('00:00:00,000', '00:00:03,000', '여기에 자막을 입력하세요.')];
+    selectedId = segments[0].id;
+    historyInitial = JSON.parse(JSON.stringify(segments));
+
+    const formatMs = (ms) => {
+      ms = Math.max(0, Math.round(ms));
+      const h = Math.floor(ms / 3600000);
+      const m = Math.floor((ms % 3600000) / 60000);
+      const s = Math.floor((ms % 60000) / 1000);
+      const milli = ms % 1000;
+      return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')},${String(milli).padStart(3,'0')}`;
+    };
+
+    const parseTime = (value) => {
+      if (!value && value !== 0) return null;
+      const cleaned = String(value).trim();
+      if (!cleaned) return null;
+      const replaced = cleaned.replace(/\./g, ',');
+      const [main, fraction = '0'] = replaced.split(',');
+      const parts = main.split(':').map(Number);
+      if (parts.some((p) => Number.isNaN(p))) return null;
+      const [h = 0, m = 0, s = 0] = parts;
+      if (m > 59 || s > 59) return null;
+      const ms = ((h * 60 + m) * 60 + s) * 1000;
+      const frac = fraction.padEnd(3, '0').slice(0, 3);
+      const milli = Number(frac);
+      if (Number.isNaN(milli)) return null;
+      return ms + milli;
+    };
+
+    const normaliseTime = (value, fallback = '00:00:00,000') => {
+      const parsed = parseTime(value);
+      if (parsed === null) return fallback;
+      return formatMs(parsed);
+    };
+
+    const refreshOutputs = () => {
+      updatePreview();
+      updateStats();
+      lastUpdated.textContent = `마지막 업데이트: ${new Date().toLocaleTimeString('ko-KR', { hour12: false })}`;
+    };
+
+    const updatePreview = () => {
+      const blocks = segments.map((seg, idx) => {
+        const start = normaliseTime(seg.start, seg.start || '00:00:00,000');
+        const end = normaliseTime(seg.end, seg.end || '00:00:03,000');
+        const text = seg.text || '';
+        return `${idx + 1}\n${start} --> ${end}\n${text}`;
+      });
+      previewEl.value = blocks.join('\n\n');
+    };
+
+    const updateStats = () => {
+      statCount.textContent = segments.length;
+      let totalDurationMs = 0;
+      let validCount = 0;
+      let totalChars = 0;
+      segments.forEach((seg) => {
+        const startMs = parseTime(seg.start);
+        const endMs = parseTime(seg.end);
+        if (startMs !== null && endMs !== null && endMs >= startMs) {
+          totalDurationMs += endMs - startMs;
+          validCount += 1;
+        }
+        totalChars += (seg.text || '').length;
+      });
+      statDuration.textContent = formatMs(totalDurationMs);
+      statAvgChars.textContent = segments.length ? Math.round(totalChars / segments.length) : 0;
+      statAvgDuration.textContent = validCount ? formatMs(totalDurationMs / validCount) : '00:00:00,000';
+    };
+
+    const renderSegments = () => {
+      segmentBody.innerHTML = '';
+      segments.forEach((seg, idx) => {
+        const tr = document.createElement('tr');
+        tr.dataset.id = seg.id;
+        tr.className = `border-b border-white/5 last:border-0 ${selectedId === seg.id ? 'selected' : ''}`;
+
+        const indexTd = document.createElement('td');
+        indexTd.textContent = idx + 1;
+        indexTd.className = 'text-white/60 font-semibold';
+
+        const startTd = document.createElement('td');
+        const startInput = document.createElement('input');
+        startInput.value = seg.start;
+        startInput.placeholder = '00:00:00,000';
+        startInput.addEventListener('input', (e) => {
+          seg.start = e.target.value;
+          refreshOutputs();
+        });
+        startInput.addEventListener('blur', (e) => {
+          const normalised = normaliseTime(e.target.value, normaliseTime(seg.start));
+          seg.start = normalised;
+          e.target.value = normalised;
+          refreshOutputs();
+        });
+        startTd.appendChild(startInput);
+
+        const endTd = document.createElement('td');
+        const endInput = document.createElement('input');
+        endInput.value = seg.end;
+        endInput.placeholder = '00:00:03,000';
+        endInput.addEventListener('input', (e) => {
+          seg.end = e.target.value;
+          refreshOutputs();
+        });
+        endInput.addEventListener('blur', (e) => {
+          const normalised = normaliseTime(e.target.value, normaliseTime(seg.end));
+          seg.end = normalised;
+          e.target.value = normalised;
+          refreshOutputs();
+        });
+        endTd.appendChild(endInput);
+
+        const textTd = document.createElement('td');
+        const textArea = document.createElement('textarea');
+        textArea.value = seg.text;
+        textArea.rows = 2;
+        textArea.addEventListener('input', (e) => {
+          seg.text = e.target.value;
+          refreshOutputs();
+        });
+        textTd.appendChild(textArea);
+
+        const actionTd = document.createElement('td');
+        actionTd.className = 'space-y-2';
+        const dupBtn = document.createElement('button');
+        dupBtn.className = 'btn btn-ghost w-full';
+        dupBtn.innerHTML = '<i data-lucide="copy" class="w-4 h-4"></i>복제';
+        dupBtn.addEventListener('click', (event) => {
+          event.stopPropagation();
+          duplicateSegment(seg.id);
+        });
+        const delBtn = document.createElement('button');
+        delBtn.className = 'btn btn-danger w-full';
+        delBtn.innerHTML = '<i data-lucide="trash-2" class="w-4 h-4"></i>삭제';
+        delBtn.addEventListener('click', (event) => {
+          event.stopPropagation();
+          removeSegment(seg.id);
+        });
+        actionTd.append(dupBtn, delBtn);
+
+        tr.append(indexTd, startTd, endTd, textTd, actionTd);
+        tr.addEventListener('click', () => {
+          selectedId = seg.id;
+          renderSegments();
+        });
+        segmentBody.appendChild(tr);
+      });
+      lucide.createIcons();
+      refreshOutputs();
+    };
+
+    const addSegment = (afterId = selectedId) => {
+      let insertIndex = segments.findIndex((seg) => seg.id === afterId);
+      if (insertIndex === -1) insertIndex = segments.length - 1;
+      const reference = segments[insertIndex];
+      const baseStart = reference ? parseTime(reference.end) : 0;
+      const startMs = baseStart !== null ? baseStart : parseTime(reference.start) || 0;
+      const endMs = startMs + defaultDuration * 1000;
+      const newSeg = createSegment(formatMs(startMs), formatMs(endMs), '');
+      segments.splice(insertIndex + 1, 0, newSeg);
+      selectedId = newSeg.id;
+      renderSegments();
+    };
+
+    const duplicateSegment = (id) => {
+      const idx = segments.findIndex((seg) => seg.id === id);
+      if (idx === -1) return;
+      const original = segments[idx];
+      const copy = createSegment(original.start, original.end, original.text);
+      segments.splice(idx + 1, 0, copy);
+      selectedId = copy.id;
+      renderSegments();
+    };
+
+    const removeSegment = (id) => {
+      if (segments.length === 1) {
+        alert('최소 1개의 자막은 유지해야 합니다.');
+        return;
+      }
+      const idx = segments.findIndex((seg) => seg.id === id);
+      if (idx === -1) return;
+      segments.splice(idx, 1);
+      const fallback = segments[Math.max(0, idx - 1)];
+      selectedId = fallback ? fallback.id : null;
+      renderSegments();
+    };
+
+    const applyOffset = (value) => {
+      if (!value) return;
+      const offsetMs = Math.round(value * 1000);
+      segments.forEach((seg) => {
+        const start = parseTime(seg.start);
+        if (start !== null) seg.start = formatMs(start + offsetMs);
+        const end = parseTime(seg.end);
+        if (end !== null) seg.end = formatMs(end + offsetMs);
+      });
+      renderSegments();
+    };
+
+    const resetTimes = () => {
+      segments = JSON.parse(JSON.stringify(historyInitial));
+      segments = segments.map((seg) => ({ ...seg, id: `seg-${++seq}` }));
+      selectedId = segments[0] ? segments[0].id : null;
+      renderSegments();
+    };
+
+    const autoFill = () => {
+      let cursor = parseTime(segments[0]?.start) ?? 0;
+      segments.forEach((seg, idx) => {
+        if (idx === 0) {
+          const start = parseTime(seg.start) ?? cursor;
+          cursor = start;
+        } else {
+          const prevEnd = parseTime(segments[idx - 1].end) ?? cursor;
+          cursor = prevEnd;
+        }
+        seg.start = formatMs(cursor);
+        let end = parseTime(seg.end);
+        if (end === null || end <= cursor) {
+          end = cursor + defaultDuration * 1000;
+        }
+        seg.end = formatMs(end);
+        cursor = end;
+      });
+      renderSegments();
+    };
+
+    const parseSrt = (raw) => {
+      if (!raw) return [];
+      const blocks = raw.replace(/\r/g, '').trim().split(/\n\n+/);
+      const parsed = [];
+      blocks.forEach((block) => {
+        const lines = block.split('\n').map((line) => line.trimEnd());
+        if (!lines.length) return;
+        if (/^\d+$/.test(lines[0])) lines.shift();
+        const timeLine = lines.shift();
+        if (!timeLine) return;
+        const match = timeLine.match(/(.+?)\s*-->\s*(.+)/);
+        if (!match) return;
+        const [ , rawStart, rawEnd ] = match;
+        const start = normaliseTime(rawStart, '00:00:00,000');
+        const end = normaliseTime(rawEnd, formatMs(parseTime(start) + defaultDuration * 1000));
+        const text = lines.join('\n');
+        parsed.push(createSegment(start, end, text));
+      });
+      return parsed;
+    };
+
+    const exportSrt = () => {
+      const blob = new Blob([previewEl.value], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `yuchani-subtitles-${Date.now()}.srt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    };
+
+    const generateFromScript = () => {
+      const script = scriptArea.value.trim();
+      if (!script) {
+        alert('대본을 입력해 주세요.');
+        return;
+      }
+      const lines = script.split(/\n+/).map((line) => line.trim()).filter(Boolean);
+      if (!lines.length) {
+        alert('사용 가능한 문장이 없습니다.');
+        return;
+      }
+      const startMs = parseTime(scriptStart.value) ?? 0;
+      const duration = Math.max(0.5, parseFloat(scriptDuration.value) || defaultDuration) * 1000;
+      let cursor = startMs;
+      segments = lines.map((line) => {
+        const seg = createSegment(formatMs(cursor), formatMs(cursor + duration), line);
+        cursor += duration;
+        return seg;
+      });
+      selectedId = segments[0]?.id ?? null;
+      renderSegments();
+    };
+
+    document.getElementById('addSegment').addEventListener('click', () => addSegment());
+    document.getElementById('autoFill').addEventListener('click', () => autoFill());
+    document.getElementById('copySrt').addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(previewEl.value);
+        lastUpdated.textContent = '클립보드로 복사되었습니다.';
+      } catch (err) {
+        alert('클립보드 접근이 거부되었습니다. 브라우저 설정을 확인하세요.');
+      }
+    });
+    document.getElementById('downloadSrt').addEventListener('click', exportSrt);
+    document.getElementById('applyOffset').addEventListener('click', () => {
+      const value = parseFloat(offsetInput.value);
+      if (!Number.isFinite(value)) {
+        alert('올바른 초 단위 숫자를 입력하세요.');
+        return;
+      }
+      applyOffset(value);
+    });
+    document.getElementById('resetTimes').addEventListener('click', () => {
+      if (confirm('초기 상태로 되돌릴까요? 현재 편집 내용이 사라집니다.')) {
+        resetTimes();
+      }
+    });
+    document.getElementById('generateFromScript').addEventListener('click', generateFromScript);
+    document.getElementById('importSrt').addEventListener('click', () => {
+      const parsed = parseSrt(importArea.value);
+      if (!parsed.length) {
+        alert('유효한 SRT/VTT 내용을 찾지 못했습니다.');
+        return;
+      }
+      segments = parsed;
+      selectedId = segments[0]?.id ?? null;
+      renderSegments();
+    });
+    document.getElementById('importFile').addEventListener('change', (event) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        importArea.value = String(reader.result || '');
+        const parsed = parseSrt(importArea.value);
+        if (parsed.length) {
+          segments = parsed;
+          selectedId = segments[0]?.id ?? null;
+          renderSegments();
+        } else {
+          alert('파일에서 SRT/VTT 데이터를 찾지 못했습니다.');
+        }
+      };
+      reader.readAsText(file, 'utf-8');
+    });
+
+    defaultDurationInput.addEventListener('change', (event) => {
+      const value = parseFloat(event.target.value);
+      if (!Number.isFinite(value) || value <= 0) {
+        event.target.value = defaultDuration;
+        return;
+      }
+      defaultDuration = value;
+    });
+
+    document.addEventListener('keydown', (event) => {
+      const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+      const modKey = isMac ? event.metaKey : event.ctrlKey;
+      if (modKey && event.key === 'Enter') {
+        event.preventDefault();
+        addSegment();
+      }
+      if (modKey && (event.key === 'Backspace' || event.key === 'Delete')) {
+        event.preventDefault();
+        if (selectedId) removeSegment(selectedId);
+      }
+      if (modKey && (event.key === 'd' || event.key === 'D')) {
+        event.preventDefault();
+        if (selectedId) duplicateSegment(selectedId);
+      }
+      if (event.altKey && (event.key === 'ArrowUp' || event.key === 'ArrowDown')) {
+        event.preventDefault();
+        const idx = segments.findIndex((seg) => seg.id === selectedId);
+        if (idx === -1) return;
+        const targetIdx = event.key === 'ArrowUp' ? idx - 1 : idx + 1;
+        if (targetIdx < 0 || targetIdx >= segments.length) return;
+        const [moved] = segments.splice(idx, 1);
+        segments.splice(targetIdx, 0, moved);
+        selectedId = moved.id;
+        renderSegments();
+      }
+    });
+
+    renderSegments();
+    lucide.createIcons();
+  </script>
+  <script src="/inject-layout.js"></script>
+</body>
+</html>

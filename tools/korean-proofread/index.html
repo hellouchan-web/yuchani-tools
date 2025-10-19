@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>맞춤법 · 문장 다듬기 — 발표문/메일 전 최종 검수 | Yuchani Tools pro</title>
+  <meta name="description" content="발표문, 제안서, 메일을 제출하기 전에 맞춤법과 문장 흐름을 자동으로 점검하세요. 연속 공백, 조사, 문장 길이, 어조까지 한 번에 정리해 주는 전문가용 문장 다듬기 웹툴입니다.">
+  <link rel="canonical" href="https://tools.yuchani.com/tools/korean-proofread/">
+  <meta name="robots" content="index,follow">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="맞춤법 · 문장 다듬기 — 발표문/메일 전 최종 검수">
+  <meta property="og:description" content="연속 공백, 조사, 문장 길이, 톤까지 한 번에 정리하는 전문가용 문장 다듬기 툴">
+  <meta property="og:url" content="https://tools.yuchani.com/tools/korean-proofread/">
+  <meta property="og:image" content="https://tools.yuchani.com/assets/og/cover.png">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root { color-scheme: dark; }
+    body { background:#0F1113; }
+    .ring-soft { box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
+    .panel { background:#101317; }
+    .brand-grad { background-image: linear-gradient(90deg,#fbbf24,#67e8f9); }
+    textarea { font-family: "Pretendard", "Noto Sans KR", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    .tone-chip { border:1px solid rgba(255,255,255,0.08); border-radius:9999px; padding:0.25rem 0.65rem; font-size:0.75rem; }
+    .shadow-soft { box-shadow: 0 16px 40px rgba(15,17,19,0.28); }
+    .card { background: linear-gradient(135deg, rgba(17,20,26,0.92), rgba(14,16,20,0.92)); }
+    .glass { background: rgba(18,22,28,0.7); backdrop-filter: blur(18px); }
+  </style>
+
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"WebApplication",
+    "name":"맞춤법 · 문장 다듬기",
+    "url":"https://tools.yuchani.com/tools/korean-proofread/",
+    "applicationCategory":"WritingApplication",
+    "operatingSystem":"Web",
+    "inLanguage":"ko",
+    "description":"발표문과 비즈니스 메일을 제출하기 전 맞춤법·문장 흐름·어조를 자동으로 검수하는 웹 기반 도구.",
+    "featureList":[
+      "맞춤법 후보와 조사 오류 탐지",
+      "긴 문장·톤 분석",
+      "자동 다듬기(띄어쓰기, 공백, 구두점)"
+    ],
+    "offers": {"@type":"Offer","price":"0","priceCurrency":"KRW"}
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {"@type":"Question","name":"자동으로 수정된 내용은 어디에서 확인하나요?","acceptedAnswer":{"@type":"Answer","text":"하단의 ‘자동 다듬기 결과’ 텍스트 박스에서 확인할 수 있으며, 수정된 항목은 자동 정리 리스트로 함께 노출됩니다."}},
+      {"@type":"Question","name":"실시간 분석은 지원하나요?","acceptedAnswer":{"@type":"Answer","text":"입력 창에 내용을 입력하는 즉시 0.3초 딜레이 후 자동으로 분석되며, 필요 시 ‘다시 분석’ 버튼으로 즉시 갱신할 수 있습니다."}},
+      {"@type":"Question","name":"맞춤법 엔진은 어떻게 동작하나요?","acceptedAnswer":{"@type":"Answer","text":"클라이언트 단에서 자주 발생하는 띄어쓰기·조사·톤 오류를 규칙 기반으로 감지하며, 민감한 데이터는 서버로 전송하지 않습니다."}},
+      {"@type":"Question","name":"결과를 다른 앱으로 옮기고 싶어요.","acceptedAnswer":{"@type":"Answer","text":"‘복사하기’ 버튼으로 다듬어진 문장을 클립보드에 복사한 뒤 워드 프로세서나 메일에 붙여넣으면 됩니다."}}
+    ]
+  }
+  </script>
+</head>
+<body class="text-white">
+  <div data-include="/partials/header.html"></div>
+
+  <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+    <section class="rounded-3xl ring-soft border border-white/10 card shadow-soft overflow-hidden">
+      <div class="p-6 md:p-8 lg:p-10 space-y-6">
+        <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+          <div class="space-y-3">
+            <p class="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-white/50">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              Writer's Quality Suite
+            </p>
+            <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight">
+              맞춤법 · 문장 다듬기
+            </h1>
+            <p class="text-white/70 leading-relaxed max-w-2xl">
+              발표문, 보도자료, 영업 메일까지 전문가 톤으로 다듬어 드립니다. 연속 공백·조사 오류·긴 문장·톤 흔들림을 즉시 포착하고, 자동 다듬기 결과로 매끄러운 문장을 제안합니다.
+            </p>
+            <div class="flex flex-wrap gap-2 text-xs text-white/60">
+              <span class="tone-chip bg-emerald-400/10 text-emerald-200 border-emerald-400/30">맞춤법 후보</span>
+              <span class="tone-chip bg-cyan-400/10 text-cyan-200 border-cyan-400/30">문장 흐름 분석</span>
+              <span class="tone-chip bg-indigo-400/10 text-indigo-200 border-indigo-400/30">톤 & 스타일 가이드</span>
+              <span class="tone-chip bg-amber-400/10 text-amber-200 border-amber-400/30">모바일 · PC 최적화</span>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-2 md:flex-col md:items-end">
+            <a href="/" class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl border border-emerald-400/30 bg-emerald-400/10 text-emerald-100 text-sm font-semibold hover:bg-emerald-400/20 transition">
+              <i data-lucide="home" class="w-4 h-4"></i>
+              메인으로
+            </a>
+            <button id="btnRecheck" class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl border border-white/10 bg-white/5 text-sm font-semibold hover:bg-white/10 transition">
+              <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+              다시 분석
+            </button>
+            <button id="btnCopyPolished" class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl border border-cyan-400/30 bg-cyan-400/15 text-cyan-100 text-sm font-semibold hover:bg-cyan-400/25 transition">
+              <i data-lucide="clipboard-check" class="w-4 h-4"></i>
+              다듬은 문장 복사
+            </button>
+          </div>
+        </div>
+
+        <section class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div class="glass ring-soft border border-white/10 rounded-2xl p-4" aria-live="polite">
+            <div class="flex items-center justify-between text-xs text-white/50">
+              <span>글자 수</span>
+              <i data-lucide="type" class="w-4 h-4"></i>
+            </div>
+            <div class="mt-2 text-2xl font-semibold" data-metric="chars">0</div>
+            <p class="text-xs text-white/50 mt-1">공백 제외 <span data-metric="charsNoSpace">0</span>자</p>
+          </div>
+          <div class="glass ring-soft border border-white/10 rounded-2xl p-4" aria-live="polite">
+            <div class="flex items-center justify-between text-xs text-white/50">
+              <span>어절 수</span>
+              <i data-lucide="list" class="w-4 h-4"></i>
+            </div>
+            <div class="mt-2 text-2xl font-semibold" data-metric="words">0</div>
+            <p class="text-xs text-white/50 mt-1">평균 문장당 <span data-metric="wordsPerSentence">0</span>어절</p>
+          </div>
+          <div class="glass ring-soft border border-white/10 rounded-2xl p-4" aria-live="polite">
+            <div class="flex items-center justify-between text-xs text-white/50">
+              <span>문장 수</span>
+              <i data-lucide="text-cursor" class="w-4 h-4"></i>
+            </div>
+            <div class="mt-2 text-2xl font-semibold" data-metric="sentences">0</div>
+            <p class="text-xs text-white/50 mt-1">긴 문장 <span data-metric="longSentences">0</span>개</p>
+          </div>
+          <div class="glass ring-soft border border-white/10 rounded-2xl p-4" aria-live="polite">
+            <div class="flex items-center justify-between text-xs text-white/50">
+              <span>문단 수</span>
+              <i data-lucide="align-left" class="w-4 h-4"></i>
+            </div>
+            <div class="mt-2 text-2xl font-semibold" data-metric="paragraphs">0</div>
+            <p class="text-xs text-white/50 mt-1">공백 라인 <span data-metric="blankLines">0</span>개</p>
+          </div>
+        </section>
+
+        <section class="grid gap-6 lg:grid-cols-2">
+          <div class="space-y-3">
+            <div class="flex items-center justify-between text-sm text-white/60">
+              <div class="flex items-center gap-2">
+                <i data-lucide="edit-3" class="w-4 h-4 text-emerald-300"></i>
+                <span>검수할 원본 문장</span>
+              </div>
+              <div class="flex gap-2">
+                <button id="btnSample" class="px-2.5 py-1 text-xs rounded-lg border border-amber-400/30 bg-amber-400/10 text-amber-100 hover:bg-amber-400/20 transition">샘플 불러오기</button>
+                <button id="btnClear" class="px-2.5 py-1 text-xs rounded-lg border border-white/10 hover:bg-white/10 transition">초기화</button>
+              </div>
+            </div>
+            <textarea id="inputText" rows="12" class="w-full min-h-[18rem] md:min-h-[22rem] rounded-2xl border border-white/10 ring-soft bg-[#0b0d10] text-sm md:text-base text-white/80 p-4 focus:outline-none focus:ring-2 focus:ring-emerald-400/60" placeholder="예: 안녕하세요. 오늘 회의에 사용될 발표 자료를 검토 부탁드립니다..."></textarea>
+            <p class="text-xs text-white/40">* 모든 분석은 브라우저에서 이루어지며, 입력한 내용은 서버로 전송되지 않습니다.</p>
+          </div>
+          <div class="space-y-3">
+            <div class="flex items-center justify-between text-sm text-white/60">
+              <div class="flex items-center gap-2">
+                <i data-lucide="sparkles" class="w-4 h-4 text-cyan-300"></i>
+                <span>자동 다듬기 결과</span>
+              </div>
+              <span id="polishSummary" class="text-xs text-white/40">수정된 항목 0건</span>
+            </div>
+            <textarea id="polishedText" rows="12" class="w-full min-h-[18rem] md:min-h-[22rem] rounded-2xl border border-cyan-400/25 ring-soft bg-[#0b0d10] text-sm md:text-base text-white/80 p-4 focus:outline-none" readonly></textarea>
+            <div id="autoFixes" class="hidden rounded-2xl border border-cyan-400/20 bg-cyan-400/5 p-4 text-xs text-cyan-100 space-y-2">
+              <div class="flex items-center gap-2 font-semibold text-sm">
+                <i data-lucide="wand-2" class="w-4 h-4"></i>
+                자동 정리 항목
+              </div>
+              <ul class="space-y-1 list-disc pl-4" id="autoFixList"></ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="rounded-2xl border border-white/10 ring-soft bg-[#0b0d10] p-5 space-y-4">
+          <div class="flex items-center gap-2 text-sm font-semibold text-white/80">
+            <i data-lucide="shield-check" class="w-4 h-4 text-emerald-300"></i>
+            맞춤법 & 스타일 진단 결과
+          </div>
+          <div id="issueContainer" class="grid gap-3" aria-live="polite"></div>
+        </section>
+      </div>
+    </section>
+
+    <section class="mt-10 grid gap-6 lg:grid-cols-2">
+      <div class="rounded-3xl border border-white/10 ring-soft bg-[#12161c] p-6 space-y-3">
+        <div class="flex items-center gap-2 text-sm font-semibold text-white/80">
+          <i data-lucide="lightbulb" class="w-4 h-4 text-yellow-300"></i>
+          도움말 & 팁
+        </div>
+        <ul class="text-sm text-white/70 space-y-2 list-disc pl-5">
+          <li>긴 문장이 감지되면 <strong>쉼표 또는 문장 분리</strong>를 고려해 가독성을 높여 주세요.</li>
+          <li>톤 가이드가 ‘캐주얼 표현’을 표시하면, 발표문·메일에서는 <strong>감탄사·중복 구두점</strong>을 정리하는 것이 좋습니다.</li>
+          <li>자동 다듬기 결과가 마음에 들지 않으면, 오른쪽 상단의 <strong>다시 분석</strong> 버튼으로 원본을 기준으로 재생성할 수 있습니다.</li>
+          <li>보고서·프레젠테이션에는 <strong>숫자, 단위, 고유명사</strong> 표기가 정확한지 한번 더 수동 검토해 주세요.</li>
+          <li>단락이 길어질 경우 <strong>문단 사이에 한 줄 공백</strong>을 넣으면 모바일에서도 가독성이 좋아집니다.</li>
+        </ul>
+      </div>
+
+      <div class="rounded-3xl border border-white/10 ring-soft bg-[#12161c] p-6 space-y-3">
+        <div class="flex items-center gap-2 text-sm font-semibold text-white/80">
+          <i data-lucide="help-circle" class="w-4 h-4 text-cyan-300"></i>
+          사용설명서 & FAQ
+        </div>
+        <ol class="text-sm text-white/70 space-y-2 list-decimal pl-5">
+          <li><strong>원본 입력</strong> 영역에 검토할 문장을 붙여넣거나 직접 작성합니다.</li>
+          <li>입력과 동시에 자동 분석이 진행되며, 필요 시 <strong>다시 분석</strong> 버튼으로 즉시 갱신합니다.</li>
+          <li>하단 <strong>진단 결과</strong>에서 감지된 이슈를 확인하고, 자동 다듬기 결과를 참고해 수정합니다.</li>
+          <li><strong>다듬은 문장 복사</strong> 버튼으로 결과를 복사한 뒤 다른 문서에 붙여넣습니다.</li>
+          <li>FAQ에서 원하는 답변이 없다면 우측 하단의 <strong>고객지원 채널</strong>로 문의해 주세요.</li>
+        </ol>
+      </div>
+    </section>
+  </main>
+
+  <div data-include="/partials/footer.html"></div>
+
+  <script defer src="/inject-layout.js?v=6"></script>
+  <script>
+  (function(){
+    const input = document.getElementById('inputText');
+    const polished = document.getElementById('polishedText');
+    const issueContainer = document.getElementById('issueContainer');
+    const summary = document.getElementById('polishSummary');
+    const autoFixBox = document.getElementById('autoFixes');
+    const autoFixList = document.getElementById('autoFixList');
+
+    const metricsMap = {
+      chars: document.querySelector('[data-metric="chars"]'),
+      charsNoSpace: document.querySelector('[data-metric="charsNoSpace"]'),
+      words: document.querySelector('[data-metric="words"]'),
+      wordsPerSentence: document.querySelector('[data-metric="wordsPerSentence"]'),
+      sentences: document.querySelector('[data-metric="sentences"]'),
+      longSentences: document.querySelector('[data-metric="longSentences"]'),
+      paragraphs: document.querySelector('[data-metric="paragraphs"]'),
+      blankLines: document.querySelector('[data-metric="blankLines"]')
+    };
+
+    const detectors = [
+      {
+        id: 'double-space',
+        title: '연속 공백',
+        severity: 'warn',
+        detail: '연속된 공백은 하나로 줄이는 것이 자연스럽습니다.',
+        regex: () => / {2,}/g
+      },
+      {
+        id: 'space-before-punctuation',
+        title: '구두점 앞 불필요한 공백',
+        severity: 'warn',
+        detail: '쉼표, 마침표 앞의 공백은 제거하는 것이 맞춤법에 맞습니다.',
+        regex: () => /([가-힣A-Za-z0-9])\s+([,\.\?\!])/g
+      },
+      {
+        id: 'missing-space-after-punctuation',
+        title: '구두점 뒤 공백 누락',
+        severity: 'info',
+        detail: '쉼표 또는 마침표 뒤에는 한 칸 공백을 두면 가독성이 좋아집니다.',
+        regex: () => /([,\.\?!])([^\s\)\]\}”’"'>])/g
+      },
+      {
+        id: 'repeated-punctuation',
+        title: '과도한 구두점 반복',
+        severity: 'info',
+        detail: '공식 문서에서는 감탄사나 물음표를 연속 사용하지 않는 것이 좋습니다.',
+        regex: () => /([!?\.])\1{1,}/g
+      },
+      {
+        id: 'repeated-word',
+        title: '단어 반복 사용',
+        severity: 'info',
+        detail: '같은 단어가 연속으로 반복되었습니다. 한번 더 검토해 주세요.',
+        regex: () => /(\b[가-힣A-Za-z]{2,}\b)\s+\1\b/g
+      },
+      {
+        id: 'spacing-josa',
+        title: '조사 결합형 띄어쓰기',
+        severity: 'warn',
+        detail: '“것 입니다 / 수 입니다” 등은 붙여 쓰는 것이 자연스럽습니다.',
+        regex: () => /(것|수|때|점)\s+(입니다|이었다|이었습니다|이에요)/g
+      },
+      {
+        id: 'casual-tone',
+        title: '캐주얼 표현 감지',
+        severity: 'info',
+        detail: '비즈니스/공식 문서에서는 “ㅋㅋ”, “ㅎㅎ”, “~~” 등 캐주얼 표현을 줄이는 것이 좋습니다.',
+        regex: () => /(ㅋㅋ+|ㅎㅎ+|~~+|!!{2,})/g
+      }
+    ];
+
+    const replacements = [
+      { regex: / {2,}/g, replacement: ' ', note: '연속 공백 정리' },
+      { regex: /([가-힣A-Za-z0-9])\s+([,\.\?\!])/g, replacement: '$1$2', note: '구두점 앞 공백 제거' },
+      { regex: /([,\.\?!])(?!\s|$)/g, replacement: '$1 ', note: '구두점 뒤 공백 보정' },
+      { regex: /(것|수|때|점)\s+(입니다|이었다|이었습니다|이에요)/g, replacement: '$1$2', note: '조사 결합형 붙여쓰기' },
+      { regex: /\s*\n\s*\n{2,}/g, replacement: '\n\n', note: '과도한 빈 줄 정리' },
+      { regex: /\t+/g, replacement: ' ', note: '탭 문자를 공백으로 변환' }
+    ];
+
+    const helper = {
+      excerpt(text, start, end) {
+        const radius = 36;
+        const snippet = text.slice(Math.max(0, start - radius), Math.min(text.length, end + radius));
+        return snippet.replace(/\s+/g, ' ').trim();
+      },
+      classify(severity) {
+        switch (severity) {
+          case 'error': return { icon: 'alert-triangle', color: 'border-rose-500/40 bg-rose-500/10 text-rose-100' };
+          case 'warn': return { icon: 'alert-octagon', color: 'border-amber-400/40 bg-amber-400/10 text-amber-100' };
+          default: return { icon: 'info', color: 'border-cyan-400/40 bg-cyan-400/10 text-cyan-100' };
+        }
+      }
+    };
+
+    function computeMetrics(text) {
+      const length = text.length;
+      const noSpace = text.replace(/\s/g, '').length;
+      const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+      const sentencesArr = text
+        .split(/(?<=[\.\?\!\u2026\u3002])/)
+        .map(v => v.trim())
+        .filter(Boolean);
+      const sentences = sentencesArr.length;
+      const longSentences = sentencesArr.filter(s => s.length >= 80).length;
+      const paragraphsArr = text.trim() ? text.trim().split(/\n{2,}/) : [];
+      const paragraphs = paragraphsArr.filter(Boolean).length || (text.trim() ? 1 : 0);
+      const blankLines = (text.match(/\n\s*\n/g) || []).length;
+      const wordsPerSentence = sentences ? Math.round((words / sentences) * 10) / 10 : 0;
+      return { length, noSpace, words, sentences, longSentences, paragraphs, blankLines, wordsPerSentence };
+    }
+
+    function runAnalysis() {
+      const text = input.value;
+      const issues = [];
+
+      detectors.forEach(det => {
+        const regex = det.regex();
+        let match;
+        while ((match = regex.exec(text)) !== null) {
+          issues.push({
+            id: det.id,
+            title: det.title,
+            severity: det.severity,
+            detail: det.detail,
+            excerpt: helper.excerpt(text, match.index, regex.lastIndex)
+          });
+          if (!regex.global) break;
+        }
+      });
+
+      // 긴 문장 추가 감지
+      const sentencesArr = text
+        .split(/(?<=[\.\?\!\u2026\u3002])/)
+        .map(v => v.trim())
+        .filter(Boolean);
+      sentencesArr.forEach(sentence => {
+        if (sentence.length >= 110) {
+          const idx = text.indexOf(sentence);
+          issues.push({
+            id: 'long-sentence',
+            title: '긴 문장 감지',
+            severity: 'warn',
+            detail: '110자 이상인 문장은 두 개로 나누면 전달력이 좋아집니다.',
+            excerpt: helper.excerpt(text, idx, idx + sentence.length)
+          });
+        } else if (sentence.length >= 80) {
+          const idx = text.indexOf(sentence);
+          issues.push({
+            id: 'long-sentence',
+            title: '다소 긴 문장',
+            severity: 'info',
+            detail: '80자 이상의 문장은 쉼표나 접속사를 조정해 보세요.',
+            excerpt: helper.excerpt(text, idx, idx + sentence.length)
+          });
+        }
+      });
+
+      renderIssues(issues);
+      applyReplacements(text);
+      updateMetrics(text, sentencesArr);
+    }
+
+    function renderIssues(issues) {
+      issueContainer.innerHTML = '';
+      if (!issues.length) {
+        issueContainer.innerHTML = `
+          <div class="rounded-2xl border border-emerald-400/40 bg-emerald-400/10 text-emerald-100 p-4 flex items-start gap-3">
+            <i data-lucide="check-circle" class="w-5 h-5 mt-0.5"></i>
+            <div>
+              <div class="text-sm font-semibold">눈에 띄는 맞춤법 오류가 발견되지 않았어요.</div>
+              <p class="text-xs text-emerald-100/70 mt-1">필요하다면 문장 흐름과 톤을 한번 더 점검하고, 다듬은 문장을 복사해 사용하세요.</p>
+            </div>
+          </div>`;
+        window.lucide?.createIcons?.({ root: issueContainer });
+        return;
+      }
+
+      const fragment = document.createDocumentFragment();
+      issues.slice(0, 50).forEach(issue => {
+        const { icon, color } = helper.classify(issue.severity);
+        const item = document.createElement('article');
+        item.className = `rounded-2xl border ${color} p-4 space-y-2`;
+        item.innerHTML = `
+          <div class="flex items-start gap-3">
+            <div class="mt-0.5">
+              <i data-lucide="${icon}" class="w-5 h-5"></i>
+            </div>
+            <div class="space-y-1">
+              <div class="text-sm font-semibold text-white/90">${issue.title}</div>
+              <p class="text-xs text-white/60 leading-relaxed">${issue.detail}</p>
+              ${issue.excerpt ? `<div class="rounded-xl bg-black/30 text-white/70 text-xs px-3 py-2 border border-white/5 leading-relaxed"><span class="text-white/40">…</span> ${issue.excerpt} <span class="text-white/40">…</span></div>` : ''}
+            </div>
+          </div>`;
+        fragment.appendChild(item);
+      });
+      issueContainer.appendChild(fragment);
+      window.lucide?.createIcons?.({ root: issueContainer });
+    }
+
+    function applyReplacements(text) {
+      let result = text;
+      const applied = [];
+
+      replacements.forEach(rule => {
+        const matches = result.match(rule.regex);
+        if (matches) {
+          result = result.replace(rule.regex, rule.replacement);
+          applied.push(rule.note + ` (${matches.length}건)`);
+        }
+      });
+
+      const trimmed = result.replace(/\s+$/g, '');
+      polished.value = trimmed;
+
+      if (!text.trim()) {
+        polished.value = '';
+        summary.textContent = '수정된 항목 0건';
+        autoFixBox.classList.add('hidden');
+        autoFixList.innerHTML = '';
+        return;
+      }
+
+      const uniqueApplied = Array.from(new Set(applied));
+      summary.textContent = uniqueApplied.length ? `수정된 항목 ${uniqueApplied.length}건` : '수정된 항목 0건';
+
+      if (uniqueApplied.length) {
+        autoFixBox.classList.remove('hidden');
+        autoFixList.innerHTML = uniqueApplied.map(item => `<li>${item}</li>`).join('');
+      } else {
+        autoFixBox.classList.add('hidden');
+        autoFixList.innerHTML = '';
+      }
+    }
+
+    function updateMetrics(text, sentencesArr) {
+      const metrics = computeMetrics(text);
+      metricsMap.chars.textContent = metrics.length;
+      metricsMap.charsNoSpace.textContent = metrics.noSpace;
+      metricsMap.words.textContent = metrics.words;
+      metricsMap.wordsPerSentence.textContent = metrics.wordsPerSentence.toFixed(1);
+      metricsMap.sentences.textContent = metrics.sentences;
+      metricsMap.longSentences.textContent = metrics.longSentences;
+      metricsMap.paragraphs.textContent = metrics.paragraphs;
+      metricsMap.blankLines.textContent = metrics.blankLines;
+    }
+
+    let timer = null;
+    function scheduleAnalysis() {
+      clearTimeout(timer);
+      timer = setTimeout(runAnalysis, 300);
+    }
+
+    document.getElementById('btnRecheck').addEventListener('click', runAnalysis);
+    document.getElementById('btnSample').addEventListener('click', () => {
+      const sample = `안녕하세요. 내일 있을 IR 브리핑에서 사용할 발표문 초안입니다. \n\n이번 분기에는 신규 고객 확보율이 28% 상승했지만, 내부 프로세스 표준화가 미비하여 부서별로 보고 포맷이 다릅니다. 그래서 이번 발표에서는 핵심 수치를 중심으로 설명드리고, 후속 논의가 필요한 항목은 회의록으로 정리하려고 합니다. 검토 부탁드리겠습니다!!`;
+      input.value = sample;
+      scheduleAnalysis();
+    });
+    document.getElementById('btnClear').addEventListener('click', () => {
+      input.value = '';
+      scheduleAnalysis();
+    });
+
+    input.addEventListener('input', scheduleAnalysis);
+
+    document.getElementById('btnCopyPolished').addEventListener('click', async () => {
+      const text = polished.value;
+      if (!text) return;
+      try {
+        await navigator.clipboard.writeText(text);
+        summary.textContent = summary.textContent + ' · 복사 완료';
+        setTimeout(runAnalysis, 1200);
+      } catch (err) {
+        alert('복사에 실패했습니다. 수동으로 선택 후 복사해 주세요.');
+      }
+    });
+
+    runAnalysis();
+    window.lucide?.createIcons?.();
+  })();
+  </script>
+
+  <script>
+  (function(){
+    if (window.__ytIncludeFallbackLoaded) return;
+    window.__ytIncludeFallbackLoaded = true;
+    const targets = document.querySelectorAll('[data-include]');
+    if (!targets.length) return;
+    targets.forEach(function(node){
+      const path = node.getAttribute('data-include');
+      if (!path) return;
+      fetch(path).then(function(resp){
+        if (!resp.ok) throw new Error('failed');
+        return resp.text();
+      }).then(function(html){
+        node.innerHTML = html;
+        window.lucide?.createIcons?.({ root: node });
+      }).catch(function(){
+        node.remove();
+      });
+    });
+  })();
+  </script>
+</body>
+</html>

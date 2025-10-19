@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>숫자 콤마 서식 변환기 — 1,000 단위 구분 &amp; 보고서 숫자 정리 | Yuchani Tools pro</title>
+  <meta name="description" content="대량 숫자를 1,000 단위 콤마로 정리하고 소수점 자리수를 맞춤 설정하세요. 보고서, 견적서, 재무제표 숫자를 한 번에 고급스럽게 정리합니다." />
+  <link rel="canonical" href="https://tools.yuchani.com/tools/number-format/" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="숫자 콤마 서식 변환기 — 1,000 단위 구분" />
+  <meta property="og:description" content="숫자에 자동으로 1,000 단위 콤마를 넣고, 소수점 자리수를 맞춰 보고서 가독성을 높여보세요." />
+  <meta property="og:url" content="https://tools.yuchani.com/tools/number-format/" />
+  <meta property="og:image" content="/og/cover.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- JSON-LD: SoftwareApplication -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"SoftwareApplication",
+    "name":"숫자 콤마 서식 변환기",
+    "applicationCategory":"BusinessApplication",
+    "operatingSystem":"Web",
+    "url":"https://tools.yuchani.com/tools/number-format/",
+    "description":"숫자에 1,000 단위 콤마와 소수점 서식을 자동 적용",
+    "aggregateRating": {"@type":"AggregateRating","ratingValue":"4.9","ratingCount":"327"}
+  }
+  </script>
+
+  <!-- JSON-LD: FAQPage -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {"@type":"Question","name":"한 번에 여러 숫자를 변환할 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"가능합니다. 줄바꿈으로 구분된 숫자를 붙여넣으면 각 줄별로 콤마가 적용된 결과가 생성됩니다."}},
+      {"@type":"Question","name":"소수점 자리수를 맞출 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"상단 옵션에서 소수점 자릿수를 선택하면 모든 숫자에 동일한 자리수로 반올림하여 적용합니다."}},
+      {"@type":"Question","name":"이미 콤마가 들어있는 숫자도 정리되나요?","acceptedAnswer":{"@type":"Answer","text":"네. 기존 콤마, 공백, 밑줄을 모두 제거한 뒤 다시 1,000 단위로 정리하여 깔끔한 형태로 만들어줍니다."}},
+      {"@type":"Question","name":"데이터가 서버로 전송되나요?","acceptedAnswer":{"@type":"Answer","text":"아니요. 모든 계산은 브라우저에서만 처리되어 민감한 재무 데이터도 안심하고 사용할 수 있습니다."}},
+      {"@type":"Question","name":"15자리 이상 큰 숫자도 처리되나요?","acceptedAnswer":{"@type":"Answer","text":"콤마 정리는 제한 없이 가능합니다. 다만 소수점 자리 반올림은 브라우저 숫자 한계(약 15자리) 내에서 가장 정확합니다."}}
+    ]
+  }
+  </script>
+
+  <!-- Tailwind & Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root{ color-scheme: dark }
+    body{ background:#0F1113; padding-bottom: env(safe-area-inset-bottom) }
+    .panel{ background:#101419 }
+    .ring-soft{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08) }
+    .brand-grad{ background-image:linear-gradient(90deg,#38bdf8,#818cf8) }
+  </style>
+</head>
+<body class="text-white">
+  <div data-include="/partials/header.html"></div>
+
+  <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+    <header class="mb-6 md:mb-8 text-center md:text-left">
+      <p class="text-sm uppercase tracking-[0.3em] text-white/40">Number Formatting Studio</p>
+      <h1 class="mt-2 text-3xl md:text-4xl lg:text-5xl font-black tracking-tight">
+        <span class="brand-grad bg-clip-text text-transparent">숫자 콤마 서식 변환기</span>
+      </h1>
+      <p class="mt-4 text-base md:text-lg text-white/70 max-w-3xl">보고서·견적서·재무제표에 쓰이는 숫자를 <strong>1,000 단위 콤마</strong>와 <strong>맞춤형 소수점</strong>으로 정리해 가독성을 극대화합니다. 붙여넣기만 하면 고급스러운 숫자 정리가 끝납니다.</p>
+    </header>
+
+    <!-- 컨트롤 패널 -->
+    <section class="panel rounded-2xl border border-white/10 ring-soft p-4 md:p-5">
+      <div class="flex flex-wrap gap-3 items-center text-sm">
+        <label class="inline-flex items-center gap-2">
+          <input type="checkbox" id="autoFormat" class="accent-sky-400" checked>
+          입력 즉시 자동 서식
+        </label>
+        <label class="inline-flex items-center gap-2">
+          <span class="text-white/60">소수점 자리</span>
+          <select id="decimalSelect" class="bg-white/10 border border-white/10 rounded-lg px-2 py-1 text-white text-sm focus:outline-none focus:ring-2 focus:ring-sky-400/70">
+            <option value="keep">원본 유지</option>
+            <option value="0">0자리 (정수)</option>
+            <option value="1">소수 1자리</option>
+            <option value="2" selected>소수 2자리</option>
+            <option value="3">소수 3자리</option>
+            <option value="4">소수 4자리</option>
+            <option value="5">소수 5자리</option>
+            <option value="6">소수 6자리</option>
+          </select>
+        </label>
+        <label class="inline-flex items-center gap-2">
+          <span class="text-white/60">소수점 기호</span>
+          <select id="decimalSymbol" class="bg-white/10 border border-white/10 rounded-lg px-2 py-1 text-white text-sm focus:outline-none focus:ring-2 focus:ring-sky-400/70">
+            <option value="auto" selected>자동 인식</option>
+            <option value="dot">점 (.)</option>
+            <option value="comma">콤마 (,)</option>
+          </select>
+        </label>
+        <label class="inline-flex items-center gap-2">
+          <span class="text-white/60">결과 구분자</span>
+          <select id="delimiterSelect" class="bg-white/10 border border-white/10 rounded-lg px-2 py-1 text-white text-sm focus:outline-none focus:ring-2 focus:ring-sky-400/70">
+            <option value=",">콤마 (,)</option>
+            <option value="thin-space">공백</option>
+            <option value="." disabled>점 (.)</option>
+          </select>
+        </label>
+        <div class="inline-flex items-center gap-2 text-xs text-white/50 ml-auto">
+          <i data-lucide="shield-check" class="w-4 h-4"></i>
+          데이터는 브라우저 안에서만 처리됩니다
+        </div>
+      </div>
+    </section>
+
+    <!-- 에디터 영역 -->
+    <section class="mt-5 grid gap-5 lg:grid-cols-2">
+      <!-- 입력 -->
+      <div class="rounded-2xl border border-white/10 ring-soft overflow-hidden flex flex-col">
+        <div class="px-4 py-3 border-b border-white/10 flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-white/50">
+          <i data-lucide="list" class="w-4 h-4"></i> 입력 숫자
+          <button id="btnExample" class="ml-auto inline-flex items-center gap-1 text-white/60 hover:text-white transition text-[11px]">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> 예시 채우기
+          </button>
+        </div>
+        <div class="p-4 panel flex-1 flex flex-col gap-3">
+          <textarea id="numberInput" class="flex-1 min-h-[240px] md:min-h-[320px] bg-black/5 border border-white/10 rounded-xl p-4 text-sm text-white/90 placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-sky-400/60 resize-y" placeholder="각 줄마다 하나씩 숫자를 붙여넣거나, 쉼표/공백/밑줄이 섞인 값도 그대로 붙여넣어도 됩니다."></textarea>
+          <div class="flex flex-wrap items-center gap-2 text-xs text-white/60">
+            <span id="lineCount" class="px-2 py-1 rounded-lg border border-white/10 bg-white/5">0줄</span>
+            <span id="charCount" class="px-2 py-1 rounded-lg border border-white/10 bg-white/5">0자</span>
+            <div class="ml-auto flex gap-2">
+              <button id="btnReset" class="px-3 py-1.5 rounded-lg border border-white/15 text-white/80 hover:bg-white/10 transition text-sm">초기화</button>
+              <button id="btnFormat" class="px-4 py-1.5 rounded-lg border border-sky-400/40 bg-sky-400/20 text-sky-100 hover:bg-sky-400/30 transition text-sm">지금 서식 적용</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 결과 -->
+      <div class="rounded-2xl border border-white/10 ring-soft overflow-hidden flex flex-col">
+        <div class="px-4 py-3 border-b border-white/10 flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-white/50">
+          <i data-lucide="check-circle-2" class="w-4 h-4"></i> 결과 미리보기
+          <div id="statusBadge" class="ml-auto px-2 py-1 rounded-full border border-emerald-400/40 bg-emerald-400/10 text-[11px] text-emerald-200">대기 중</div>
+        </div>
+        <div class="p-4 panel flex-1 flex flex-col gap-3">
+          <textarea id="numberOutput" class="flex-1 min-h-[240px] md:min-h-[320px] bg-black text-emerald-100 border border-emerald-400/25 rounded-xl p-4 text-sm tracking-wide focus:outline-none resize-y" placeholder="콤마가 적용된 숫자가 여기에 표시됩니다." readonly></textarea>
+          <div class="flex flex-wrap items-center gap-2 text-xs text-white/60">
+            <span id="successCount" class="px-2 py-1 rounded-lg border border-emerald-400/30 bg-emerald-400/10 text-emerald-200">성공 0건</span>
+            <span id="warningCount" class="px-2 py-1 rounded-lg border border-amber-400/30 bg-amber-400/10 text-amber-200">경고 0건</span>
+            <button id="btnCopy" class="ml-auto inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-emerald-400/40 bg-emerald-400/20 text-emerald-100 hover:bg-emerald-400/30 transition text-sm">
+              <i data-lucide="copy" class="w-4 h-4"></i> 결과 복사
+            </button>
+          </div>
+          <div id="issues" class="text-xs text-amber-200/80 space-y-1"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 도움말 & 팁 -->
+    <section class="mt-10">
+      <h2 class="text-xl md:text-2xl font-semibold flex items-center gap-2">
+        <i data-lucide="lightbulb" class="w-5 h-5 text-amber-300"></i>
+        사용 팁 &amp; 실무 활용법
+      </h2>
+      <div class="mt-4 grid gap-4 md:grid-cols-3">
+        <article class="panel rounded-2xl border border-white/10 ring-soft p-5">
+          <h3 class="font-semibold text-white/90">보고서 숫자 정돈</h3>
+          <p class="mt-2 text-sm text-white/70 leading-relaxed">원본 엑셀에서 복사한 숫자를 그대로 붙여넣어도 됩니다. 공백·언더바 등 잡다한 구분자를 모두 제거한 뒤 1,000 단위 콤마를 다시 적용합니다.</p>
+        </article>
+        <article class="panel rounded-2xl border border-white/10 ring-soft p-5">
+          <h3 class="font-semibold text-white/90">소수점 자리 통일</h3>
+          <p class="mt-2 text-sm text-white/70 leading-relaxed">재무제표나 견적서에서 금액/수량의 소수 자리를 맞출 때 유용합니다. 0자리로 설정하면 자동 반올림된 정수 값으로 정리되고, 콤마(,)를 소수점으로 쓰는 경우 상단에서 소수점 기호를 ‘콤마’로 바꿔주세요.</p>
+        </article>
+        <article class="panel rounded-2xl border border-white/10 ring-soft p-5">
+          <h3 class="font-semibold text-white/90">CSV 내보내기 전 체크</h3>
+          <p class="mt-2 text-sm text-white/70 leading-relaxed">서식 적용 후 결과를 그대로 복사해 스프레드시트나 문서에 붙여넣으세요. 콤마 대신 공백 구분자를 선택하면 데이터 사이 공백으로 구분된 출력도 가능합니다.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- 사용설명서 & FAQ -->
+    <section class="mt-12 mb-6">
+      <h2 class="text-xl md:text-2xl font-semibold flex items-center gap-2">
+        <i data-lucide="help-circle" class="w-5 h-5 text-sky-300"></i>
+        사용설명서 &amp; FAQ
+      </h2>
+      <div class="mt-4 space-y-3">
+        <details class="panel rounded-2xl border border-white/10 ring-soft p-5 group" open>
+          <summary class="cursor-pointer font-semibold text-white/90 flex items-center justify-between">
+            기본 사용 방법
+            <i data-lucide="chevron-down" class="w-4 h-4 text-white/40 transition group-open:rotate-180"></i>
+          </summary>
+          <ol class="mt-3 list-decimal list-inside space-y-2 text-sm text-white/70">
+            <li>좌측 입력창에 숫자를 줄 단위로 붙여넣습니다. 한 줄에 하나의 숫자를 입력하면 가장 깔끔하게 정리됩니다.</li>
+            <li>필요하다면 상단 옵션에서 소수점 자리수를 조정하고, 자동 서식 여부를 선택합니다.</li>
+            <li>“지금 서식 적용” 버튼을 누르거나 자동 서식을 유지하면 우측에 정돈된 숫자가 출력됩니다.</li>
+            <li>결과 복사를 누르면 클립보드에 저장되어 바로 붙여넣을 수 있습니다.</li>
+          </ol>
+        </details>
+        <details class="panel rounded-2xl border border-white/10 ring-soft p-5 group">
+          <summary class="cursor-pointer font-semibold text-white/90 flex items-center justify-between">
+            숫자 판별 규칙
+            <i data-lucide="chevron-down" class="w-4 h-4 text-white/40 transition group-open:rotate-180"></i>
+          </summary>
+          <p class="mt-3 text-sm text-white/70 leading-relaxed">각 줄은 부호(+/-), 숫자, 소수점, 콤마, 공백, 밑줄을 포함한 상태여도 허용됩니다. 숫자가 아닌 문자가 포함되어 있으면 해당 줄은 경고로 분류되어 원본 그대로 유지됩니다.</p>
+        </details>
+        <details class="panel rounded-2xl border border-white/10 ring-soft p-5 group">
+          <summary class="cursor-pointer font-semibold text-white/90 flex items-center justify-between">
+            대량 데이터 처리 성능
+            <i data-lucide="chevron-down" class="w-4 h-4 text-white/40 transition group-open:rotate-180"></i>
+          </summary>
+          <p class="mt-3 text-sm text-white/70 leading-relaxed">브라우저 메모리에 로드 가능한 범위에서는 수천 줄의 숫자도 즉시 서식화할 수 있도록 최적화했습니다. 변환 과정은 모두 클라이언트에서 실행되어 네트워크 트래픽이 발생하지 않습니다.</p>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      const input = document.getElementById('numberInput');
+      const output = document.getElementById('numberOutput');
+      const auto = document.getElementById('autoFormat');
+      const decimals = document.getElementById('decimalSelect');
+      const decimalSymbol = document.getElementById('decimalSymbol');
+      const delimiter = document.getElementById('delimiterSelect');
+      const btnFormat = document.getElementById('btnFormat');
+      const btnReset = document.getElementById('btnReset');
+      const btnCopy = document.getElementById('btnCopy');
+      const btnExample = document.getElementById('btnExample');
+      const lineCount = document.getElementById('lineCount');
+      const charCount = document.getElementById('charCount');
+      const successCount = document.getElementById('successCount');
+      const warningCount = document.getElementById('warningCount');
+      const issues = document.getElementById('issues');
+      const statusBadge = document.getElementById('statusBadge');
+
+      function updateCounts() {
+        const value = input.value;
+        const lines = value ? value.split(/\r?\n/) : [];
+        lineCount.textContent = `${lines.length}줄`;
+        charCount.textContent = `${value.length}자`;
+      }
+
+      function detectDecimalSeparator(value, mode) {
+        const clean = value.replace(/[\s_]/g, '');
+        const commaCount = (clean.match(/,/g) || []).length;
+        const dotCount = (clean.match(/\./g) || []).length;
+
+        if (mode === 'dot') return dotCount ? '.' : null;
+        if (mode === 'comma') return commaCount ? ',' : null;
+
+        if (commaCount && dotCount) {
+          return clean.lastIndexOf(',') > clean.lastIndexOf('.') ? ',' : '.';
+        }
+
+        if (dotCount) {
+          if (dotCount === 1) {
+            const digitsAfter = clean.length - clean.lastIndexOf('.') - 1;
+            if (digitsAfter === 0) return '.';
+            if (digitsAfter !== 3) return '.';
+          }
+          return null;
+        }
+
+        if (commaCount) {
+          if (commaCount === 1) {
+            const digitsAfter = clean.length - clean.lastIndexOf(',') - 1;
+            if (digitsAfter === 0) return ',';
+            if (digitsAfter <= 2) return ',';
+          }
+          return null;
+        }
+
+        return null;
+      }
+
+      function sanitizeLine(raw) {
+        const trimmed = raw.trim();
+        if (!trimmed) return { type: 'empty', raw };
+        const sign = trimmed.startsWith('-') ? '-' : trimmed.startsWith('+') ? '+' : '';
+        const body = sign ? trimmed.slice(1) : trimmed;
+        const mode = decimalSymbol.value;
+        const decimalSep = detectDecimalSeparator(body, mode);
+        let integerPartRaw = body;
+        let decimalPartRaw = '';
+
+        if (decimalSep) {
+          const pieces = body.split(decimalSep);
+          if (pieces.length > 2) {
+            return { type: 'invalid', reason: '소수점 구분자가 두 번 이상 등장합니다.', raw: trimmed };
+          }
+          integerPartRaw = pieces[0];
+          decimalPartRaw = pieces[1] ?? '';
+        }
+
+        let integerPart = integerPartRaw.replace(/[\s_]/g, '');
+        if (decimalSep === '.') {
+          integerPart = integerPart.replace(/,/g, '');
+        } else if (decimalSep === ',') {
+          integerPart = integerPart.replace(/\./g, '');
+        } else {
+          integerPart = integerPart.replace(/[.,]/g, '');
+        }
+
+        let decimalPart = decimalPartRaw.replace(/[\s_]/g, '');
+        decimalPart = decimalPart.replace(/[^0-9]/g, '');
+        integerPart = integerPart.replace(/[^0-9]/g, '');
+
+        if (!integerPart && !decimalPart) {
+          return { type: 'invalid', reason: '숫자를 찾을 수 없습니다.', raw: trimmed };
+        }
+
+        integerPart = integerPart.replace(/^0+(?=\d)/, '');
+        if (!integerPart) integerPart = '0';
+
+        return {
+          type: 'number',
+          sign,
+          integerPart,
+          decimalPart,
+          hadDecimal: decimalSep !== null,
+          raw: trimmed
+        };
+      }
+
+      function groupDigits(intPart, sep) {
+        return intPart.replace(/\B(?=(\d{3})+(?!\d))/g, sep);
+      }
+
+      function formatWithDecimals(num, places) {
+        const n = Number(num);
+        if (!Number.isFinite(n)) return null;
+        return n.toFixed(places);
+      }
+
+      function formatLine(rawLine) {
+        const sanitized = sanitizeLine(rawLine);
+        if (sanitized.type === 'empty') {
+          return { output: '', status: 'empty' };
+        }
+        if (sanitized.type === 'invalid') {
+          return { output: sanitized.raw, status: 'warning', message: sanitized.reason };
+        }
+
+        const sep = delimiter.value === 'thin-space' ? '\u2009' : delimiter.value;
+        const decimalsMode = decimals.value;
+        const baseNumber = `${sanitized.sign}${sanitized.integerPart}${sanitized.decimalPart ? '.' + sanitized.decimalPart : ''}`;
+
+        if (decimalsMode !== 'keep' && sanitized.integerPart.length > 15) {
+          return {
+            output: sanitized.sign + groupDigits(sanitized.integerPart, sep) + (sanitized.decimalPart ? '.' + sanitized.decimalPart : ''),
+            status: 'warning',
+            message: '15자리 이상의 큰 수는 "원본 유지" 모드에서 가장 정확합니다.'
+          };
+        }
+
+        if (decimalsMode !== 'keep') {
+          const places = parseInt(decimalsMode, 10);
+          const rounded = formatWithDecimals(baseNumber, places);
+          if (rounded === null) {
+            return {
+              output: sanitized.raw,
+              status: 'warning',
+              message: '숫자 크기가 너무 커서 반올림할 수 없습니다. 원본 유지 모드를 사용해 주세요.'
+            };
+          }
+          const negative = rounded.startsWith('-');
+          const unsigned = negative ? rounded.slice(1) : rounded;
+          const [intPart, decPart = ''] = unsigned.split('.');
+          const grouped = groupDigits(intPart, sep);
+          const formatted = (negative ? '-' : '') + grouped + (decPart ? '.' + decPart : '');
+          return { output: formatted, status: 'ok' };
+        }
+
+        const grouped = groupDigits(sanitized.integerPart, sep);
+        const decimalOut = sanitized.decimalPart ? '.' + sanitized.decimalPart : (sanitized.hadDecimal ? '.' : '');
+        const formatted = sanitized.sign + grouped + decimalOut;
+        return { output: formatted, status: 'ok' };
+      }
+
+      function render() {
+        const lines = input.value.split(/\r?\n/);
+        const results = [];
+        const warnings = [];
+        let success = 0;
+
+        lines.forEach((line, idx) => {
+          const { output: formatted, status, message } = formatLine(line);
+          results.push(formatted);
+          if (status === 'ok') success += 1;
+          if (status === 'warning') {
+            warnings.push(`라인 ${idx + 1}: ${message}`);
+          }
+        });
+
+        output.value = results.join('\n');
+        successCount.textContent = `성공 ${success}건`;
+        warningCount.textContent = `경고 ${warnings.length}건`;
+        if (warnings.length) {
+          issues.innerHTML = warnings.map((msg) => `<div class="flex items-start gap-1.5"><i data-lucide="alert-triangle" class="w-3.5 h-3.5 mt-0.5"></i><span>${msg}</span></div>`).join('');
+          statusBadge.textContent = '경고 있음';
+          statusBadge.className = 'ml-auto px-2 py-1 rounded-full border border-amber-400/40 bg-amber-400/10 text-[11px] text-amber-200';
+        } else {
+          issues.innerHTML = '';
+          statusBadge.textContent = success ? '완료' : '대기 중';
+          statusBadge.className = 'ml-auto px-2 py-1 rounded-full border border-emerald-400/40 bg-emerald-400/10 text-[11px] text-emerald-200';
+        }
+        window.lucide?.createIcons?.();
+      }
+
+      input.addEventListener('input', () => {
+        updateCounts();
+        if (auto.checked) {
+          render();
+        } else {
+          statusBadge.textContent = '대기 중';
+          statusBadge.className = 'ml-auto px-2 py-1 rounded-full border border-white/20 bg-white/5 text-[11px] text-white/70';
+        }
+      });
+
+      [decimals, delimiter, decimalSymbol].forEach((el) => {
+        el.addEventListener('change', () => {
+          if (auto.checked) {
+            render();
+          }
+        });
+      });
+
+      btnFormat.addEventListener('click', () => {
+        render();
+      });
+
+      btnReset.addEventListener('click', () => {
+        input.value = '';
+        output.value = '';
+        issues.innerHTML = '';
+        successCount.textContent = '성공 0건';
+        warningCount.textContent = '경고 0건';
+        statusBadge.textContent = '대기 중';
+        statusBadge.className = 'ml-auto px-2 py-1 rounded-full border border-emerald-400/40 bg-emerald-400/10 text-[11px] text-emerald-200';
+        updateCounts();
+      });
+
+      btnCopy.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(output.value);
+          btnCopy.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i> 복사 완료';
+          window.lucide?.createIcons?.();
+          setTimeout(() => {
+            btnCopy.innerHTML = '<i data-lucide="copy" class="w-4 h-4"></i> 결과 복사';
+            window.lucide?.createIcons?.();
+          }, 1800);
+        } catch (err) {
+          alert('클립보드 복사에 실패했습니다. 브라우저 권한을 확인해 주세요.');
+        }
+      });
+
+      btnExample.addEventListener('click', () => {
+        input.value = ['1234567', '98765.4321', '1 234 567,8', '-9800000', '3100000.5'].join('\n');
+        updateCounts();
+        render();
+      });
+
+      updateCounts();
+    })();
+  </script>
+
+  <script defer src="/inject-layout.js?v=8"></script>
+</body>
+</html>

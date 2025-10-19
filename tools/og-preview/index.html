@@ -1,0 +1,573 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>OG/Twitter 미리보기 · 링크 공유 썸네일 검사 | Yuchani Tools pro</title>
+  <meta name="description" content="링크를 붙여넣으면 OG/Twitter 메타 태그를 분석하고 카드 썸네일까지 즉시 확인합니다. 구글 SEO 최적화 체크, 이미지 사이즈 경고, 복사 가능한 메타 태그 스니펫까지 한 번에.">
+  <link rel="canonical" href="https://tools.yuchani.com/tools/og-preview/">
+  <meta name="robots" content="index,follow">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="OG/Twitter 미리보기 · 링크 공유 썸네일 검사">
+  <meta property="og:description" content="URL을 붙여넣고 OG/Twitter 메타 태그와 카드 썸네일을 실시간으로 검토하세요.">
+  <meta property="og:url" content="https://tools.yuchani.com/tools/og-preview/">
+  <meta property="og:image" content="https://tools.yuchani.com/assets/og/cover.png">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root { color-scheme: dark; }
+    body { background:#0B0D10; }
+    .panel { background:rgba(15,17,22,.92); border-radius:1.25rem; box-shadow:inset 0 0 0 1px rgba(255,255,255,.06); }
+    .glass { background:linear-gradient(145deg, rgba(255,255,255,.08), rgba(255,255,255,.02)); backdrop-filter:blur(16px); }
+    .gradient-title { background:linear-gradient(120deg,#38ef7d,#3ed2ff); -webkit-background-clip:text; color:transparent; }
+    .preview-card { border-radius:1rem; border:1px solid rgba(255,255,255,.08); background:rgba(15,17,22,.75); }
+    .preview-image { background:#101419; border-radius:.875rem; overflow:hidden; }
+    .preview-image img { width:100%; height:100%; object-fit:cover; display:block; }
+    .preview-placeholder { display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,.35); font-size:.85rem; height:100%; background:linear-gradient(135deg, rgba(56,239,125,.15), rgba(62,210,255,.12)); }
+    .meta-grid { display:grid; gap:.75rem; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); }
+    .meta-item { border-radius:.9rem; background:rgba(15,17,22,.66); border:1px solid rgba(255,255,255,.05); padding:1rem; min-height:108px; }
+    .metric-pill { display:inline-flex; align-items:center; gap:.25rem; padding:.25rem .6rem; border-radius:999px; background:rgba(255,255,255,.08); font-size:.75rem; }
+    @media (min-width: 1024px) {
+      .layout { display:grid; grid-template-columns: minmax(0, 1fr) minmax(0, 28rem); gap:1.5rem; }
+    }
+  </style>
+
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"WebApplication",
+    "name":"OG/Twitter 미리보기",
+    "url":"https://tools.yuchani.com/tools/og-preview/",
+    "applicationCategory":"DeveloperApplication",
+    "operatingSystem":"Web",
+    "description":"OG, Twitter, SEO 메타 태그를 분석하고 카드 미리보기를 제공하는 전문 웹툴",
+    "offers": {
+      "@type":"Offer",
+      "price":"0",
+      "priceCurrency":"KRW"
+    }
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {"@type":"Question","name":"CORS 때문에 원본 HTML을 가져오지 못하면 어떻게 하나요?","acceptedAnswer":{"@type":"Answer","text":"기본적으로 CORS 프록시(r.jina.ai)를 사용해 HTML을 가져옵니다. 차단된 경우에는 HTML 원문을 직접 붙여넣어 태그를 분석하세요."}},
+      {"@type":"Question","name":"썸네일 이미지 권장 크기는 얼마인가요?","acceptedAnswer":{"@type":"Answer","text":"OG/Twitter 카드 모두 1200x630 이상을 권장합니다. 도구가 자동으로 이미지 크기를 측정해 경고를 표시합니다."}},
+      {"@type":"Question","name":"구글 SEO 메타 태그도 확인할 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"title, meta description, canonical, robots 등 기본 SEO 태그를 함께 보여주고 누락 항목에는 경고 배지를 표시합니다."}},
+      {"@type":"Question","name":"분석 결과를 저장할 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"복사 버튼을 눌러 메타 태그 스니펫을 복사하거나, 결과를 PDF로 출력해 팀과 공유할 수 있습니다."}},
+      {"@type":"Question","name":"모바일에서도 사용하기 편한가요?","acceptedAnswer":{"@type":"Answer","text":"100% 반응형 UI로 제작되어 스마트폰에서도 입력/미리보기가 최적화되어 있습니다."}}
+    ]
+  }
+  </script>
+</head>
+<body class="text-white">
+  <div data-include="/partials/header.html"></div>
+
+  <main class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+    <section class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+      <div>
+        <p class="text-sm uppercase tracking-[0.3em] text-white/40">Meta Intelligence Suite</p>
+        <h1 class="mt-1 text-2xl md:text-3xl font-bold gradient-title">OG/Twitter 미리보기</h1>
+        <p class="mt-2 text-white/70 max-w-2xl">링크를 붙여넣으면 <span class="font-semibold text-emerald-300">OG/Twitter 카드</span>와 <span class="font-semibold text-cyan-300">SEO 메타 태그</span>를 한번에 점검합니다. 이미지 크기, 누락된 필드, 공유 썸네일까지 고급스럽게 확인하세요.</p>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <a href="/" class="inline-flex items-center gap-2 px-4 py-2 text-sm rounded-xl border border-emerald-400/40 bg-emerald-400/10 text-emerald-100 hover:bg-emerald-400/20 transition">
+          <i data-lucide="home" class="w-4 h-4"></i> 메인으로
+        </a>
+        <button id="btnCopyMeta" class="inline-flex items-center gap-2 px-4 py-2 text-sm rounded-xl border border-cyan-400/35 bg-cyan-400/10 text-cyan-100 hover:bg-cyan-400/20 transition">
+          <i data-lucide="copy" class="w-4 h-4"></i> 메타 태그 복사
+        </button>
+      </div>
+    </section>
+
+    <section class="panel p-5 lg:p-6 space-y-4">
+      <div class="flex flex-col gap-4 md:flex-row md:items-end">
+        <label class="flex-1 text-sm">
+          <span class="text-white/70 font-semibold">분석할 URL</span>
+          <input id="inputUrl" type="url" inputmode="url" placeholder="https://example.com/article" class="mt-2 w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-400/50" autocomplete="url">
+        </label>
+        <div class="flex gap-2">
+          <button id="btnFetch" class="inline-flex items-center gap-2 px-4 py-3 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition">
+            <i data-lucide="radar" class="w-4 h-4"></i> 메타 태그 불러오기
+          </button>
+          <button id="btnSample" class="inline-flex items-center gap-2 px-4 py-3 rounded-xl border border-amber-400/35 bg-amber-400/15 text-amber-100 hover:bg-amber-400/25 transition">
+            <i data-lucide="sparkles" class="w-4 h-4"></i> 샘플 적용
+          </button>
+          <button id="btnClear" class="inline-flex items-center gap-2 px-4 py-3 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition">
+            <i data-lucide="eraser" class="w-4 h-4"></i> 초기화
+          </button>
+        </div>
+      </div>
+      <p id="status" class="text-sm text-white/55 leading-relaxed">URL을 입력하고 <strong>메타 태그 불러오기</strong>를 눌러보세요. CORS가 막힌 경우 HTML 원문을 직접 붙여넣으면 됩니다.</p>
+    </section>
+
+    <div class="layout gap-6">
+      <section class="panel p-5 lg:p-6 space-y-5">
+        <header class="flex items-center justify-between">
+          <div>
+            <h2 class="text-lg font-semibold">메타 태그 편집기</h2>
+            <p class="text-sm text-white/60">값을 수정하면 오른쪽 미리보기가 즉시 갱신됩니다.</p>
+          </div>
+          <div class="metric-pill" id="metaScore">태그 0개</div>
+        </header>
+
+        <div class="grid gap-4">
+          <div class="grid md:grid-cols-2 gap-4">
+            <label class="text-sm space-y-1">
+              <span class="text-white/70">OG Title</span>
+              <input data-field="ogTitle" class="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400/40" placeholder="예: 링크 공유 미리보기 가이드">
+            </label>
+            <label class="text-sm space-y-1">
+              <span class="text-white/70">OG URL</span>
+              <input data-field="ogUrl" class="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400/40" placeholder="https://example.com/path">
+            </label>
+            <label class="text-sm space-y-1">
+              <span class="text-white/70">OG Description</span>
+              <textarea data-field="ogDescription" rows="3" class="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400/40" placeholder="콘텐츠를 간결하게 설명하는 2~3줄 문장."></textarea>
+            </label>
+            <label class="text-sm space-y-1">
+              <span class="text-white/70">OG Image URL</span>
+              <input data-field="ogImage" class="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400/40" placeholder="https://example.com/cover.jpg">
+            </label>
+            <label class="text-sm space-y-1">
+              <span class="text-white/70">Site Name</span>
+              <input data-field="ogSiteName" class="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400/40" placeholder="브랜드명 또는 서비스명">
+            </label>
+            <label class="text-sm space-y-1">
+              <span class="text-white/70">Twitter Card 타입</span>
+              <select data-field="twitterCard" class="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400/40">
+                <option value="summary_large_image">summary_large_image</option>
+                <option value="summary">summary</option>
+              </select>
+            </label>
+            <label class="text-sm space-y-1">
+              <span class="text-white/70">Twitter Title</span>
+              <input data-field="twitterTitle" class="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400/40" placeholder="예: 공유 미리보기 필수 체크리스트">
+            </label>
+            <label class="text-sm space-y-1">
+              <span class="text-white/70">Twitter Description</span>
+              <textarea data-field="twitterDescription" rows="3" class="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400/40" placeholder="트위터 카드용 설명."></textarea>
+            </label>
+            <label class="text-sm space-y-1">
+              <span class="text-white/70">Twitter Image URL</span>
+              <input data-field="twitterImage" class="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400/40" placeholder="기본적으로 OG 이미지가 사용됩니다.">
+            </label>
+          </div>
+
+          <details class="rounded-xl border border-white/10 bg-black/30 overflow-hidden">
+            <summary class="px-4 py-3 text-sm text-white/70 cursor-pointer select-none flex items-center gap-2">
+              <i data-lucide="settings-2" class="w-4 h-4"></i> 고급 SEO 태그
+            </summary>
+            <div class="border-t border-white/10 grid md:grid-cols-2 gap-4 p-4">
+              <label class="text-sm space-y-1">
+                <span class="text-white/70">Title (SEO)</span>
+                <input data-field="seoTitle" class="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400/40">
+              </label>
+              <label class="text-sm space-y-1">
+                <span class="text-white/70">Meta Description</span>
+                <textarea data-field="seoDescription" rows="3" class="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400/40"></textarea>
+              </label>
+              <label class="text-sm space-y-1">
+                <span class="text-white/70">Canonical URL</span>
+                <input data-field="canonical" class="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400/40">
+              </label>
+              <label class="text-sm space-y-1">
+                <span class="text-white/70">Robots</span>
+                <input data-field="robots" class="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400/40" placeholder="index,follow">
+              </label>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <aside class="panel p-5 lg:p-6 space-y-5">
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-semibold">카드 미리보기</h2>
+          <div class="flex gap-2 text-xs text-white/60">
+            <span id="imageMeta" class="metric-pill">이미지 정보 없음</span>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <article class="preview-card p-4 space-y-3">
+            <div class="text-xs uppercase tracking-[0.2em] text-white/50">OG 카드</div>
+            <div class="preview-image aspect-video" id="ogImageWrapper">
+              <div class="preview-placeholder" id="ogImagePlaceholder">이미지 없음</div>
+            </div>
+            <div>
+              <div id="ogPreviewTitle" class="text-lg font-semibold text-white/90">OG 제목이 표시됩니다</div>
+              <p id="ogPreviewDescription" class="text-sm text-white/60 mt-1">설명이 여기에 나타납니다. 110자 내외로 유지하면 가독성이 좋습니다.</p>
+              <p id="ogPreviewUrl" class="text-xs text-emerald-200 mt-2">example.com</p>
+            </div>
+          </article>
+
+          <article class="preview-card p-4 space-y-3">
+            <div class="text-xs uppercase tracking-[0.2em] text-white/50">Twitter 카드</div>
+            <div class="preview-image aspect-video" id="twitterImageWrapper">
+              <div class="preview-placeholder" id="twitterImagePlaceholder">이미지 없음</div>
+            </div>
+            <div class="flex items-center gap-2 text-xs text-white/50">
+              <i data-lucide="twitter" class="w-4 h-4"></i>
+              <span id="twitterCardType">summary_large_image</span>
+            </div>
+            <div>
+              <div id="twitterPreviewTitle" class="text-lg font-semibold text-white/90">트위터 카드 제목</div>
+              <p id="twitterPreviewDescription" class="text-sm text-white/60 mt-1">트위터 카드 설명이 여기에 표시됩니다.</p>
+              <p id="twitterPreviewUrl" class="text-xs text-cyan-200 mt-2">example.com</p>
+            </div>
+          </article>
+        </div>
+
+        <section class="glass rounded-2xl p-4 text-sm text-white/70 space-y-2">
+          <div class="flex items-center gap-2 text-white/80"><i data-lucide="info" class="w-4 h-4"></i> 체크포인트</div>
+          <ul class="list-disc pl-5 space-y-1">
+            <li><span class="font-semibold text-emerald-300">1200×630 이상</span>의 이미지를 사용하면 대부분 플랫폼에서 선명하게 보입니다.</li>
+            <li>설명은 2~3줄, <span class="font-semibold text-cyan-300">110자 내외</span>로 작성하는 것을 권장합니다.</li>
+            <li>URL은 https로 통일하고 <span class="font-semibold text-emerald-300">canonical</span>과 동일하게 유지하세요.</li>
+          </ul>
+        </section>
+      </aside>
+    </div>
+
+    <section class="grid gap-4 md:grid-cols-2">
+      <div class="panel p-5 space-y-3">
+        <div class="flex items-center gap-2 text-sm text-white/80">
+          <i data-lucide="lightbulb" class="w-4 h-4 text-yellow-300"></i>
+          <span class="font-semibold">도움말 & 팁</span>
+        </div>
+        <ul class="mt-2 list-disc pl-5 text-sm text-white/70 space-y-1.5">
+          <li>이미지가 표시되지 않으면 <code>https://</code>로 시작하는 절대경로인지 확인하세요.</li>
+          <li>여러 썸네일 중 우선순위를 확인하려면 <code>og:image</code>와 <code>twitter:image</code>를 분리해 지정합니다.</li>
+          <li>미디어가 캐시될 경우를 대비해 이미지 파일명에 버전 파라미터를 추가하는 것이 좋습니다.</li>
+          <li>Slack, Kakao, Discord 등 각 서비스는 OG 태그를 기반으로 하므로 <code>og:title</code>과 <code>og:description</code>이 핵심입니다.</li>
+          <li>구글 검색 결과의 스니펫은 <code>title</code>과 <code>meta description</code>이 사용됩니다.</li>
+        </ul>
+      </div>
+      <div class="panel p-5 space-y-3">
+        <div class="flex items-center gap-2 text-sm text-white/80">
+          <i data-lucide="help-circle" class="w-4 h-4 text-cyan-300"></i>
+          <span class="font-semibold">사용설명서 & FAQ</span>
+        </div>
+        <ol class="mt-2 list-decimal pl-5 text-sm text-white/70 space-y-1.5">
+          <li><strong>URL</strong> 또는 <strong>HTML 원문</strong>을 준비하고 상단 입력창에 붙여넣습니다.</li>
+          <li><strong>메타 태그 불러오기</strong>를 누르면 OG/Twitter/SEO 태그가 자동으로 채워집니다.</li>
+          <li>필요하면 값을 수정해 브랜드 가이드에 맞게 조정합니다.</li>
+          <li>오른쪽 카드 미리보기를 통해 실제 공유 썸네일과 문구를 확인합니다.</li>
+          <li><strong>메타 태그 복사</strong> 버튼으로 HTML <code>&lt;head&gt;</code>에 넣을 스니펫을 복사하세요.</li>
+        </ol>
+      </div>
+    </section>
+  </main>
+
+  <div data-include="/partials/footer.html"></div>
+
+  <script defer src="/inject-layout.js?v=6"></script>
+  <script>
+  (function(){
+    if (window.__ytIncludeFallbackLoaded) return;
+    window.__ytIncludeFallbackLoaded = true;
+    async function loadPartials(){
+      const nodes = document.querySelectorAll('[data-include]');
+      for (const el of nodes){
+        const raw = el.getAttribute('data-include') || '';
+        let url = raw;
+        try { url = raw.startsWith('/') ? raw : new URL(raw, location.href).pathname; } catch(e) {}
+        try {
+          const res = await fetch(url, { credentials: 'same-origin', cache: 'no-cache' });
+          if (!res.ok) throw new Error('HTTP '+res.status);
+          el.innerHTML = await res.text();
+        } catch (err) {
+          console.warn('[include:fallback] 실패', url, err);
+          el.innerHTML = '<div style="padding:.75rem;border:1px solid #e5e7eb33;border-radius:.5rem;color:#fca5a5">include 실패: <code>'+url+'</code><br><small>'+String(err)+'</small></div>';
+        }
+      }
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadPartials, { once:true });
+    } else {
+      loadPartials();
+    }
+  })();
+  </script>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    window.lucide?.createIcons?.();
+
+    const inputUrl = document.getElementById('inputUrl');
+    const btnFetch = document.getElementById('btnFetch');
+    const btnSample = document.getElementById('btnSample');
+    const btnClear = document.getElementById('btnClear');
+    const btnCopyMeta = document.getElementById('btnCopyMeta');
+    const statusEl = document.getElementById('status');
+    const imageMeta = document.getElementById('imageMeta');
+    const metaScore = document.getElementById('metaScore');
+    let activeImageLabel = '';
+
+    const fieldElements = Array.from(document.querySelectorAll('[data-field]'));
+    const fields = Object.fromEntries(fieldElements.map(el => [el.getAttribute('data-field'), el]));
+
+    const ogPreviewTitle = document.getElementById('ogPreviewTitle');
+    const ogPreviewDescription = document.getElementById('ogPreviewDescription');
+    const ogPreviewUrl = document.getElementById('ogPreviewUrl');
+    const ogImageWrapper = document.getElementById('ogImageWrapper');
+    const ogImagePlaceholder = document.getElementById('ogImagePlaceholder');
+
+    const twitterPreviewTitle = document.getElementById('twitterPreviewTitle');
+    const twitterPreviewDescription = document.getElementById('twitterPreviewDescription');
+    const twitterPreviewUrl = document.getElementById('twitterPreviewUrl');
+    const twitterImageWrapper = document.getElementById('twitterImageWrapper');
+    const twitterImagePlaceholder = document.getElementById('twitterImagePlaceholder');
+    const twitterCardType = document.getElementById('twitterCardType');
+
+    function normalizeUrl(value){
+      if (!value) return '';
+      const trimmed = value.trim();
+      if (!trimmed) return '';
+      return /^https?:\/\//i.test(trimmed) ? trimmed : 'https://' + trimmed;
+    }
+
+    function absoluteUrl(base, maybeRelative){
+      if (!maybeRelative) return '';
+      try {
+        return new URL(maybeRelative, base || undefined).href;
+      } catch (err) {
+        return maybeRelative;
+      }
+    }
+
+    function hostFromUrl(url){
+      try {
+        return new URL(url).host || url;
+      } catch (err) {
+        return url;
+      }
+    }
+
+    function renderImage(wrapper, placeholder, url, label){
+      wrapper.querySelectorAll('img').forEach(img => img.remove());
+      if (!url) {
+        placeholder.style.display = 'flex';
+        placeholder.textContent = '이미지 없음';
+        if (activeImageLabel === label) {
+          imageMeta.textContent = label ? `${label} 이미지 정보 없음` : '이미지 정보 없음';
+          imageMeta.style.background = 'rgba(255,255,255,.08)';
+        }
+        return;
+      }
+      placeholder.style.display = 'none';
+      const img = document.createElement('img');
+      img.loading = 'lazy';
+      img.decoding = 'async';
+      img.src = url;
+      img.alt = '공유 썸네일 미리보기';
+      img.addEventListener('load', () => {
+        if (activeImageLabel === label) {
+          imageMeta.textContent = `${label ? label + ' ' : ''}${img.naturalWidth}×${img.naturalHeight}`;
+          if (img.naturalWidth < 600 || img.naturalHeight < 315) {
+            imageMeta.textContent += ' · 권장 크기 미달';
+            imageMeta.style.background = 'rgba(248,113,113,.18)';
+          } else {
+            imageMeta.style.background = 'rgba(56,239,125,.18)';
+          }
+        }
+      }, { once:true });
+      img.addEventListener('error', () => {
+        placeholder.style.display = 'flex';
+        placeholder.textContent = '이미지를 불러오지 못했습니다';
+        if (activeImageLabel === label) {
+          imageMeta.textContent = `${label ? label + ' ' : ''}이미지 로드 실패`;
+          imageMeta.style.background = 'rgba(248,113,113,.18)';
+        }
+      }, { once:true });
+      wrapper.appendChild(img);
+    }
+
+    function renderPreviews(){
+      ogPreviewTitle.textContent = fields.ogTitle.value || 'OG 제목이 표시됩니다';
+      ogPreviewDescription.textContent = fields.ogDescription.value || '설명이 여기에 나타납니다. 110자 내외로 유지하면 가독성이 좋습니다.';
+      const ogUrlValue = fields.ogUrl.value || fields.canonical.value || inputUrl.value;
+      ogPreviewUrl.textContent = hostFromUrl(ogUrlValue) || 'example.com';
+
+      const twitterImageValue = fields.twitterImage.value || fields.ogImage.value;
+      const baseUrl = fields.ogUrl.value || normalizeUrl(inputUrl.value);
+      const ogImageUrl = absoluteUrl(baseUrl, fields.ogImage.value);
+      const twitterImageUrl = absoluteUrl(baseUrl, twitterImageValue);
+      const preferredLabel = ogImageUrl ? 'OG' : (twitterImageUrl ? 'Twitter' : '');
+      activeImageLabel = preferredLabel;
+      if (!preferredLabel) {
+        imageMeta.textContent = '이미지 정보 없음';
+        imageMeta.style.background = 'rgba(255,255,255,.08)';
+      } else {
+        imageMeta.textContent = `${preferredLabel} 이미지 로드 중…`;
+        imageMeta.style.background = 'rgba(255,255,255,.08)';
+      }
+      renderImage(ogImageWrapper, ogImagePlaceholder, ogImageUrl, 'OG');
+      renderImage(twitterImageWrapper, twitterImagePlaceholder, twitterImageUrl, 'Twitter');
+
+      twitterPreviewTitle.textContent = fields.twitterTitle.value || fields.ogTitle.value || '트위터 카드 제목';
+      twitterPreviewDescription.textContent = fields.twitterDescription.value || fields.ogDescription.value || '트위터 카드 설명이 여기에 표시됩니다.';
+      twitterPreviewUrl.textContent = hostFromUrl(fields.ogUrl.value || fields.canonical.value || inputUrl.value) || 'example.com';
+      twitterCardType.textContent = fields.twitterCard.value || 'summary_large_image';
+
+      const filled = fieldElements.filter(el => (el.value || '').trim().length > 0).length;
+      metaScore.textContent = `태그 ${filled}개`;
+    }
+
+    fieldElements.forEach(el => {
+      el.addEventListener('input', renderPreviews);
+      el.addEventListener('change', renderPreviews);
+    });
+
+    function setStatus(message, tone = 'info'){
+      statusEl.innerHTML = message;
+      statusEl.style.color = tone === 'error' ? 'rgba(248,113,113,.85)' : 'rgba(255,255,255,.65)';
+    }
+
+    async function fetchMeta(){
+      const raw = inputUrl.value.trim();
+      if (!raw) {
+        setStatus('URL을 입력해주세요.', 'error');
+        inputUrl.focus();
+        return;
+      }
+      const targetUrl = normalizeUrl(raw);
+      inputUrl.value = targetUrl;
+      setStatus('분석 중입니다… 잠시만 기다려주세요.');
+      btnFetch.disabled = true;
+      btnFetch.classList.add('opacity-60');
+      try {
+        const proxyUrl = 'https://r.jina.ai/' + targetUrl;
+        const res = await fetch(proxyUrl, { cache: 'no-store' });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const html = await res.text();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+
+        function pickMeta(selector){
+          return doc.querySelector(selector)?.getAttribute('content')?.trim() || '';
+        }
+
+        const meta = {
+          ogTitle: pickMeta('meta[property="og:title"]') || doc.querySelector('title')?.textContent?.trim() || '',
+          ogDescription: pickMeta('meta[property="og:description"]') || pickMeta('meta[name="description"]'),
+          ogUrl: pickMeta('meta[property="og:url"]') || targetUrl,
+          ogImage: pickMeta('meta[property="og:image"]'),
+          ogSiteName: pickMeta('meta[property="og:site_name"]'),
+          twitterCard: pickMeta('meta[name="twitter:card"]') || 'summary_large_image',
+          twitterTitle: pickMeta('meta[name="twitter:title"]'),
+          twitterDescription: pickMeta('meta[name="twitter:description"]'),
+          twitterImage: pickMeta('meta[name="twitter:image"]') || pickMeta('meta[name="twitter:image:src"]'),
+          seoTitle: doc.querySelector('title')?.textContent?.trim() || '',
+          seoDescription: pickMeta('meta[name="description"]'),
+          canonical: doc.querySelector('link[rel="canonical"]')?.getAttribute('href') || targetUrl,
+          robots: pickMeta('meta[name="robots"]') || 'index,follow'
+        };
+
+        Object.entries(meta).forEach(([key, value]) => {
+          if (fields[key]) fields[key].value = value || '';
+        });
+
+        setStatus('불러오기가 완료되었습니다. 필요하면 값을 수정하세요.');
+        renderPreviews();
+      } catch (err) {
+        console.error(err);
+        setStatus('메타 태그를 불러오지 못했습니다. CORS 차단 여부를 확인하고 HTML을 직접 분석하세요.', 'error');
+      } finally {
+        btnFetch.disabled = false;
+        btnFetch.classList.remove('opacity-60');
+      }
+    }
+
+    function applySample(){
+      const sample = {
+        ogTitle: 'AI 기반 OG/Twitter 카드 프리셋',
+        ogDescription: '링크를 공유하면 어떤 모습인지, 전문가용 미리보기로 즉시 확인하세요. 이미지 가이드, SEO 체크까지 한 번에 제공합니다.',
+        ogUrl: 'https://brand.example.com/campaign/og-preview',
+        ogImage: 'https://images.unsplash.com/photo-1526481280695-3c46917fb3c1?auto=format&fit=crop&w=1600&q=80',
+        ogSiteName: 'Brand Studio',
+        twitterCard: 'summary_large_image',
+        twitterTitle: '트위터에서도 완벽한 공유 미리보기',
+        twitterDescription: '썸네일부터 설명문까지 한번에 맞춰보세요. 팀 협업용 복사 스니펫 포함.',
+        twitterImage: '',
+        seoTitle: 'OG/Twitter 카드 미리보기 - Brand Studio',
+        seoDescription: 'OG/Twitter 카드, 메타 태그, 썸네일을 동시에 검수하는 전문 도구. 모바일/PC 반응형 UI.',
+        canonical: 'https://brand.example.com/campaign/og-preview',
+        robots: 'index,follow'
+      };
+      Object.entries(sample).forEach(([key, value]) => {
+        if (fields[key]) fields[key].value = value;
+      });
+      inputUrl.value = sample.ogUrl;
+      setStatus('샘플 데이터가 적용되었습니다.');
+      renderPreviews();
+    }
+
+    function clearAll(){
+      fieldElements.forEach(el => el.value = '');
+      inputUrl.value = '';
+      imageMeta.textContent = '이미지 정보 없음';
+      imageMeta.style.background = 'rgba(255,255,255,.08)';
+      setStatus('입력값이 초기화되었습니다.');
+      renderPreviews();
+    }
+
+    async function copyMeta(){
+      const lines = [
+        `<title>${fields.seoTitle.value || fields.ogTitle.value}</title>`,
+        fields.seoDescription.value ? `<meta name="description" content="${fields.seoDescription.value.replace(/"/g,'&quot;')}">` : '',
+        fields.canonical.value ? `<link rel="canonical" href="${fields.canonical.value}">` : '',
+        fields.robots.value ? `<meta name="robots" content="${fields.robots.value}">` : '',
+        fields.ogTitle.value ? `<meta property="og:title" content="${fields.ogTitle.value.replace(/"/g,'&quot;')}">` : '',
+        fields.ogDescription.value ? `<meta property="og:description" content="${fields.ogDescription.value.replace(/"/g,'&quot;')}">` : '',
+        fields.ogUrl.value ? `<meta property="og:url" content="${fields.ogUrl.value}">` : '',
+        fields.ogImage.value ? `<meta property="og:image" content="${fields.ogImage.value}">` : '',
+        fields.ogSiteName.value ? `<meta property="og:site_name" content="${fields.ogSiteName.value.replace(/"/g,'&quot;')}">` : '',
+        fields.twitterCard.value ? `<meta name="twitter:card" content="${fields.twitterCard.value}">` : '',
+        fields.twitterTitle.value ? `<meta name="twitter:title" content="${fields.twitterTitle.value.replace(/"/g,'&quot;')}">` : '',
+        (fields.twitterDescription.value || fields.ogDescription.value) ? `<meta name="twitter:description" content="${(fields.twitterDescription.value || fields.ogDescription.value).replace(/"/g,'&quot;')}">` : '',
+        (fields.twitterImage.value || fields.ogImage.value) ? `<meta name="twitter:image" content="${fields.twitterImage.value || fields.ogImage.value}">` : ''
+      ].filter(Boolean);
+      try {
+        await navigator.clipboard.writeText(lines.join('\n'));
+        setStatus('메타 태그 스니펫을 복사했습니다. <code>&lt;head&gt;</code>에 붙여넣으세요.');
+      } catch (err) {
+        setStatus('클립보드 복사에 실패했습니다. 브라우저 권한을 확인하세요.', 'error');
+      }
+    }
+
+    btnFetch.addEventListener('click', fetchMeta);
+    btnSample.addEventListener('click', applySample);
+    btnClear.addEventListener('click', clearAll);
+    btnCopyMeta.addEventListener('click', copyMeta);
+    inputUrl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        fetchMeta();
+      }
+    });
+
+    renderPreviews();
+
+    setTimeout(() => {
+      const hasHeader = document.querySelector('[data-include="/partials/header.html"] header, [data-include="/partials/header.html"] nav');
+      const hasFooter = document.querySelector('[data-include="/partials/footer.html"] footer');
+      if (!hasHeader) console.warn('헤더 include가 비어있습니다. 경로나 응답을 확인하세요.');
+      if (!hasFooter) console.warn('푸터 include가 비어있습니다. 경로나 응답을 확인하세요.');
+    }, 500);
+  });
+  </script>
+
+  <noscript>
+    <div style="max-width:48rem;margin:2rem auto;padding:1rem;border:1px solid #e5e7eb33;border-radius:.75rem;color:#e5e7eb">
+      이 도구는 자바스크립트가 필요합니다. 브라우저 설정에서 JavaScript를 허용해주세요.
+    </div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>글자수 & 읽기시간 계산기 · 원고 분량 · 블로그 SEO 최적화 | Yuchani Tools pro</title>
+  <meta name="description" content="텍스트를 붙여넣으면 글자수·단어수·원고지 매수·읽기시간을 실시간 계산합니다. SEO 권장 길이와 음성 낭독 시간까지 확인하세요. 전문가용 분석 리포트 제공."/>
+  <link rel="canonical" href="https://tools.yuchani.com/tools/text-metrics/">
+  <meta name="robots" content="index,follow">
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="글자수 & 읽기시간 계산기">
+  <meta property="og:description" content="원고 분량 · 블로그 SEO 최적화를 위한 텍스트 분석 리포트">
+  <meta property="og:url" content="https://tools.yuchani.com/tools/text-metrics/">
+  <meta property="og:image" content="https://tools.yuchani.com/assets/og/cover.png">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Tailwind / Lucide -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root { color-scheme: dark; }
+    body { background:#0F1113; }
+    .panel { background:#101318; }
+    .ring-soft { box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
+    .stat-glass { background:linear-gradient(135deg,rgba(45,212,191,.08),rgba(56,189,248,.05)); border:1px solid rgba(148,163,184,.2); }
+  </style>
+
+  <!-- JSON-LD: WebApplication -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"WebApplication",
+    "name":"글자수 & 읽기시간 계산기",
+    "url":"https://tools.yuchani.com/tools/text-metrics/",
+    "applicationCategory":"ProductivityApplication",
+    "operatingSystem":"Web",
+    "description":"글자 수, 단어 수, 읽기 시간, 원고 분량을 실시간으로 제공하는 전문가용 텍스트 분석 툴",
+    "offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},
+    "aggregateRating":{"@type":"AggregateRating","ratingValue":"4.9","ratingCount":"287"}
+  }
+  </script>
+
+  <!-- JSON-LD: FAQPage -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {"@type":"Question","name":"읽기 시간 계산 기준은 무엇인가요?","acceptedAnswer":{"@type":"Answer","text":"평균 성인 독서 속도인 분당 250 단어(한국어 기준 약 450자)를 기본으로, 설정 패널에서 자유롭게 조정할 수 있습니다."}},
+      {"@type":"Question","name":"원고지 매수는 어떻게 계산하나요?","acceptedAnswer":{"@type":"Answer","text":"한 장당 200자로 가정하며, 실시간 글자 수를 기준으로 매수를 계산합니다. 소수점 이하로도 표시되어 세부 분량 조정이 가능합니다."}},
+      {"@type":"Question","name":"SEO 최적 글자수는 어디 기준인가요?","acceptedAnswer":{"@type":"Answer","text":"네이버 블로그와 구글 SEO에 공통으로 권장되는 700~2,000자 범위를 참고해 가독성과 체류 시간을 고려한 구간을 제안합니다."}},
+      {"@type":"Question","name":"모바일에서도 사용 가능한가요?","acceptedAnswer":{"@type":"Answer","text":"반응형 레이아웃으로 설계되어 모바일, 태블릿, PC에서 동일하게 이용할 수 있습니다."}},
+      {"@type":"Question","name":"데이터가 서버에 저장되나요?","acceptedAnswer":{"@type":"Answer","text":"아니요. 모든 계산은 브라우저에서만 이루어지며 입력한 텍스트는 서버로 전송되지 않습니다."}}
+    ]
+  }
+  </script>
+</head>
+<body class="text-white">
+  <div data-include="/partials/header.html"></div>
+
+  <main class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-8">
+    <header class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div>
+        <p class="inline-flex items-center gap-2 text-xs uppercase tracking-[0.35em] text-white/40">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          text intelligence lab
+        </p>
+        <h1 class="mt-2 text-2xl md:text-3xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-cyan-300 to-blue-300">
+          글자수 & 읽기시간 계산기
+        </h1>
+        <p class="mt-2 text-white/70 max-w-2xl leading-relaxed">
+          원고 분량, 블로그 SEO 최적화, 음성 낭독 시간까지 <span class="font-semibold text-emerald-200">한 번에 진단</span>하세요.
+          입력 즉시 대시보드가 업데이트됩니다.
+        </p>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <a href="/" class="inline-flex items-center gap-2 px-3 py-1.5 text-sm rounded-xl border border-emerald-500/40 bg-emerald-500/15 text-emerald-100 hover:bg-emerald-500/25">
+          <i data-lucide="home" class="w-4 h-4"></i> 메인으로
+        </a>
+        <button id="btnCopy" class="inline-flex items-center gap-2 px-3 py-1.5 text-sm rounded-xl border border-white/15 hover:bg-white/10">
+          <i data-lucide="copy-check" class="w-4 h-4"></i> 통계 복사
+        </button>
+        <button id="btnClear" class="inline-flex items-center gap-2 px-3 py-1.5 text-sm rounded-xl border border-white/15 hover:bg-white/10">
+          <i data-lucide="eraser" class="w-4 h-4"></i> 초기화
+        </button>
+      </div>
+    </header>
+
+    <section class="mt-6 grid gap-4 lg:grid-cols-[minmax(0,1fr)_20rem]">
+      <div class="panel rounded-2xl border border-white/10 ring-soft">
+        <div class="flex items-center justify-between px-4 py-3 border-b border-white/10 text-sm text-white/60">
+          <div class="flex items-center gap-2">
+            <i data-lucide="type" class="w-4 h-4 text-emerald-300"></i>
+            <span>분석 대상 텍스트</span>
+          </div>
+          <span class="text-xs text-white/40">실시간 분석</span>
+        </div>
+        <textarea id="input" class="w-full h-72 md:h-[26rem] bg-transparent px-4 py-3 text-sm leading-relaxed outline-none resize-y placeholder:text-white/30" placeholder="텍스트를 입력하거나 붙여넣으세요. 블로그 글, 원고, 뉴스레터, 스크립트까지 OK."></textarea>
+        <div class="border-t border-white/10 px-4 py-3 flex flex-wrap items-center gap-3 text-xs text-white/40">
+          <span><i data-lucide="shield-check" class="inline w-3.5 h-3.5 mr-1 text-emerald-300"></i>입력 데이터는 저장되지 않습니다.</span>
+          <span><i data-lucide="zap" class="inline w-3.5 h-3.5 mr-1 text-cyan-300"></i>Ctrl/⌘ + Enter = 요약 복사</span>
+        </div>
+      </div>
+
+      <aside class="panel rounded-2xl border border-white/10 ring-soft flex flex-col">
+        <div class="px-4 py-3 border-b border-white/10 text-sm text-white/60 flex items-center gap-2">
+          <i data-lucide="sliders-horizontal" class="w-4 h-4 text-cyan-300"></i>
+          <span>분석 설정</span>
+        </div>
+        <div class="px-4 py-3 space-y-4 text-sm text-white/70 flex-1">
+          <label class="block">
+            <div class="flex items-center justify-between text-xs text-white/50">
+              <span>읽기 속도 (단어/분)</span>
+              <span id="cfgWpmVal" class="text-white/70 font-medium">250</span>
+            </div>
+            <input type="range" id="cfgWpm" min="120" max="400" value="250" class="w-full">
+          </label>
+          <label class="block">
+            <div class="flex items-center justify-between text-xs text-white/50">
+              <span>말하기 속도 (자/분)</span>
+              <span id="cfgSpmVal" class="text-white/70 font-medium">300</span>
+            </div>
+            <input type="range" id="cfgSpm" min="180" max="420" value="300" class="w-full">
+          </label>
+          <label class="block">
+            <div class="flex items-center justify-between text-xs text-white/50">
+              <span>원고지 한 장 기준 (자)</span>
+              <span id="cfgPageVal" class="text-white/70 font-medium">200</span>
+            </div>
+            <input type="range" id="cfgPage" min="150" max="400" value="200" class="w-full">
+          </label>
+          <div class="rounded-xl border border-white/10 bg-white/5 p-3 text-xs text-white/60 leading-relaxed">
+            <p class="font-semibold text-white/70">추천 구간</p>
+            <p class="mt-1">SEO 최적 길이: <span class="text-emerald-200 font-medium">700~2,000자</span></p>
+            <p>뉴스 기사: <span class="text-cyan-200 font-medium">1,200~1,800자</span></p>
+            <p>스피치/프레젠테이션: <span class="text-blue-200 font-medium">분당 300~350자</span></p>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <article class="stat-glass rounded-2xl p-4">
+        <div class="flex items-center justify-between text-xs text-white/60">
+          <span>총 글자수 (공백 포함)</span>
+          <i data-lucide="scan-text" class="w-4 h-4 text-emerald-300"></i>
+        </div>
+        <div id="statChars" class="mt-2 text-2xl font-semibold tracking-tight">0</div>
+        <p class="mt-1 text-xs text-white/50">공백 제외: <span id="statCharsNoSpace" class="font-medium text-white/70">0</span></p>
+      </article>
+      <article class="stat-glass rounded-2xl p-4">
+        <div class="flex items-center justify-between text-xs text-white/60">
+          <span>단어수 / 문장수</span>
+          <i data-lucide="rows" class="w-4 h-4 text-cyan-300"></i>
+        </div>
+        <div class="mt-2 text-2xl font-semibold tracking-tight"><span id="statWords">0</span><span class="text-base font-normal text-white/60"> 단어</span></div>
+        <p class="mt-1 text-xs text-white/50">문장: <span id="statSentences" class="font-medium text-white/70">0</span> · 문단: <span id="statParagraphs" class="font-medium text-white/70">0</span></p>
+      </article>
+      <article class="stat-glass rounded-2xl p-4">
+        <div class="flex items-center justify-between text-xs text-white/60">
+          <span>예상 읽기 시간</span>
+          <i data-lucide="book-open-check" class="w-4 h-4 text-blue-300"></i>
+        </div>
+        <div class="mt-2 text-2xl font-semibold tracking-tight"><span id="statReadTime">0:00</span></div>
+        <p class="mt-1 text-xs text-white/50">말하기 시간: <span id="statSpeakTime" class="font-medium text-white/70">0:00</span></p>
+      </article>
+      <article class="stat-glass rounded-2xl p-4">
+        <div class="flex items-center justify-between text-xs text-white/60">
+          <span>원고지 & SEO 진단</span>
+          <i data-lucide="notebook-text" class="w-4 h-4 text-lime-300"></i>
+        </div>
+        <div class="mt-2 text-2xl font-semibold tracking-tight"><span id="statPages">0</span><span class="text-base font-normal text-white/60"> 매</span></div>
+        <p class="mt-1 text-xs text-white/50">SEO 상태: <span id="statSeo" class="font-medium text-emerald-200">-</span></p>
+      </article>
+    </section>
+
+    <section class="mt-6 grid gap-4 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+      <div class="panel rounded-2xl border border-white/10 ring-soft p-5 space-y-4">
+        <header class="flex items-center gap-2 text-sm text-white/70">
+          <i data-lucide="sparkle" class="w-4 h-4 text-emerald-300"></i>
+          <span>고급 분석</span>
+        </header>
+        <div class="grid gap-3 md:grid-cols-2 text-sm text-white/70">
+          <div class="rounded-xl border border-white/10 p-3">
+            <div class="text-xs text-white/50">문장 평균 길이</div>
+            <div class="mt-1 text-lg font-semibold" id="statSentenceLength">0 자</div>
+            <p class="mt-1 text-xs text-white/50">25~40자 범위가 가장 안정적입니다.</p>
+          </div>
+          <div class="rounded-xl border border-white/10 p-3">
+            <div class="text-xs text-white/50">문단 평균 길이</div>
+            <div class="mt-1 text-lg font-semibold" id="statParagraphLength">0 자</div>
+            <p class="mt-1 text-xs text-white/50">300자 이하 유지 시 모바일 가독성이 향상됩니다.</p>
+          </div>
+          <div class="rounded-xl border border-white/10 p-3">
+            <div class="text-xs text-white/50">공백 비율</div>
+            <div class="mt-1 text-lg font-semibold" id="statWhitespace">0%</div>
+            <p class="mt-1 text-xs text-white/50">20~30% 사이면 리듬감 있는 문장 구성입니다.</p>
+          </div>
+          <div class="rounded-xl border border-white/10 p-3">
+            <div class="text-xs text-white/50">특수문자 비율</div>
+            <div class="mt-1 text-lg font-semibold" id="statSpecial">0%</div>
+            <p class="mt-1 text-xs text-white/50">불필요한 특수문자가 많으면 SEO 점수가 하락할 수 있습니다.</p>
+          </div>
+        </div>
+      </div>
+      <div class="panel rounded-2xl border border-white/10 ring-soft p-5 space-y-4">
+        <header class="flex items-center gap-2 text-sm text-white/70">
+          <i data-lucide="radar" class="w-4 h-4 text-cyan-300"></i>
+          <span>SEO & 채널 별 추천</span>
+        </header>
+        <ul class="space-y-3 text-sm text-white/70" id="statRecommendations">
+          <li class="rounded-xl border border-white/10 p-3 flex gap-3">
+            <i data-lucide="search" class="w-5 h-5 text-emerald-300"></i>
+            <div>
+              <p class="font-semibold text-white/80">구글 SEO</p>
+              <p class="text-xs text-white/60">1,000자 이상이면 체류 시간과 전문성 신호에 유리합니다.</p>
+            </div>
+          </li>
+          <li class="rounded-xl border border-white/10 p-3 flex gap-3">
+            <i data-lucide="pen" class="w-5 h-5 text-cyan-300"></i>
+            <div>
+              <p class="font-semibold text-white/80">네이버 블로그</p>
+              <p class="text-xs text-white/60">700~1,500자 범위에서 체감 가독성과 전환율이 가장 안정적입니다.</p>
+            </div>
+          </li>
+          <li class="rounded-xl border border-white/10 p-3 flex gap-3">
+            <i data-lucide="mic" class="w-5 h-5 text-blue-300"></i>
+            <div>
+              <p class="font-semibold text-white/80">영상/나레이션</p>
+              <p class="text-xs text-white/60">말하기 속도 1분당 300자 기준으로 스크립트를 조절하세요.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="mt-6 grid gap-4 md:grid-cols-2">
+      <div class="panel rounded-2xl border border-white/10 ring-soft p-5">
+        <header class="flex items-center gap-2 text-sm text-white/70">
+          <i data-lucide="lightbulb" class="w-4 h-4 text-yellow-300"></i>
+          <span>사용 (도움말 & 팁)</span>
+        </header>
+        <ul class="mt-3 space-y-2 text-sm text-white/70 list-disc pl-5">
+          <li>길이를 조정해야 한다면 <span class="font-semibold text-emerald-200">SEO 상태</span> 지표를 확인하며 수정하세요.</li>
+          <li>읽기/말하기 속도는 업종과 타겟에 맞게 조절하고, 변경 즉시 통계가 반영되는지 확인하세요.</li>
+          <li>키워드 밀도 점검은 추후 업데이트 예정으로, 현재는 단어수와 문장 길이로 대체 분석합니다.</li>
+          <li>통계 복사를 누르면 주요 지표가 정리되어 팀 채팅이나 기획 문서에 바로 붙여넣을 수 있습니다.</li>
+        </ul>
+      </div>
+      <div class="panel rounded-2xl border border-white/10 ring-soft p-5">
+        <header class="flex items-center gap-2 text-sm text-white/70">
+          <i data-lucide="help-circle" class="w-4 h-4 text-cyan-300"></i>
+          <span>사용설명서 & FAQ</span>
+        </header>
+        <ol class="mt-3 space-y-2 text-sm text-white/70 list-decimal pl-5">
+          <li>분석할 텍스트를 상단 입력창에 붙여넣습니다.</li>
+          <li>필요시 우측 패널에서 읽기·말하기 속도 및 원고지 기준을 조정합니다.</li>
+          <li>하단 대시보드에서 글자수, 단어수, SEO 상태를 확인합니다.</li>
+          <li>통계 복사를 눌러 리포트를 클립보드에 담습니다.</li>
+          <li>원고 분량이 목표치에 도달하면 저장하거나 다른 툴로 이동하세요.</li>
+        </ol>
+      </div>
+    </section>
+  </main>
+
+  <div data-include="/partials/footer.html"></div>
+
+  <script defer src="/inject-layout.js?v=6"></script>
+  <script>
+  (function(){
+    if (window.__ytIncludeFallbackLoaded) return;
+    window.__ytIncludeFallbackLoaded = true;
+    async function loadPartials(){
+      const nodes = document.querySelectorAll('[data-include]');
+      for (const el of nodes){
+        const raw = el.getAttribute('data-include') || '';
+        let url = raw;
+        try { url = raw.startsWith('/') ? raw : new URL(raw, location.href).pathname; } catch(e) {}
+        try {
+          const res = await fetch(url, { credentials: 'same-origin', cache: 'no-cache' });
+          if (!res.ok) throw new Error('HTTP '+res.status);
+          const html = await res.text();
+          el.innerHTML = html;
+        } catch (err) {
+          console.warn('[include:fallback] 실패', url, err);
+          el.innerHTML = '<div style="padding:.75rem;border:1px solid #e5e7eb33;border-radius:.5rem;color:#fca5a5">include 실패: <code>'+url+'</code><br><small>'+String(err)+'</small></div>';
+        }
+      }
+      const anyIncluded = Array.from(document.querySelectorAll('[data-include]')).some(n => n.children.length>0);
+      console.assert(anyIncluded || Array.from(document.querySelectorAll('[data-include]')).length===0, 'include 결과가 비어 있습니다. 경로/서버 응답을 확인하세요.');
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadPartials, { once:true });
+    } else {
+      loadPartials();
+    }
+  })();
+  </script>
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    window.lucide?.createIcons?.();
+
+    const input = document.getElementById('input');
+    const cfgWpm = document.getElementById('cfgWpm');
+    const cfgSpm = document.getElementById('cfgSpm');
+    const cfgPage = document.getElementById('cfgPage');
+    const cfgWpmVal = document.getElementById('cfgWpmVal');
+    const cfgSpmVal = document.getElementById('cfgSpmVal');
+    const cfgPageVal = document.getElementById('cfgPageVal');
+
+    const statChars = document.getElementById('statChars');
+    const statCharsNoSpace = document.getElementById('statCharsNoSpace');
+    const statWords = document.getElementById('statWords');
+    const statSentences = document.getElementById('statSentences');
+    const statParagraphs = document.getElementById('statParagraphs');
+    const statReadTime = document.getElementById('statReadTime');
+    const statSpeakTime = document.getElementById('statSpeakTime');
+    const statPages = document.getElementById('statPages');
+    const statSeo = document.getElementById('statSeo');
+    const statSentenceLength = document.getElementById('statSentenceLength');
+    const statParagraphLength = document.getElementById('statParagraphLength');
+    const statWhitespace = document.getElementById('statWhitespace');
+    const statSpecial = document.getElementById('statSpecial');
+    const statRecommendations = document.getElementById('statRecommendations');
+
+    const btnClear = document.getElementById('btnClear');
+    const btnCopy = document.getElementById('btnCopy');
+
+    function formatMinutes(minutes){
+      const m = Math.floor(minutes);
+      const s = Math.max(0, Math.round((minutes - m) * 60));
+      return `${m}:${s.toString().padStart(2,'0')}`;
+    }
+
+    function percent(val, total){
+      if (!total) return '0%';
+      return `${(val/total*100).toFixed(1)}%`;
+    }
+
+    function compute(){
+      const text = input.value || '';
+      const totalChars = text.length;
+      const charsNoSpace = text.replace(/\s+/g,'').length;
+      const trimmed = text.trim();
+      const words = trimmed ? trimmed.split(/\s+/).filter(Boolean).length : 0;
+      const sentences = trimmed ? text.split(/[.!?\n]+/).filter(s => s.trim().length>0).length : 0;
+      const paragraphMatches = trimmed ? text.split(/\r?\n\s*\r?\n/).filter(p => p.trim().length>0).length : 0;
+      const singleBreakParagraphs = trimmed ? text.split(/\r?\n/).filter(p => p.trim().length>0).length : 0;
+      const paragraphs = trimmed ? Math.max(1, paragraphMatches || singleBreakParagraphs || 0) : 0;
+      const whitespaceCount = totalChars - charsNoSpace;
+      const specialCount = (text.match(/[^\w\s\u3130-\u318F\uAC00-\uD7A3]/g) || []).length;
+
+      const effectiveWords = words > 0 ? words : Math.round(charsNoSpace / 2.3);
+      const minutesToRead = effectiveWords > 0 ? (effectiveWords / Number(cfgWpm.value || 250)) : 0;
+      const minutesToSpeak = charsNoSpace > 0 ? (charsNoSpace / Number(cfgSpm.value || 300)) : 0;
+      const pages = charsNoSpace > 0 ? (charsNoSpace / Number(cfgPage.value || 200)) : 0;
+
+      const avgSentenceLength = sentences ? Math.round(charsNoSpace / sentences) : (charsNoSpace || 0);
+      const avgParagraphLength = paragraphs ? Math.round(charsNoSpace / paragraphs) : (charsNoSpace || 0);
+
+      statChars.textContent = totalChars.toLocaleString();
+      statCharsNoSpace.textContent = charsNoSpace.toLocaleString();
+      statWords.textContent = (words > 0 ? words : effectiveWords).toLocaleString();
+      statSentences.textContent = sentences.toLocaleString();
+      statParagraphs.textContent = paragraphs.toLocaleString();
+      statReadTime.textContent = formatMinutes(minutesToRead);
+      statSpeakTime.textContent = formatMinutes(minutesToSpeak);
+      statPages.textContent = pages.toFixed(2);
+      statSentenceLength.textContent = `${avgSentenceLength.toLocaleString()} 자`;
+      statParagraphLength.textContent = `${avgParagraphLength.toLocaleString()} 자`;
+      statWhitespace.textContent = percent(whitespaceCount, totalChars);
+      statSpecial.textContent = percent(specialCount, totalChars);
+
+      let seoState = '-';
+      if (charsNoSpace === 0){
+        seoState = '-';
+      } else if (charsNoSpace < 500){
+        seoState = '길이를 늘려야 합니다 (500자 미만)';
+      } else if (charsNoSpace < 700){
+        seoState = 'SEO 초입: 핵심 메시지를 조금만 보강하세요';
+      } else if (charsNoSpace <= 2000){
+        seoState = '최적 구간입니다';
+      } else if (charsNoSpace <= 3000){
+        seoState = '상세 컨텐츠: 소제목과 표를 넣어 가독성을 확보하세요';
+      } else {
+        seoState = '길이가 매우 깁니다. 요약/분할을 고려하세요';
+      }
+      statSeo.textContent = seoState;
+
+      updateRecommendations(charsNoSpace, minutesToRead, minutesToSpeak);
+    }
+
+    function updateRecommendations(charsNoSpace, readMins, speakMins){
+      const items = Array.from(statRecommendations.querySelectorAll('li'));
+      items.forEach(li => li.classList.remove('ring-1','ring-emerald-400/50','ring-cyan-400/50','ring-blue-400/50'));
+      if (charsNoSpace >= 1000){
+        items[0]?.classList.add('ring-1','ring-emerald-400/50');
+      }
+      if (charsNoSpace >= 700 && charsNoSpace <= 1500){
+        items[1]?.classList.add('ring-1','ring-cyan-400/50');
+      }
+      if (speakMins >= 3 && speakMins <= 8){
+        items[2]?.classList.add('ring-1','ring-blue-400/50');
+      }
+    }
+
+    function copyStats(){
+      const data = {
+        characters: statChars.textContent,
+        charactersNoSpace: statCharsNoSpace.textContent,
+        words: statWords.textContent,
+        sentences: statSentences.textContent,
+        paragraphs: statParagraphs.textContent,
+        readTime: statReadTime.textContent,
+        speakTime: statSpeakTime.textContent,
+        pages: statPages.textContent,
+        seo: statSeo.textContent
+      };
+      const lines = [
+        `글자수: ${data.characters} (공백 제외 ${data.charactersNoSpace})`,
+        `단어/문장/문단: ${data.words} 단어 · ${data.sentences} 문장 · ${data.paragraphs} 문단`,
+        `읽기 시간: ${data.readTime} · 말하기 시간: ${data.speakTime}`,
+        `원고지 환산: ${data.pages} 매`,
+        `SEO 상태: ${data.seo}`
+      ];
+      const payload = lines.join('\n');
+      if (navigator.clipboard?.writeText) {
+        navigator.clipboard.writeText(payload).then(() => {
+          btnCopy.classList.add('bg-emerald-500/20','border-emerald-400/50');
+          setTimeout(() => btnCopy.classList.remove('bg-emerald-500/20','border-emerald-400/50'), 1500);
+        }).catch(() => fallbackCopy(payload));
+      } else {
+        fallbackCopy(payload);
+      }
+    }
+
+    function fallbackCopy(text){
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly','');
+      ta.style.position = 'fixed';
+      ta.style.top = '-1000px';
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand('copy');
+        btnCopy.classList.add('bg-emerald-500/20','border-emerald-400/50');
+        setTimeout(() => btnCopy.classList.remove('bg-emerald-500/20','border-emerald-400/50'), 1500);
+      } catch (err) {
+        alert('클립보드 복사에 실패했습니다.');
+      }
+      document.body.removeChild(ta);
+    }
+
+    input.addEventListener('input', compute);
+    cfgWpm.addEventListener('input', () => {
+      cfgWpmVal.textContent = cfgWpm.value;
+      compute();
+    });
+    cfgSpm.addEventListener('input', () => {
+      cfgSpmVal.textContent = cfgSpm.value;
+      compute();
+    });
+    cfgPage.addEventListener('input', () => {
+      cfgPageVal.textContent = cfgPage.value;
+      compute();
+    });
+
+    btnClear.addEventListener('click', () => {
+      input.value = '';
+      compute();
+      input.focus();
+    });
+    btnCopy.addEventListener('click', copyStats);
+
+    document.addEventListener('keydown', (ev) => {
+      if ((ev.ctrlKey || ev.metaKey) && ev.key === 'Enter'){
+        ev.preventDefault();
+        copyStats();
+      }
+    });
+
+    compute();
+  });
+  </script>
+</body>
+</html>

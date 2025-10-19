@@ -1,0 +1,584 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>형식 유지 번역기 — 표/목록 구조 그대로 한·영 번역 | Yuchani Tools pro</title>
+  <meta name="description" content="표·목록·마크다운 테이블 모양을 흐트러뜨리지 않고 한국어↔영어로 번역합니다. 자동 줄맞춤, 줄 수·단어 수 카운터, FAQ와 사용 팁 제공." />
+  <link rel="canonical" href="https://tools.yuchani.com/tools/format-preserving-translator/" />
+  <meta name="robots" content="index,follow" />
+  <meta name="site-base" content="/tools/format-preserving-translator" />
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="형식 유지 번역기 — 표/목록 구조 그대로 한·영 번역" />
+  <meta property="og:description" content="마크다운 표, bullet 리스트 구조를 그대로 유지한 채 한국어↔영어 문서를 번역합니다." />
+  <meta property="og:url" content="https://tools.yuchani.com/tools/format-preserving-translator/" />
+  <meta property="og:image" content="/og/cover.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- JSON-LD: SoftwareApplication -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"SoftwareApplication",
+    "name":"형식 유지 번역기",
+    "applicationCategory":"ProductivityApplication",
+    "operatingSystem":"Web",
+    "url":"https://tools.yuchani.com/tools/format-preserving-translator/",
+    "description":"표와 목록 구조를 유지한 한국어↔영어 번역기",
+    "offers":{
+      "@type":"Offer",
+      "price":"0",
+      "priceCurrency":"KRW"
+    }
+  }
+  </script>
+  <!-- JSON-LD: FAQPage -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {"@type":"Question","name":"표 모양을 어떻게 보존하나요?","acceptedAnswer":{"@type":"Answer","text":"마크다운 표와 리스트를 셀 단위로 분리한 뒤 번역하므로 구분선과 bullet 모양이 유지됩니다."}},
+      {"@type":"Question","name":"어떤 언어쌍을 지원하나요?","acceptedAnswer":{"@type":"Answer","text":"기본 제공 언어쌍은 한국어↔영어이며, 자동 감지를 이용해 문서의 주 언어를 판별합니다."}},
+      {"@type":"Question","name":"내 데이터는 안전한가요?","acceptedAnswer":{"@type":"Answer","text":"브라우저에서 직접 번역 API를 호출하며, 입력 내용은 저장되지 않습니다."}}
+    ]
+  }
+  </script>
+
+  <!-- Tailwind & Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root { color-scheme: dark; }
+    body { background:#0F1113; padding-bottom: env(safe-area-inset-bottom); }
+    .ring-soft { box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
+    .panel { background:rgba(17,20,24,0.92); }
+    .brand-grad { background-image:linear-gradient(90deg,#34d399,#a3e635); }
+    textarea { background:#0f1216; }
+    .glass { background:rgba(15,17,20,0.85); }
+    .blur-card { backdrop-filter:blur(24px); background:rgba(15,17,20,0.68); }
+  </style>
+</head>
+<body class="text-white">
+  <div data-include="/partials/header.html"></div>
+
+  <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Hero -->
+    <header class="rounded-3xl border border-white/10 bg-gradient-to-br from-emerald-500/10 via-emerald-400/5 to-lime-400/5 px-6 md:px-10 py-8 md:py-12 shadow-[0_32px_80px_rgba(0,0,0,0.35)] relative overflow-hidden">
+      <div aria-hidden class="absolute inset-y-0 right-0 w-56 md:w-72 opacity-40 pointer-events-none">
+        <div class="w-full h-full rounded-full blur-3xl bg-gradient-to-br from-emerald-400/40 to-lime-300/30"></div>
+      </div>
+      <div class="relative">
+        <div class="inline-flex items-center gap-2 rounded-full border border-emerald-400/40 bg-emerald-400/10 px-3 py-1 text-xs font-semibold text-emerald-200">
+          <i data-lucide="sparkles" class="w-4 h-4"></i>
+          한·영 문서 전문 번역
+        </div>
+        <h1 class="mt-4 text-3xl md:text-4xl lg:text-[42px] font-extrabold tracking-tight leading-tight">
+          <span class="brand-grad bg-clip-text text-transparent">형식 유지 번역기</span>
+          로 표와 목록을 <span class="text-emerald-200">그대로</span>
+        </h1>
+        <p class="mt-4 text-white/70 leading-relaxed max-w-2xl">
+          마크다운 표, 불릿 리스트, 단계별 지침 등 구조화된 문서를 한국어와 영어 사이에서 빠르게 변환합니다.
+          전문가가 작성한 것처럼 정돈된 결과와 SEO 메타 데이터 최적화까지 한 번에 해결하세요.
+        </p>
+        <dl class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm text-white/70">
+          <div class="rounded-2xl border border-white/10 bg-black/10 px-4 py-3">
+            <dt class="uppercase tracking-widest text-xs text-white/40">최적화</dt>
+            <dd class="mt-1 font-semibold text-white">Google SEO 메타, FAQ 구조화 데이터</dd>
+          </div>
+          <div class="rounded-2xl border border-white/10 bg-black/10 px-4 py-3">
+            <dt class="uppercase tracking-widest text-xs text-white/40">속도</dt>
+            <dd class="mt-1 font-semibold text-white">중복 문장 캐싱 + 병렬 번역</dd>
+          </div>
+          <div class="rounded-2xl border border-white/10 bg-black/10 px-4 py-3">
+            <dt class="uppercase tracking-widest text-xs text-white/40">반응형</dt>
+            <dd class="mt-1 font-semibold text-white">모바일·데스크톱 동시 대응 UI</dd>
+          </div>
+        </dl>
+      </div>
+    </header>
+
+    <!-- Control Panel -->
+    <section class="mt-8 rounded-3xl border border-white/10 glass blur-card p-4 sm:p-6">
+      <div class="flex flex-col lg:flex-row gap-4 lg:items-center">
+        <div class="flex flex-wrap gap-3 items-center flex-1">
+          <div class="flex items-center gap-2 text-sm text-white/70">
+            <i data-lucide="languages" class="w-4 h-4"></i>
+            <span class="font-semibold">언어 설정</span>
+          </div>
+          <label class="flex items-center gap-2 text-sm">
+            <span class="text-white/60">소스</span>
+            <select id="sourceLang" class="rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-emerald-400/60">
+              <option value="auto">자동 감지</option>
+              <option value="ko">한국어</option>
+              <option value="en">영어</option>
+            </select>
+          </label>
+          <button id="swapLang" class="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm hover:bg-white/10 transition">
+            <i data-lucide="arrow-left-right" class="w-4 h-4"></i>
+            전환
+          </button>
+          <label class="flex items-center gap-2 text-sm">
+            <span class="text-white/60">타깃</span>
+            <select id="targetLang" class="rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-emerald-400/60">
+              <option value="en">영어</option>
+              <option value="ko">한국어</option>
+            </select>
+          </label>
+          <label class="inline-flex items-center gap-2 text-xs sm:text-sm text-white/70 bg-white/5 px-3 py-2 rounded-xl border border-white/10">
+            <input type="checkbox" id="keepMarkdown" checked class="accent-emerald-400">
+            마크다운 표·리스트 보존
+          </label>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-3">
+          <button id="autoTranslate" class="hidden"></button>
+          <button id="translateBtn" class="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-400 to-lime-300 px-5 py-3 text-sm font-semibold text-black shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/40">
+            <i data-lucide="wand-2" class="w-4 h-4"></i>
+            번역 실행 (Ctrl/⌘ + Enter)
+          </button>
+        </div>
+      </div>
+      <div class="mt-4 grid gap-3 sm:grid-cols-3 text-xs text-white/60">
+        <div class="rounded-2xl border border-white/10 bg-black/20 px-3 py-2">
+          <span class="block text-[11px] uppercase tracking-widest text-white/40">입력 요약</span>
+          <span id="sourceStats" class="mt-1 block font-medium text-white/80">0자 · 0단어 · 0줄</span>
+        </div>
+        <div class="rounded-2xl border border-white/10 bg-black/20 px-3 py-2">
+          <span class="block text-[11px] uppercase tracking-widest text-white/40">출력 요약</span>
+          <span id="targetStats" class="mt-1 block font-medium text-white/80">0자 · 0단어 · 0줄</span>
+        </div>
+        <div class="rounded-2xl border border-white/10 bg-black/20 px-3 py-2">
+          <span class="block text-[11px] uppercase tracking-widest text-white/40">상태</span>
+          <span id="statusLine" class="mt-1 block font-medium text-emerald-200">준비됨</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Editor -->
+    <section class="mt-6 grid gap-6 lg:grid-cols-2">
+      <article class="rounded-3xl border border-white/10 panel p-4 sm:p-6 flex flex-col">
+        <header class="flex items-center justify-between text-sm text-white/70">
+          <div class="inline-flex items-center gap-2 font-semibold">
+            <i data-lucide="edit-3" class="w-4 h-4"></i>
+            원문 입력
+          </div>
+          <div class="inline-flex items-center gap-3">
+            <button id="clearBtn" class="inline-flex items-center gap-1 rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5 text-xs hover:bg-white/10">
+              <i data-lucide="eraser" class="w-3.5 h-3.5"></i>
+              초기화
+            </button>
+            <button id="sampleBtn" class="inline-flex items-center gap-1 rounded-lg border border-emerald-400/30 bg-emerald-400/10 px-2.5 py-1.5 text-xs text-emerald-100 hover:bg-emerald-400/20">
+              <i data-lucide="list" class="w-3.5 h-3.5"></i>
+              샘플 불러오기
+            </button>
+          </div>
+        </header>
+        <textarea id="sourceText" class="mt-4 flex-1 resize-y rounded-2xl border border-white/10 bg-black/40 p-4 font-mono text-sm leading-relaxed text-white/90 outline-none focus:ring-2 focus:ring-emerald-400/60 min-h-[18rem]" placeholder="마크다운 표 또는 불릿 리스트가 포함된 한국어/영어 문서를 붙여넣으세요."></textarea>
+        <p class="mt-3 text-xs text-white/50">
+          줄바꿈, 테이블 구분선, 목록 번호는 그대로 유지됩니다. 여러 번역을 반복하면 캐시 덕분에 더 빨라집니다.
+        </p>
+      </article>
+
+      <article class="rounded-3xl border border-white/10 panel p-4 sm:p-6 flex flex-col">
+        <header class="flex items-center justify-between text-sm text-white/70">
+          <div class="inline-flex items-center gap-2 font-semibold">
+            <i data-lucide="sparkles" class="w-4 h-4"></i>
+            번역 결과
+          </div>
+          <div class="inline-flex items-center gap-3">
+            <button id="copyBtn" class="inline-flex items-center gap-1 rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5 text-xs hover:bg-white/10">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+              복사
+            </button>
+            <button id="downloadBtn" class="inline-flex items-center gap-1 rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5 text-xs hover:bg-white/10">
+              <i data-lucide="download" class="w-3.5 h-3.5"></i>
+              .md 저장
+            </button>
+          </div>
+        </header>
+        <textarea id="resultText" class="mt-4 flex-1 resize-y rounded-2xl border border-emerald-400/30 bg-emerald-950/40 p-4 font-mono text-sm leading-relaxed text-emerald-100 outline-none focus:ring-2 focus:ring-emerald-300/60 min-h-[18rem]" placeholder="번역 결과가 여기에 표시됩니다." readonly></textarea>
+        <div class="mt-3 text-xs text-white/50">
+          <span class="inline-flex items-center gap-1 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-2.5 py-1">
+            <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+            모든 처리는 브라우저에서만 수행됩니다
+          </span>
+        </div>
+      </article>
+    </section>
+
+    <!-- Usage Tips -->
+    <section class="mt-12">
+      <h2 class="text-2xl font-bold tracking-tight">사용 — 도움말 &amp; 팁</h2>
+      <p class="mt-2 text-white/60">전문가가 현장에서 자주 쓰는 번역 운영 노하우를 모았습니다.</p>
+      <div class="mt-6 grid gap-4 md:grid-cols-3">
+        <article class="rounded-3xl border border-white/10 panel p-5 space-y-3">
+          <div class="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3 py-1 text-xs font-semibold text-emerald-100">
+            <i data-lucide="grid" class="w-4 h-4"></i>
+            표 구조 유지
+          </div>
+          <h3 class="text-lg font-semibold">셀 단위로 번역</h3>
+          <p class="text-sm text-white/70 leading-relaxed">
+            테이블 행마다 자동으로 셀을 분해해 번역하고, 구분선과 맞춤선을 그대로 되돌립니다. 헤더/정렬 행(|:---|)은 감지 후 번역에서 제외해 안정적인 표를 유지합니다.
+          </p>
+        </article>
+        <article class="rounded-3xl border border-white/10 panel p-5 space-y-3">
+          <div class="inline-flex items-center gap-2 rounded-full border border-sky-400/30 bg-sky-400/10 px-3 py-1 text-xs font-semibold text-sky-100">
+            <i data-lucide="zap" class="w-4 h-4"></i>
+            캐싱 &amp; 병렬
+          </div>
+          <h3 class="text-lg font-semibold">중복 문장 빠른 처리</h3>
+          <p class="text-sm text-white/70 leading-relaxed">
+            동일한 문장은 한 번만 번역하고 캐시에 저장합니다. 최대 3개의 번역 요청을 동시에 보내 체감 속도를 높였습니다.
+          </p>
+        </article>
+        <article class="rounded-3xl border border-white/10 panel p-5 space-y-3">
+          <div class="inline-flex items-center gap-2 rounded-full border border-amber-400/30 bg-amber-400/10 px-3 py-1 text-xs font-semibold text-amber-100">
+            <i data-lucide="smartphone" class="w-4 h-4"></i>
+            반응형 UI
+          </div>
+          <h3 class="text-lg font-semibold">모바일·PC 모두 최적화</h3>
+          <p class="text-sm text-white/70 leading-relaxed">
+            입력/출력 패널이 세로 또는 가로 2분할로 자연스럽게 전환되며, 버튼 크기와 간격도 손쉬운 터치 조작에 맞춰 조정됩니다.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <!-- Manual & FAQ -->
+    <section class="mt-12">
+      <h2 class="text-2xl font-bold tracking-tight">사용설명서 &amp; FAQ</h2>
+      <div class="mt-6 grid gap-6 lg:grid-cols-2">
+        <div class="space-y-4">
+          <div class="rounded-3xl border border-white/10 panel p-5">
+            <h3 class="text-lg font-semibold">빠른 시작 가이드</h3>
+            <ol class="mt-3 space-y-3 text-sm text-white/70 list-decimal list-inside">
+              <li>마크다운 문서를 붙여넣고 언어 방향을 선택합니다.</li>
+              <li>필요하면 <span class="text-emerald-200">전환</span> 버튼으로 소스·타깃 언어를 뒤집습니다.</li>
+              <li>Ctrl/⌘ + Enter로 즉시 번역하고, 결과를 복사하거나 .md 파일로 내려받습니다.</li>
+              <li>FAQ에서 문제 상황별 해결책을 확인하세요.</li>
+            </ol>
+          </div>
+          <div class="rounded-3xl border border-white/10 panel p-5">
+            <h3 class="text-lg font-semibold">번역 품질 팁</h3>
+            <ul class="mt-3 space-y-2 text-sm text-white/70 list-disc list-inside">
+              <li>숫자·단위는 번역 후 자동 교정되지 않으므로 리뷰 단계에서 확인하세요.</li>
+              <li>표 안의 줄바꿈은 <code>&lt;br&gt;</code> 대신 빈 줄을 사용하면 깔끔합니다.</li>
+              <li>긴 단락은 문장을 2~3개로 나눈 뒤 번역하면 더 자연스러운 결과를 얻습니다.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="space-y-3">
+          <details class="group rounded-3xl border border-white/10 panel p-5">
+            <summary class="flex cursor-pointer items-center justify-between gap-3 text-sm font-semibold text-white/80">
+              표가 무너질 때는 어떻게 하나요?
+              <i data-lucide="chevron-down" class="w-4 h-4 transition-transform group-open:rotate-180"></i>
+            </summary>
+            <p class="mt-3 text-sm text-white/70 leading-relaxed">
+              정렬 행(|:---|)이 제대로 감지되지 않았을 수 있습니다. 해당 행에 공백이 아닌 <code>-</code>, <code>:</code>, <code>|</code>만 포함되어 있는지 확인하세요. 필요하면 <strong>마크다운 보존</strong> 체크박스를 유지한 채 다시 번역하세요.
+            </p>
+          </details>
+          <details class="group rounded-3xl border border-white/10 panel p-5">
+            <summary class="flex cursor-pointer items-center justify-between gap-3 text-sm font-semibold text-white/80">
+              API 속도가 느릴 때 개선 방법은?
+              <i data-lucide="chevron-down" class="w-4 h-4 transition-transform group-open:rotate-180"></i>
+            </summary>
+            <p class="mt-3 text-sm text-white/70 leading-relaxed">
+              병렬 요청 수를 3개로 제한해 안정성을 확보했습니다. 네트워크 품질이 낮을 경우 결과 영역에 표시되는 문장을 복사해 재번역하거나, VPN/사설망 품질을 확인하세요.
+            </p>
+          </details>
+          <details class="group rounded-3xl border border-white/10 panel p-5">
+            <summary class="flex cursor-pointer items-center justify-between gap-3 text-sm font-semibold text-white/80">
+              다른 언어도 번역할 수 있나요?
+              <i data-lucide="chevron-down" class="w-4 h-4 transition-transform group-open:rotate-180"></i>
+            </summary>
+            <p class="mt-3 text-sm text-white/70 leading-relaxed">
+              기본 UI는 한국어와 영어에 최적화되어 있습니다. 향후 다국어 옵션을 확장할 예정이며, 그 전까지는 소스 언어를 <strong>자동 감지</strong>로 두고 타깃 언어 드롭다운에서 영어/한국어를 전환해 활용해 주세요.
+            </p>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div data-include="/partials/footer.html"></div>
+  <script defer src="/inject-layout.js"></script>
+  <script>
+    const placeholder = (idx) => `§§SEG${idx}§§`;
+
+    function prepareSegments(raw, preserveMarkdown = true) {
+      const segments = [];
+      const lines = raw.replace(/\r\n?/g, "\n").split("\n");
+      const wrap = (text) => {
+        if (!text) return text;
+        const leading = text.match(/^\s*/)[0] || "";
+        const trailing = text.match(/\s*$/)[0] || "";
+        const core = text.slice(leading.length, text.length - trailing.length);
+        if (!core) return text;
+        const index = segments.length;
+        segments.push(core);
+        return `${leading}${placeholder(index)}${trailing}`;
+      };
+
+      const processed = lines.map((line) => {
+        if (!line.trim()) return line; // 공백 라인 유지
+
+        if (preserveMarkdown) {
+          const pipeCount = (line.match(/\|/g) || []).length;
+          const isTableRow = pipeCount >= 2;
+          if (isTableRow) {
+            const symbolsRemoved = line.replace(/[\s\|:\-]/g, "");
+            if (!symbolsRemoved) return line; // 정렬 행은 그대로 반환
+
+            const parts = line.split("|");
+            const startsWithBar = /^\s*\|/.test(line);
+            const endsWithBar = /\|\s*$/.test(line);
+            return parts
+              .map((part, idx) => {
+                if (part === "" && ((idx === 0 && startsWithBar) || (idx === parts.length - 1 && endsWithBar))) {
+                  return part;
+                }
+                return wrap(part);
+              })
+              .join("|");
+          }
+
+          const listMatch = line.match(/^(\s*(?:\d+\.\s+|[\-*\+]\s+))/);
+          if (listMatch) {
+            const prefix = listMatch[1];
+            const rest = line.slice(prefix.length);
+            return prefix + wrap(rest);
+          }
+        }
+
+        return wrap(line);
+      });
+
+      const rebuild = (translations) => {
+        const pattern = /§§SEG(\d+)§§/g;
+        return processed
+          .join("\n")
+          .replace(pattern, (_, idx) => translations[Number(idx)] ?? "");
+      };
+
+      return { segments, rebuild };
+    }
+
+    async function translateText(text, source, target) {
+      const params = new URLSearchParams({
+        client: "gtx",
+        sl: source || "auto",
+        tl: target,
+        dt: "t",
+        q: text,
+      });
+      const url = `https://translate.googleapis.com/translate_a/single?${params.toString()}`;
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const data = await response.json();
+      if (!Array.isArray(data) || !Array.isArray(data[0])) throw new Error("Unexpected response");
+      return data[0].map((chunk) => chunk[0]).join("");
+    }
+
+    async function translateSegments(segments, { source, target, onProgress }) {
+      const cache = new Map();
+      const indexMap = new Map();
+      segments.forEach((text, idx) => {
+        if (!indexMap.has(text)) indexMap.set(text, []);
+        indexMap.get(text).push(idx);
+      });
+
+      const unique = Array.from(indexMap.keys());
+      const results = Array(segments.length).fill("");
+      let completed = 0;
+      const total = unique.length;
+      const concurrency = 3;
+      const queue = unique.slice();
+
+      async function worker() {
+        while (queue.length) {
+          const text = queue.shift();
+          if (cache.has(text)) {
+            const translated = cache.get(text);
+            indexMap.get(text).forEach((i) => (results[i] = translated));
+            completed++;
+            onProgress?.(completed, total, text);
+            continue;
+          }
+          try {
+            const translated = await translateText(text, source, target);
+            cache.set(text, translated);
+            indexMap.get(text).forEach((i) => (results[i] = translated));
+          } catch (err) {
+            const fallback = `[번역 실패] ${err.message}`;
+            indexMap.get(text).forEach((i) => (results[i] = fallback));
+          } finally {
+            completed++;
+            onProgress?.(completed, total, text);
+          }
+        }
+      }
+
+      const workers = Array.from({ length: Math.min(concurrency, unique.length) }, () => worker());
+      await Promise.all(workers);
+      return results;
+    }
+
+    function updateStats(el, target) {
+      const value = (el.value || "").replace(/\r\n?/g, "\n");
+      const chars = value.length;
+      const words = value.trim() ? value.trim().split(/\s+/).length : 0;
+      const lines = value ? value.split("\n").length : 0;
+      target.textContent = `${chars.toLocaleString()}자 · ${words.toLocaleString()}단어 · ${lines.toLocaleString()}줄`;
+    }
+
+    function downloadText(filename, content) {
+      const blob = new Blob([content], { type: "text/markdown;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const sourceText = document.getElementById("sourceText");
+      const resultText = document.getElementById("resultText");
+      const translateBtn = document.getElementById("translateBtn");
+      const sourceStats = document.getElementById("sourceStats");
+      const targetStats = document.getElementById("targetStats");
+      const statusLine = document.getElementById("statusLine");
+      const sourceLang = document.getElementById("sourceLang");
+      const targetLang = document.getElementById("targetLang");
+      const swapLang = document.getElementById("swapLang");
+      const keepMarkdown = document.getElementById("keepMarkdown");
+      const copyBtn = document.getElementById("copyBtn");
+      const downloadBtn = document.getElementById("downloadBtn");
+      const clearBtn = document.getElementById("clearBtn");
+      const sampleBtn = document.getElementById("sampleBtn");
+
+      const sample = `| 구분 | 한국어 | 영어 |
+| --- | --- | --- |
+| 표 제목 | 마케팅 KPI 보고서 | Marketing KPI Report |
+| 핵심 지표 | 전환율, ROAS, CAC | Conversion Rate, ROAS, CAC |
+
+- 1단계: 캠페인 목표 정리
+- 2단계: 채널별 성과 비교
+- 3단계: 다음 분기 액션 아이템
+
+**주의사항**
+- 수치는 쉼표를 유지하세요.
+- 제품명은 고유명사로 그대로 두세요.`;
+
+      function setStatus(text, tone = "info") {
+        const color = tone === "error" ? "text-rose-300" : tone === "success" ? "text-emerald-200" : "text-white/70";
+        statusLine.className = `mt-1 block font-medium ${color}`;
+        statusLine.textContent = text;
+      }
+
+      function refreshStats() {
+        updateStats(sourceText, sourceStats);
+        updateStats(resultText, targetStats);
+      }
+
+      sourceText.addEventListener("input", refreshStats);
+      resultText.addEventListener("input", refreshStats);
+
+      clearBtn.addEventListener("click", () => {
+        sourceText.value = "";
+        resultText.value = "";
+        refreshStats();
+        setStatus("준비됨", "info");
+      });
+
+      sampleBtn.addEventListener("click", () => {
+        sourceText.value = sample;
+        refreshStats();
+        setStatus("샘플이 입력되었습니다. 번역을 실행해보세요.", "success");
+      });
+
+      swapLang.addEventListener("click", () => {
+        const prevSource = sourceLang.value;
+        sourceLang.value = targetLang.value === "ko" || targetLang.value === "en" ? targetLang.value : prevSource;
+        targetLang.value = prevSource === "auto" ? targetLang.value : prevSource;
+        setStatus("언어 방향이 전환되었습니다.", "info");
+      });
+
+      async function handleTranslate() {
+        const raw = sourceText.value;
+        if (!raw.trim()) {
+          setStatus("번역할 문장을 입력하세요.", "error");
+          return;
+        }
+
+        translateBtn.disabled = true;
+        translateBtn.classList.add("opacity-70", "cursor-wait");
+        setStatus("번역 준비 중…", "info");
+
+        try {
+          const { segments, rebuild } = prepareSegments(raw, keepMarkdown.checked);
+          if (segments.length === 0) {
+            resultText.value = raw;
+            refreshStats();
+            setStatus("번역할 텍스트가 없어 원문을 그대로 복사했습니다.", "success");
+            return;
+          }
+
+          let lastProgress = 0;
+          const translations = await translateSegments(segments, {
+            source: sourceLang.value || "auto",
+            target: targetLang.value || "en",
+            onProgress(completed, total) {
+              if (completed !== lastProgress) {
+                setStatus(`번역 진행률 ${completed}/${total}`);
+                lastProgress = completed;
+              }
+            },
+          });
+
+          const finalText = rebuild(translations);
+          resultText.value = finalText;
+          refreshStats();
+          setStatus("번역이 완료되었습니다.", "success");
+        } catch (err) {
+          console.error(err);
+          setStatus(`번역 중 오류가 발생했습니다: ${err.message}`, "error");
+        } finally {
+          translateBtn.disabled = false;
+          translateBtn.classList.remove("opacity-70", "cursor-wait");
+        }
+      }
+
+      translateBtn.addEventListener("click", handleTranslate);
+      sourceText.addEventListener("keydown", (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+          e.preventDefault();
+          handleTranslate();
+        }
+      });
+
+      copyBtn.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(resultText.value || "");
+          setStatus("번역 결과를 복사했습니다.", "success");
+        } catch (err) {
+          setStatus("클립보드 접근이 거부되었습니다.", "error");
+        }
+      });
+
+      downloadBtn.addEventListener("click", () => {
+        const now = new Date();
+        const stamp = now.toISOString().slice(0, 10);
+        downloadText(`translated-${stamp}.md`, resultText.value || "");
+        setStatus(".md 파일을 내려받았습니다.", "success");
+      });
+
+      refreshStats();
+      setStatus("준비됨", "info");
+    });
+  </script>
+</body>
+</html>

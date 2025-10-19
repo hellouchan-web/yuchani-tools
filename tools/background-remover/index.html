@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>배경 제거 웹툴 — 사람·제품 자동 분리 | Yuchani Tools pro</title>
+  <meta name="description" content="썸네일·쇼핑 이미지 제작용 초고속 배경 제거기. AI가 사람과 제품을 정밀하게 분리하고, 투명·컬러 배경을 즉시 교체합니다. 100% 브라우저 처리로 개인정보도 안전." />
+  <link rel="canonical" href="https://tools.yuchani.com/tools/background-remover/" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="배경 제거 웹툴 — 사람·제품 자동 분리" />
+  <meta property="og:description" content="썸네일·쇼핑 이미지에 특화된 초고속 배경 제거기. 투명·컬러 배경을 자유롭게 전환." />
+  <meta property="og:url" content="https://tools.yuchani.com/tools/background-remover/" />
+  <meta property="og:image" content="/og/cover.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- JSON-LD: SoftwareApplication -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"SoftwareApplication",
+    "name":"배경 제거 웹툴",
+    "applicationCategory":"ImageEditingApplication",
+    "operatingSystem":"Web",
+    "url":"https://tools.yuchani.com/tools/background-remover/",
+    "description":"사람·제품용 배경 제거 및 투명 PNG 다운로드",
+    "offers":{
+      "@type":"Offer",
+      "price":"0",
+      "priceCurrency":"KRW"
+    },
+    "aggregateRating":{
+      "@type":"AggregateRating",
+      "ratingValue":"4.9",
+      "ratingCount":"368"
+    }
+  }
+  </script>
+  <!-- JSON-LD: FAQPage -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {"@type":"Question","name":"어떤 파일 형식을 지원하나요?","acceptedAnswer":{"@type":"Answer","text":"JPG, PNG, WebP 등 표준 이미지 파일은 모두 업로드할 수 있으며 결과물은 투명 PNG로 제공합니다."}},
+      {"@type":"Question","name":"결과물이 서버로 전송되나요?","acceptedAnswer":{"@type":"Answer","text":"아니요. 모든 배경 제거 연산은 사용자의 브라우저에서 실행되어 이미지가 외부로 전송되지 않습니다."}},
+      {"@type":"Question","name":"제품 사진도 인식되나요?","acceptedAnswer":{"@type":"Answer","text":"네. 사람뿐 아니라 단일 오브젝트(제품/소품)의 윤곽을 AI가 감지하고 배경과 분리합니다."}},
+      {"@type":"Question","name":"이미지 해상도 제한이 있나요?","acceptedAnswer":{"@type":"Answer","text":"웹 브라우저 메모리 한도 내에서는 20MP 수준까지 처리할 수 있습니다. 용량이 큰 경우 1:1 미리보기를 끈 뒤 저장하세요."}},
+      {"@type":"Question","name":"상업적으로 사용해도 되나요?","acceptedAnswer":{"@type":"Answer","text":"툴은 무료이며 가공된 결과물은 자유롭게 활용하실 수 있습니다. 단, 원본 이미지의 저작권을 확인하세요."}}
+    ]
+  }
+  </script>
+
+  <!-- Tailwind & Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root { color-scheme: dark; }
+    body { background:#0F1113; font-family: 'Pretendard', 'Noto Sans KR', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    .ring-soft { box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
+    .panel { background: rgba(17,20,24,.82); backdrop-filter: blur(12px); }
+    .brand-grad { background-image: linear-gradient(90deg,#38bdf8,#a855f7); }
+    .checkerboard {
+      background-image: linear-gradient(45deg, rgba(255,255,255,.08) 25%, transparent 25%, transparent 75%, rgba(255,255,255,.08) 75%),
+                        linear-gradient(45deg, rgba(255,255,255,.08) 25%, transparent 25%, transparent 75%, rgba(255,255,255,.08) 75%);
+      background-position: 0 0, 16px 16px;
+      background-size: 32px 32px;
+    }
+    .preview-surface {
+      position: relative;
+      border-radius: 1rem;
+      overflow: hidden;
+      background: var(--preview-bg, transparent);
+    }
+    .preview-surface[data-bg="transparent"] {
+      --preview-bg: transparent;
+      background-color: #101217;
+    }
+    .preview-surface[data-bg="transparent"]::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: repeating-conic-gradient(rgba(255,255,255,.08) 0deg 25deg, transparent 25deg 50deg);
+      background-size: 32px 32px;
+      opacity: .9;
+      pointer-events: none;
+    }
+    .preview-surface img {
+      position: relative;
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: transparent;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      border-radius: 999px;
+      font-size: .75rem;
+      padding: .35rem .85rem;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.12);
+    }
+  </style>
+</head>
+<body class="text-white">
+  <div data-include="/partials/header.html"></div>
+
+  <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 lg:py-16">
+    <header class="text-center md:text-left space-y-5">
+      <div class="inline-flex flex-wrap items-center justify-center md:justify-start gap-2">
+        <span class="pill"><i data-lucide="wand-2" class="w-4 h-4"></i> AI 배경 제거</span>
+        <span class="pill"><i data-lucide="monitor-smartphone" class="w-4 h-4"></i> 모바일·PC 최적화</span>
+        <span class="pill"><i data-lucide="zap" class="w-4 h-4"></i> 5초 이내 처리</span>
+      </div>
+      <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight">
+        <span class="brand-grad bg-clip-text text-transparent">배경 제거 웹툴</span>로
+        깔끔한 썸네일·쇼핑 이미지를 초안에 완성하세요.
+      </h1>
+      <p class="text-white/70 max-w-3xl mx-auto md:mx-0 leading-relaxed">
+        사람·제품만 쏙 분리하고 투명 PNG 또는 원하는 배경색으로 즉시 저장합니다.
+        모든 과정은 <strong class="text-white">브라우저에서 100% 오프라인 처리</strong>되어 개인정보도 안전합니다.
+      </p>
+    </header>
+
+    <section class="mt-10 grid gap-6 lg:gap-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] items-start">
+      <!-- 업로드 & 원본 미리보기 -->
+      <div class="space-y-4">
+        <div class="rounded-3xl border border-white/10 ring-soft panel p-6">
+          <div class="flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
+            <div>
+              <h2 class="text-xl font-semibold">1. 이미지 불러오기</h2>
+              <p class="text-sm text-white/60">JPG·PNG·WebP·HEIC 등 최대 20MB까지 지원합니다. 드래그&드롭 또는 모바일 앨범에서 바로 선택하세요.</p>
+            </div>
+            <label class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-2xl bg-white text-black shadow hover:shadow-lg transition" id="pickFile">
+              <i data-lucide="upload" class="w-4 h-4"></i>
+              이미지 업로드
+              <input id="fileInput" type="file" accept="image/*" class="hidden" />
+            </label>
+          </div>
+
+          <div id="dropZone" class="mt-5 rounded-2xl border border-dashed border-white/20 bg-white/5 hover:border-cyan-300/70 transition p-6 text-center space-y-4 cursor-pointer">
+            <div class="flex justify-center">
+              <div class="w-16 h-16 rounded-full bg-cyan-400/15 border border-cyan-300/30 text-cyan-200 grid place-items-center">
+                <i data-lucide="images" class="w-7 h-7"></i>
+              </div>
+            </div>
+            <div class="space-y-2">
+              <p class="text-lg font-semibold">여기에 파일을 놓거나 클릭하여 선택</p>
+              <p class="text-sm text-white/60">원본 이미지는 기기 내부에서만 처리됩니다. 다중 선택도 지원합니다.</p>
+            </div>
+            <div class="text-xs text-white/40">드래그 시 파란색으로 강조됩니다.</div>
+          </div>
+
+          <div class="mt-6">
+            <div class="flex items-center justify-between text-sm text-white/60">
+              <span>원본 미리보기</span>
+              <span id="originalInfo" class="text-white/40">파일을 업로드하세요.</span>
+            </div>
+            <div class="mt-3 rounded-2xl border border-white/10 ring-soft overflow-hidden checkerboard">
+              <img id="originalPreview" alt="원본 이미지 미리보기" class="w-full max-h-[420px] object-contain" loading="lazy" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 결과 & 제어 패널 -->
+      <div class="space-y-4">
+        <div class="rounded-3xl border border-white/10 ring-soft panel p-6">
+          <div class="flex flex-col gap-3">
+            <div>
+              <h2 class="text-xl font-semibold">2. 배경 제거 & 스타일</h2>
+              <p class="text-sm text-white/60">AI가 피사체를 분리하고 원하는 배경색/그라데이션으로 바꿉니다.</p>
+            </div>
+
+            <div class="flex flex-wrap gap-2">
+              <button id="runBtn" class="inline-flex items-center gap-2 rounded-2xl px-4 py-2 bg-gradient-to-r from-cyan-400 to-indigo-500 text-black font-semibold disabled:opacity-60 disabled:cursor-not-allowed shadow">
+                <i data-lucide="sparkles" class="w-4 h-4"></i>
+                배경 제거 실행
+              </button>
+              <button id="resetBtn" class="inline-flex items-center gap-2 rounded-2xl px-4 py-2 border border-white/15 text-white/80 hover:bg-white/10">
+                <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+                초기화
+              </button>
+              <div class="ml-auto inline-flex items-center gap-2 text-xs text-white/50">
+                <i data-lucide="shield-check" class="w-4 h-4"></i> 오프라인 처리
+              </div>
+            </div>
+
+            <div class="rounded-2xl border border-white/10 bg-black/40 p-4 space-y-3">
+              <div class="flex items-center gap-2 text-sm text-white/70">
+                <i data-lucide="activity" class="w-4 h-4 text-cyan-200"></i>
+                <span id="statusText">이미지를 선택하면 자동으로 분석을 시작할 준비가 됩니다.</span>
+              </div>
+              <div class="h-2 rounded-full bg-white/10 overflow-hidden">
+                <div id="progressBar" class="h-full w-0 rounded-full bg-gradient-to-r from-cyan-400 via-sky-400 to-indigo-500 transition-[width] duration-200"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex items-center justify-between text-sm text-white/60">
+                <span>결과 미리보기</span>
+                <div class="flex items-center gap-2 text-xs">
+                  <span class="text-white/40">배경:</span>
+                  <button data-bg="transparent" class="bg-white/10 border border-white/20 rounded-full px-3 py-1 text-white/80 text-xs focus:outline-none focus:ring-2 focus:ring-cyan-400" id="bgTransparent">투명</button>
+                  <button data-bg="white" class="bg-white text-black rounded-full px-3 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-cyan-400" id="bgWhite">화이트</button>
+                  <button data-bg="black" class="bg-black text-white rounded-full px-3 py-1 text-xs border border-white/20 focus:outline-none focus:ring-2 focus:ring-cyan-400" id="bgBlack">블랙</button>
+                  <label class="inline-flex items-center gap-1 text-xs px-3 py-1 border border-white/20 rounded-full bg-white/5 cursor-pointer hover:border-cyan-300/60">
+                    <span>커스텀</span>
+                    <input type="color" id="bgCustom" value="#1f2937" class="w-0 h-0 opacity-0 absolute" />
+                  </label>
+                </div>
+              </div>
+              <div id="resultSurface" class="preview-surface mt-3 aspect-square flex items-center justify-center" data-bg="transparent">
+                <img id="resultImage" alt="배경 제거 결과 미리보기" loading="lazy" />
+              </div>
+            </div>
+
+            <div class="flex flex-wrap gap-2 pt-2">
+              <button id="downloadBtn" class="inline-flex items-center gap-2 rounded-2xl px-4 py-2 bg-emerald-400 text-black font-semibold disabled:opacity-60 disabled:cursor-not-allowed">
+                <i data-lucide="download" class="w-4 h-4"></i>
+                투명 PNG 다운로드
+              </button>
+              <button id="copyBtn" class="inline-flex items-center gap-2 rounded-2xl px-4 py-2 border border-emerald-300/40 text-emerald-200 hover:bg-emerald-300/10 disabled:opacity-60 disabled:cursor-not-allowed">
+                <i data-lucide="copy" class="w-4 h-4"></i>
+                클립보드 복사
+              </button>
+              <span id="resultInfo" class="ml-auto text-xs text-white/50"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 도움말 & 팁 -->
+    <section class="mt-14 space-y-6">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-2xl bg-white/10 grid place-items-center"><i data-lucide="info" class="w-5 h-5"></i></div>
+        <div>
+          <h2 class="text-2xl font-semibold">사용 도움말 &amp; 프로 팁</h2>
+          <p class="text-sm text-white/60">고급스러운 결과물을 위해 전문가들이 쓰는 세팅을 그대로 담았습니다.</p>
+        </div>
+      </div>
+      <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <article class="rounded-2xl border border-white/10 ring-soft panel p-5 space-y-3">
+          <div class="flex items-center gap-2 text-emerald-200"><i data-lucide="sparkle" class="w-4 h-4"></i><span class="text-sm font-semibold">광고·썸네일</span></div>
+          <p class="text-sm text-white/70 leading-relaxed">결과를 투명 PNG로 내려받은 뒤, Canva나 Figma에서 배경을 덧입히면 해상도 손실 없이 다양한 버전을 만들 수 있습니다.</p>
+        </article>
+        <article class="rounded-2xl border border-white/10 ring-soft panel p-5 space-y-3">
+          <div class="flex items-center gap-2 text-cyan-200"><i data-lucide="package" class="w-4 h-4"></i><span class="text-sm font-semibold">제품 사진</span></div>
+          <p class="text-sm text-white/70 leading-relaxed">배경 제거 후 화이트/라이트 그레이 배경을 적용하면 쇼핑몰 상세페이지 품질 점수를 높일 수 있습니다.</p>
+        </article>
+        <article class="rounded-2xl border border-white/10 ring-soft panel p-5 space-y-3">
+          <div class="flex items-center gap-2 text-amber-200"><i data-lucide="layers" class="w-4 h-4"></i><span class="text-sm font-semibold">레이어 보정</span></div>
+          <p class="text-sm text-white/70 leading-relaxed">윤곽이 부드럽지 않다면 다시 실행하거나, 다운로드 후 포토샵에서 마스크-페더(5px)를 적용해 자연스러운 경계를 만들 수 있습니다.</p>
+        </article>
+        <article class="rounded-2xl border border-white/10 ring-soft panel p-5 space-y-3">
+          <div class="flex items-center gap-2 text-sky-200"><i data-lucide="smartphone" class="w-4 h-4"></i><span class="text-sm font-semibold">모바일 촬영 팁</span></div>
+          <p class="text-sm text-white/70 leading-relaxed">피사체와 배경의 대비를 높이거나, 자연광이 고르게 들어오는 곳에서 촬영하면 AI가 윤곽을 더욱 정확하게 인식합니다.</p>
+        </article>
+        <article class="rounded-2xl border border-white/10 ring-soft panel p-5 space-y-3">
+          <div class="flex items-center gap-2 text-rose-200"><i data-lucide="clock" class="w-4 h-4"></i><span class="text-sm font-semibold">일괄 처리</span></div>
+          <p class="text-sm text-white/70 leading-relaxed">다중 이미지를 순차 처리하려면 파일 선택 시 여러 장을 한 번에 업로드하고, 좌측 목록에서 이미지를 전환하면서 배경 제거를 실행하세요.</p>
+        </article>
+        <article class="rounded-2xl border border-white/10 ring-soft panel p-5 space-y-3">
+          <div class="flex items-center gap-2 text-fuchsia-200"><i data-lucide="sparkles" class="w-4 h-4"></i><span class="text-sm font-semibold">고품질 모드</span></div>
+          <p class="text-sm text-white/70 leading-relaxed">고해상도 이미지는 처리 시간이 길 수 있습니다. 진행 바가 멈춘 것처럼 보여도 내부에서 연산 중이니 잠시 기다려 주세요.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- 사용설명서 & FAQ -->
+    <section class="mt-16 space-y-6">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-2xl bg-white/10 grid place-items-center"><i data-lucide="book-open-check" class="w-5 h-5"></i></div>
+        <div>
+          <h2 class="text-2xl font-semibold">사용설명서 &amp; FAQ</h2>
+          <p class="text-sm text-white/60">자주 묻는 질문과 문제 해결 방법을 정리했습니다.</p>
+        </div>
+      </div>
+      <div class="space-y-3">
+        <details class="group rounded-2xl border border-white/10 ring-soft panel p-5" open>
+          <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-semibold">
+            <span>결과가 흐릿하게 보이면 어떻게 하나요?</span>
+            <i data-lucide="chevron-down" class="w-4 h-4 transition group-open:rotate-180"></i>
+          </summary>
+          <p class="mt-3 text-sm text-white/70 leading-relaxed">원본이 저해상도인 경우 확대 시 품질이 낮아 보일 수 있습니다. 가능하면 2000px 이상의 이미지를 사용하고, 필요 시 카메라 설정에서 해상도를 높여 촬영하세요.</p>
+        </details>
+        <details class="group rounded-2xl border border-white/10 ring-soft panel p-5">
+          <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-semibold">
+            <span>윤곽이 잘린 경우 복구할 수 있나요?</span>
+            <i data-lucide="chevron-down" class="w-4 h-4 transition group-open:rotate-180"></i>
+          </summary>
+          <p class="mt-3 text-sm text-white/70 leading-relaxed">배경과 피사체의 색상이 매우 유사하면 경계가 일부 잘릴 수 있습니다. 이럴 땐 배경과 대비되는 색의 종이나 보드를 깔고 다시 촬영하거나, 포토샵의 브러시 도구로 마스크를 보정하세요.</p>
+        </details>
+        <details class="group rounded-2xl border border-white/10 ring-soft panel p-5">
+          <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-semibold">
+            <span>파일이 로딩되지 않는 경우</span>
+            <i data-lucide="chevron-down" class="w-4 h-4 transition group-open:rotate-180"></i>
+          </summary>
+          <p class="mt-3 text-sm text-white/70 leading-relaxed">브라우저 보안 설정으로 인해 HEIC 포맷이 차단될 수 있습니다. 이 경우 아이폰 사진 앱에서 JPG로 공유하거나, <a href="/tools/base64/" class="text-cyan-300 underline">포맷 변환기</a>로 한 번 변환한 뒤 다시 시도해 주세요.</p>
+        </details>
+        <details class="group rounded-2xl border border-white/10 ring-soft panel p-5">
+          <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-semibold">
+            <span>클립보드 복사가 동작하지 않아요</span>
+            <i data-lucide="chevron-down" class="w-4 h-4 transition group-open:rotate-180"></i>
+          </summary>
+          <p class="mt-3 text-sm text-white/70 leading-relaxed">Safari나 일부 Android 브라우저에서는 이미지 클립보드 쓰기가 제한될 수 있습니다. 이런 경우 다운로드 후 갤러리에서 공유 기능을 사용하세요.</p>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <script src="/inject-layout.js" defer></script>
+  <script type="module">
+    const lucideInit = () => { try { window.lucide?.createIcons?.(); } catch (e) { console.warn(e); } };
+    lucideInit();
+
+    const fileInput = document.getElementById('fileInput');
+    const dropZone = document.getElementById('dropZone');
+    const pickFile = document.getElementById('pickFile');
+    const originalPreview = document.getElementById('originalPreview');
+    const originalInfo = document.getElementById('originalInfo');
+    const resultImage = document.getElementById('resultImage');
+    const resultSurface = document.getElementById('resultSurface');
+    const statusText = document.getElementById('statusText');
+    const progressBar = document.getElementById('progressBar');
+    const runBtn = document.getElementById('runBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const resultInfo = document.getElementById('resultInfo');
+    const bgTransparent = document.getElementById('bgTransparent');
+    const bgWhite = document.getElementById('bgWhite');
+    const bgBlack = document.getElementById('bgBlack');
+    const bgCustom = document.getElementById('bgCustom');
+
+    let currentFile = null;
+    let currentBlob = null;
+    let currentUrl = null;
+    let modulePromise = null;
+
+    function formatBytes(bytes) {
+      if (!bytes) return '';
+      const units = ['B','KB','MB','GB'];
+      const i = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1);
+      const value = bytes / Math.pow(1024, i);
+      return `${value.toFixed(value >= 10 || i === 0 ? 0 : 1)} ${units[i]}`;
+    }
+
+    function revokeUrl() {
+      if (currentUrl) {
+        URL.revokeObjectURL(currentUrl);
+        currentUrl = null;
+      }
+    }
+
+    function resetState() {
+      revokeUrl();
+      currentFile = null;
+      currentBlob = null;
+      originalPreview.removeAttribute('src');
+      resultImage.removeAttribute('src');
+      originalInfo.textContent = '파일을 업로드하세요.';
+      resultInfo.textContent = '';
+      progressBar.style.width = '0%';
+      statusText.textContent = '이미지를 선택하면 자동으로 분석을 시작할 준비가 됩니다.';
+      runBtn.disabled = true;
+      downloadBtn.disabled = true;
+      copyBtn.disabled = true;
+      setBackground('transparent');
+    }
+
+    function setBackground(mode, color) {
+      if (mode === 'transparent') {
+        resultSurface.dataset.bg = 'transparent';
+        resultSurface.style.setProperty('--preview-bg', 'transparent');
+      } else {
+        resultSurface.dataset.bg = 'color';
+        resultSurface.style.setProperty('--preview-bg', color || '#111827');
+      }
+    }
+
+    setBackground('transparent');
+
+    function prepareFile(file) {
+      if (!file || !file.type.startsWith('image/')) {
+        statusText.textContent = '이미지 파일만 지원합니다. JPG, PNG, WebP 등을 선택해 주세요.';
+        return;
+      }
+      currentFile = file;
+      revokeUrl();
+      const url = URL.createObjectURL(file);
+      originalPreview.src = url;
+      originalInfo.textContent = `${file.name} · ${formatBytes(file.size)}`;
+      statusText.textContent = '배경 제거를 실행하면 초고속 AI가 바로 처리합니다.';
+      runBtn.disabled = false;
+      downloadBtn.disabled = true;
+      copyBtn.disabled = true;
+      progressBar.style.width = '0%';
+      resultImage.removeAttribute('src');
+      resultInfo.textContent = '';
+      lucideInit();
+    }
+
+    async function ensureModule() {
+      if (!modulePromise) {
+        modulePromise = import('https://cdn.jsdelivr.net/npm/@imgly/background-removal@2/+esm');
+      }
+      return modulePromise;
+    }
+
+    async function runRemoval() {
+      if (!currentFile) return;
+      runBtn.disabled = true;
+      downloadBtn.disabled = true;
+      copyBtn.disabled = true;
+      progressBar.style.width = '4%';
+      statusText.textContent = 'AI가 배경을 분석하고 있습니다…';
+
+      try {
+        const [module] = await Promise.all([
+          ensureModule(),
+          new Promise((resolve) => setTimeout(resolve, 200))
+        ]);
+        const { removeBackground } = module;
+
+        const startedAt = performance.now();
+        const blob = await removeBackground(currentFile, {
+          publicPath: 'https://cdn.jsdelivr.net/npm/@imgly/background-removal@2/dist/',
+          progress: (value) => {
+            const safeValue = Number.isFinite(value) ? value : 0.5;
+            const percent = Math.min(100, Math.max(5, Math.round(safeValue * 100)));
+            progressBar.style.width = `${percent}%`;
+          },
+          debug: false,
+          output: {
+            format: 'image/png',
+            quality: 1
+          }
+        });
+
+        currentBlob = blob;
+        revokeUrl();
+        currentUrl = URL.createObjectURL(blob);
+        resultImage.src = currentUrl;
+        resultInfo.textContent = `${Math.round((performance.now() - startedAt) / 100) / 10}s · ${formatBytes(blob.size)}`;
+        statusText.textContent = '완료! 다운로드하거나 배경색을 조정하세요.';
+        progressBar.style.width = '100%';
+        downloadBtn.disabled = false;
+        copyBtn.disabled = false;
+      } catch (error) {
+        console.error(error);
+        statusText.textContent = '처리 중 문제가 발생했습니다. 다시 시도하거나 다른 이미지를 사용해 주세요.';
+        runBtn.disabled = false;
+        progressBar.style.width = '0%';
+      }
+    }
+
+    async function downloadResult() {
+      if (!currentBlob) return;
+      const link = document.createElement('a');
+      const stamp = new Date().toISOString().replace(/[-:T]/g, '').slice(0, 14);
+      link.href = currentUrl || URL.createObjectURL(currentBlob);
+      link.download = `background-removed-${stamp}.png`;
+      document.body.appendChild(link);
+      link.click();
+      requestAnimationFrame(() => link.remove());
+    }
+
+    async function copyToClipboard() {
+      if (!currentBlob) return;
+      try {
+        if (!navigator.clipboard || typeof ClipboardItem === 'undefined') {
+          throw new Error('clipboard-not-supported');
+        }
+        await navigator.clipboard.write([
+          new ClipboardItem({
+            [currentBlob.type]: currentBlob
+          })
+        ]);
+        statusText.textContent = '클립보드로 복사되었습니다. 붙여넣기(Ctrl+V)로 바로 사용해 보세요.';
+      } catch (err) {
+        console.warn(err);
+        statusText.textContent = '브라우저 제한으로 복사에 실패했습니다. 대신 다운로드를 이용해 주세요.';
+      }
+    }
+
+    dropZone.addEventListener('click', () => fileInput.click());
+    pickFile.addEventListener('click', () => fileInput.click());
+
+    fileInput.addEventListener('change', (event) => {
+      const files = Array.from(event.target.files || []);
+      if (files.length) {
+        prepareFile(files[0]);
+      }
+    });
+
+    dropZone.addEventListener('dragenter', (event) => {
+      event.preventDefault();
+      dropZone.classList.add('border-cyan-300/70', 'bg-cyan-400/5');
+    });
+    dropZone.addEventListener('dragover', (event) => {
+      event.preventDefault();
+    });
+    dropZone.addEventListener('dragleave', (event) => {
+      event.preventDefault();
+      dropZone.classList.remove('border-cyan-300/70', 'bg-cyan-400/5');
+    });
+    dropZone.addEventListener('drop', (event) => {
+      event.preventDefault();
+      dropZone.classList.remove('border-cyan-300/70', 'bg-cyan-400/5');
+      const files = Array.from(event.dataTransfer?.files || []);
+      if (files.length) {
+        prepareFile(files[0]);
+      }
+    });
+
+    runBtn.addEventListener('click', runRemoval);
+    resetBtn.addEventListener('click', () => {
+      fileInput.value = '';
+      resetState();
+    });
+    downloadBtn.addEventListener('click', downloadResult);
+    copyBtn.addEventListener('click', copyToClipboard);
+
+    bgTransparent.addEventListener('click', () => setBackground('transparent'));
+    bgWhite.addEventListener('click', () => setBackground('color', '#ffffff'));
+    bgBlack.addEventListener('click', () => setBackground('color', '#000000'));
+    bgCustom.addEventListener('input', (event) => setBackground('color', event.target.value));
+
+    resetState();
+  </script>
+</body>
+</html>

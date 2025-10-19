@@ -323,12 +323,22 @@
       return btoa(binary);
     };
 
+    const createInvalidBase64Error = () => {
+      const error = new Error('INVALID_BASE64');
+      error.code = 'INVALID_BASE64';
+      return error;
+    };
+
     const decodeBase64 = (value) => {
-      const binary = atob(cleanBase64(value));
-      const len = binary.length;
-      const bytes = new Uint8Array(len);
-      for (let i = 0; i < len; i++) bytes[i] = binary.charCodeAt(i);
-      return new TextDecoder().decode(bytes);
+      try {
+        const binary = atob(cleanBase64(value));
+        const len = binary.length;
+        const bytes = new Uint8Array(len);
+        for (let i = 0; i < len; i++) bytes[i] = binary.charCodeAt(i);
+        return new TextDecoder().decode(bytes);
+      } catch (error) {
+        throw createInvalidBase64Error();
+      }
     };
 
     const detectFileInfoFromBase64 = (value) => {
@@ -342,12 +352,16 @@
     };
 
     const decodeBase64ToBlob = (value) => {
-      const cleaned = cleanBase64(value);
-      const binary = atob(cleaned);
-      const len = binary.length;
-      const bytes = new Uint8Array(len);
-      for (let i = 0; i < len; i++) bytes[i] = binary.charCodeAt(i);
-      return new Blob([bytes]);
+      try {
+        const cleaned = cleanBase64(value);
+        const binary = atob(cleaned);
+        const len = binary.length;
+        const bytes = new Uint8Array(len);
+        for (let i = 0; i < len; i++) bytes[i] = binary.charCodeAt(i);
+        return new Blob([bytes]);
+      } catch (error) {
+        throw createInvalidBase64Error();
+      }
     };
 
     const runTransform = async () => {
@@ -426,7 +440,11 @@
         }
       } catch (error) {
         console.error(error);
-        showStatus('변환 중 오류가 발생했습니다. 입력 값을 확인하세요.', true);
+        if (error?.code === 'INVALID_BASE64') {
+          showStatus('Base64 문자열이 올바르지 않습니다. 패딩과 문자를 확인하세요.', true);
+        } else {
+          showStatus('변환 중 오류가 발생했습니다. 입력 값을 확인하세요.', true);
+        }
       } finally {
         updateStats();
       }

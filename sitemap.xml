@@ -28,7 +28,6 @@
   </url>
 
   <url>
-    <loc>https://tools.yuchani.com/tools/og-preview/</loc>
     <lastmod>2025-10-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -37,6 +36,12 @@
   <url>
     <loc>https://tools.yuchani.com/tools/base64/</loc>
     <lastmod>2025-10-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>

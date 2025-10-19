@@ -3,15 +3,15 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>OCR · 이미지에서 텍스트 추출 | Yuchani Tools pro</title>
-  <meta name="description" content="이미지에서 글자를 텍스트로 추출합니다. 한국어·영어·일본어·중국어 지원, 브라우저에서 즉시 처리, 드래그앤드롭·붙여넣기·파일 업로드." />
+  <title>텍스트/OCR 추출 — 스캔 이미지에서 글자를 복사 가능한 텍스트로 | Yuchani Tools pro</title>
+  <meta name="description" content="스캔본과 사진 문서에서 글자를 인식해 복사·다운로드 가능한 텍스트로 추출합니다. 한국어·영어·일본어·중국어 지원, 브라우저에서 즉시 처리." />
   <link rel="canonical" href="https://tools.yuchani.com/tools/ocr/" />
   <meta name="robots" content="index,follow" />
 
   <!-- Open Graph / Twitter -->
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="OCR · 이미지에서 텍스트 추출" />
-  <meta property="og:description" content="한국어/영어/일본어/중국어 지원. 브라우저에서 즉시 텍스트로 변환." />
+  <meta property="og:title" content="텍스트/OCR 추출 — 스캔 이미지에서 글자 얻기" />
+  <meta property="og:description" content="고해상도 스캔 이미지에서 텍스트를 추출해 복사하거나 다운로드하세요. 한국어·영어·일본어·중국어 지원." />
   <meta property="og:url" content="https://tools.yuchani.com/tools/ocr/" />
   <meta property="og:image" content="https://tools.yuchani.com/og/cover.png" />
   <meta name="twitter:card" content="summary_large_image" />
@@ -21,203 +21,191 @@
   {
     "@context":"https://schema.org",
     "@type":"SoftwareApplication",
-    "name":"OCR · 이미지에서 텍스트 추출",
+    "name":"텍스트/OCR 추출",
     "applicationCategory":"MultimediaApplication",
     "operatingSystem":"Web",
     "url":"https://tools.yuchani.com/tools/ocr/",
-    "description":"한국어/영어/일본어/중국어 지원 OCR, 브라우저 즉시 처리",
+    "description":"스캔 이미지에서 글자를 추출하는 브라우저 OCR 도구",
     "aggregateRating": {"@type":"AggregateRating","ratingValue":"4.9","ratingCount":"173"}
   }
   </script>
-  <!-- JSON-LD: FAQPage (5문항) -->
+  <!-- JSON-LD: FAQPage -->
   <script type="application/ld+json">
   {
     "@context":"https://schema.org",
     "@type":"FAQPage",
     "mainEntity":[
-      {"@type":"Question","name":"OCR은 무엇을 하나요?","acceptedAnswer":{"@type":"Answer","text":"이미지에 포함된 글자를 분석해 복사 가능한 텍스트로 변환합니다. 스캔 이미지, 스크린샷, 사진 문서를 지원합니다."}},
-      {"@type":"Question","name":"개인정보는 안전한가요?","acceptedAnswer":{"@type":"Answer","text":"모든 처리는 브라우저에서만 수행되며 서버로 업로드되지 않습니다."}},
-      {"@type":"Question","name":"어떤 언어를 인식하나요?","acceptedAnswer":{"@type":"Answer","text":"한국어(ko), 영어(en), 일본어(ja), 중국어(간체, zh) 등을 지원합니다. 복수 언어 동시 인식도 가능합니다."}},
-      {"@type":"Question","name":"PDF도 되나요?","acceptedAnswer":{"@type":"Answer","text":"현재는 이미지(JPEG/PNG/WebP/BMP 등)만 지원합니다. PDF는 먼저 페이지 이미지를 추출한 뒤 사용하세요."}},
-      {"@type":"Question","name":"정확도를 높이려면?","acceptedAnswer":{"@type":"Answer","text":"해상도가 충분한 이미지를 사용하고, 회전/기울임을 보정하세요. 필요 시 언어를 정확히 지정하고, '정확도 우선' 모드를 사용하세요."}}
+      {"@type":"Question","name":"OCR 도구는 무엇을 하나요?","acceptedAnswer":{"@type":"Answer","text":"스캔 이미지·사진·스크린샷 안의 글자를 분석해 복사 가능한 텍스트로 변환합니다."}},
+      {"@type":"Question","name":"어떤 언어를 인식하나요?","acceptedAnswer":{"@type":"Answer","text":"한국어, 영어, 일본어, 중국어(간체) 등을 지원하며 복합 언어 문서도 처리할 수 있습니다."}},
+      {"@type":"Question","name":"데이터는 안전한가요?","acceptedAnswer":{"@type":"Answer","text":"모든 처리는 브라우저에서 이루어지며, 이미지를 서버로 업로드하지 않습니다."}},
+      {"@type":"Question","name":"정확도를 높이려면?","acceptedAnswer":{"@type":"Answer","text":"밝고 선명한 이미지를 사용하고, 언어를 정확히 지정하세요. 필요한 경우 ‘정확도 우선’ 모드를 사용하면 더 세밀하게 인식합니다."}},
+      {"@type":"Question","name":"PDF도 지원하나요?","acceptedAnswer":{"@type":"Answer","text":"현재는 이미지 파일(JPEG/PNG/WebP 등)에 최적화되어 있습니다. PDF는 먼저 페이지 이미지를 추출한 뒤 사용하세요."}}
     ]
   }
   </script>
 
-  <!-- Tailwind & Icons (둘 다 CDN이지만, 없어도 기능은 동작하도록 작성) -->
+  <!-- Tailwind & Icons -->
   <script src="https://cdn.tailwindcss.com" defer></script>
   <script src="https://unpkg.com/lucide@latest" defer></script>
 
   <style>
     :root{ color-scheme: dark }
-    body{ background:#0F1113; padding-bottom: env(safe-area-inset-bottom) }
-    .ring-soft{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08) }
-    .brand-grad{ background-image:linear-gradient(90deg,#34d399,#a3e635) }/* emerald→lime */
-    .drop-mask{ border:1px dashed rgba(255,255,255,.2) }
-    /* CDN 실패 시 최소 폴백 */
+    body{ background:#0F1113; padding-bottom:env(safe-area-inset-bottom) }
+    .surface{ background:#0f1216 }
+    .ring-soft{ box-shadow:inset 0 0 0 1px rgba(255,255,255,.08) }
+    .brand-grad{ background-image:linear-gradient(120deg,#34d399,#a3e635) }
+    .drop-mask{ border:1px dashed rgba(255,255,255,.25) }
+    textarea{ font-family: "Pretendard", "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", sans-serif }
     [data-icon]{width:1rem;height:1rem;display:inline-block}
   </style>
 </head>
 <body class="text-white">
-  <!-- 공통 헤더 -->
   <div data-include="/partials/header.html"></div>
 
   <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-    <!-- 타이틀 -->
-    <header class="mb-4">
-      <h1 class="text-left text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-tight">
-        <span class="brand-grad bg-clip-text text-transparent">OCR · 이미지에서 텍스트 추출</span>
+    <header class="mb-6 space-y-3">
+      <p class="text-xs uppercase tracking-[0.3em] text-emerald-300/80">Professional OCR Studio</p>
+      <h1 class="text-3xl md:text-4xl lg:text-5xl font-black leading-tight">
+        <span class="brand-grad bg-clip-text text-transparent">텍스트/OCR 추출</span>
       </h1>
-      <p class="mt-2 text-white/70">이미지(영수증, 문서 스캔, 스크린샷 등)에서 글자를 인식해 <strong>복사 가능한 텍스트</strong>로 바꿉니다. 브라우저에서 즉시 처리합니다.</p>
+      <p class="text-base md:text-lg text-white/70 max-w-2xl">스캔본, 영수증, 사진 문서에서 글자를 인식해 <strong>복사·다운로드 가능한 텍스트</strong>로 변환합니다. 브라우저에서 즉시 처리하며, 네트워크 전송 없이 안전합니다.</p>
     </header>
 
-    <!-- 컨트롤 패널 -->
-    <section class="rounded-2xl border border-white/10 ring-soft p-3 bg-[#0f1216]">
-      <div class="flex flex-wrap items-center gap-2 text-sm">
+    <section class="surface rounded-2xl border border-white/10 ring-soft p-4">
+      <div class="flex flex-wrap items-center gap-3 text-sm">
         <label class="inline-flex items-center gap-2">
-          <input type="checkbox" id="accurate" class="accent-emerald-400"> 정확도 우선(느림)
+          <input type="checkbox" id="accurate" class="accent-emerald-400">
+          <span>정확도 우선(느림)</span>
         </label>
-        <span class="mx-2 text-white/30">|</span>
-        <div class="inline-flex items-center gap-2">
-          <span class="whitespace-nowrap">언어</span>
-          <button id="langToggle" type="button" class="px-2 py-1.5 rounded-md border border-white/10 bg-white/10 hover:bg-white/15 text-xs inline-flex items-center gap-1" aria-expanded="true" aria-controls="langGroup">
-            토글 <i data-lucide="chevron-down" class="w-4 h-4"></i>
+        <span class="text-white/30">|</span>
+        <div class="flex flex-wrap items-center gap-2" id="langController">
+          <span class="text-white/60">언어</span>
+          <button id="langToggle" type="button" class="inline-flex items-center gap-1 rounded-lg border border-white/15 bg-white/5 px-2.5 py-1 text-xs" aria-expanded="true" aria-controls="langGroup">
+            선택 <i data-lucide="chevron-down" class="h-4 w-4"></i>
           </button>
           <div id="langGroup" class="flex flex-wrap gap-1">
-            <button type="button" class="lang-btn px-2.5 py-1 rounded-md border border-white/10 bg-black text-white" data-lang="kor">한국어</button>
-            <button type="button" class="lang-btn px-2.5 py-1 rounded-md border border-white/10 bg-white/10 text-white/80 hover:bg-white/15" data-lang="eng">영어</button>
-            <button type="button" class="lang-btn px-2.5 py-1 rounded-md border border-white/10 bg-white/10 text-white/80 hover:bg-white/15" data-lang="jpn">日本語</button>
-            <button type="button" class="lang-btn px-2.5 py-1 rounded-md border border-white/10 bg-white/10 text-white/80 hover:bg-white/15" data-lang="chi_sim">中文(简体)</button>
-            <button type="button" class="lang-btn px-2.5 py-1 rounded-md border border-white/10 bg-white/10 text-white/80 hover:bg-white/15" data-lang="kor+eng">한국어+영어</button>
+            <button type="button" class="lang-btn rounded-lg border border-white/15 bg-black px-2.5 py-1 text-xs font-medium text-white" data-lang="kor">한국어</button>
+            <button type="button" class="lang-btn rounded-lg border border-white/15 bg-white/5 px-2.5 py-1 text-xs font-medium text-white/80 hover:bg-white/10" data-lang="eng">영어</button>
+            <button type="button" class="lang-btn rounded-lg border border-white/15 bg-white/5 px-2.5 py-1 text-xs font-medium text-white/80 hover:bg-white/10" data-lang="jpn">日本語</button>
+            <button type="button" class="lang-btn rounded-lg border border-white/15 bg-white/5 px-2.5 py-1 text-xs font-medium text-white/80 hover:bg-white/10" data-lang="chi_sim">中文(简体)</button>
+            <button type="button" class="lang-btn rounded-lg border border-white/15 bg-white/5 px-2.5 py-1 text-xs font-medium text-white/80 hover:bg-white/10" data-lang="kor+eng">한국어+영어</button>
           </div>
         </div>
-        <span class="mx-2 text-white/30">|</span>
+        <span class="text-white/30">|</span>
         <label class="inline-flex items-center gap-2">
-          <input type="checkbox" id="preserve" class="accent-emerald-400" checked> 줄바꿈 유지
+          <input type="checkbox" id="preserve" class="accent-emerald-400" checked>
+          <span>줄바꿈 유지</span>
         </label>
-        <span class="ml-auto text-xs text-white/50">단축키: <span class="border px-1 rounded kbd">Ctrl/⌘ + Enter</span></span>
+        <span class="ml-auto text-xs text-white/50">단축키: <span class="rounded border border-white/20 px-1">Ctrl/⌘ + Enter</span></span>
       </div>
     </section>
 
-    <!-- 업로드/미리보기/결과 -->
-    <section class="mt-4 grid gap-4 md:grid-cols-2">
-      <!-- 좌: 업로드 & 미리보기 -->
+    <section class="mt-6 grid gap-5 md:grid-cols-2">
       <div class="rounded-2xl border border-white/10 ring-soft overflow-hidden">
-        <div class="px-3 py-2 text-xs text-white/60 border-b border-white/10 flex items-center gap-2">
-          <span data-icon></span> 이미지 업로드
-          <span id="imgInfo" class="ml-auto text-white/40 hidden"></span>
+        <div class="flex items-center gap-2 border-b border-white/10 bg-white/5 px-3 py-2 text-xs text-white/60">
+          <i data-lucide="image" class="h-4 w-4"></i> 이미지 업로드
+          <span id="imgInfo" class="ml-auto hidden text-white/40"></span>
         </div>
-        <div class="p-3 bg-[#0f1216]">
-          <label class="inline-flex items-center gap-2 justify-center w-full sm:w-auto text-sm text-white/80 bg-white/10 px-3 py-2 rounded-lg border border-white/10 cursor-pointer">
-            <span data-icon></span>
-            <input id="file" type="file" accept="image/*" class="hidden"> 파일 선택
+        <div class="surface p-4">
+          <label class="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/10 px-3 py-2 text-sm text-white/80 hover:bg-white/15 sm:w-auto">
+            <i data-lucide="upload" class="h-4 w-4"></i>
+            <input id="file" type="file" accept="image/*" class="hidden">
+            파일 선택
           </label>
-          <div id="drop" class="mt-3 rounded-xl drop-mask p-4 text-sm text-white/60">
-            여기에 이미지를 드롭하거나, 붙여넣기(Ctrl/⌘+V) 해도 됩니다.
+          <div id="drop" class="drop-mask mt-3 min-h-[8rem] rounded-xl bg-black/30 p-4 text-center text-sm text-white/60">
+            이미지를 드롭하거나, 복사한 이미지를 붙여넣기(Ctrl/⌘+V)하세요.
           </div>
-          <div class="mt-3 rounded-xl overflow-hidden bg-black/40 grid place-items-center min-h-32 md:min-h-64">
-            <img id="preview" alt="미리보기" class="w-full md:w-auto max-h-[48vh] md:max-h-[24rem] object-contain hidden">
-            <div id="noPreview" class="text-white/40 text-sm">미리보기가 여기 표시됩니다.</div>
+          <div class="mt-3 grid min-h-32 place-items-center overflow-hidden rounded-xl bg-black/40 md:min-h-64">
+            <img id="preview" alt="미리보기" class="hidden max-h-[48vh] w-full max-w-full object-contain md:max-h-[24rem]">
+            <div id="noPreview" class="text-sm text-white/35">선택한 이미지가 여기 표시됩니다.</div>
           </div>
         </div>
       </div>
 
-      <!-- 우: 결과 텍스트 -->
       <div class="rounded-2xl border border-white/10 ring-soft overflow-hidden">
-        <div class="px-3 py-2 text-xs text-white/60 border-b border-white/10 flex items-center gap-2">
-          <span data-icon></span> 결과 텍스트
-          <span id="outInfo" class="ml-auto text-white/40 hidden"></span>
+        <div class="flex items-center gap-2 border-b border-white/10 bg-white/5 px-3 py-2 text-xs text-white/60">
+          <i data-lucide="file-text" class="h-4 w-4"></i> 결과 텍스트
+          <span id="outInfo" class="ml-auto hidden text-white/40"></span>
         </div>
-        <div class="p-3 bg-[#0f1216]">
-          <textarea id="output" class="w-full h-56 md:h-[28rem] text-sm text-black outline-none resize-y bg-white rounded-lg border border-black/10 p-3" placeholder="추출된 텍스트가 여기에 표시됩니다." readonly></textarea>
-          <div class="mt-2 flex flex-wrap items-center justify-between gap-2">
-            <div class="flex flex-wrap gap-2">
-              <button id="btnOcr" class="px-3 py-1.5 text-sm rounded-xl border border-emerald-400/35 bg-emerald-400/15 text-emerald-700 hover:bg-emerald-400/25 w-full sm:w-auto">OCR 시작<\/button>
-              <button id="btnClear" class="px-3 py-1.5 text-sm rounded-xl border border-white/20 hover:bg-white/10 text-white w-full sm:w-auto">초기화<\/button>
+        <div class="surface p-4">
+          <textarea id="output" class="h-56 w-full resize-y rounded-xl border border-black/10 bg-white p-3 text-sm text-black outline-none md:h-[28rem]" placeholder="추출된 텍스트가 여기에 표시됩니다." readonly></textarea>
+          <div class="mt-3 flex flex-wrap items-center justify-between gap-2">
+            <div class="flex w-full flex-wrap gap-2 sm:w-auto">
+              <button id="btnOcr" class="w-full rounded-xl border border-emerald-400/40 bg-emerald-400/20 px-3 py-1.5 text-sm font-medium text-emerald-200 transition hover:bg-emerald-400/30 sm:w-auto">OCR 시작</button>
+              <button id="btnClear" class="w-full rounded-xl border border-white/20 px-3 py-1.5 text-sm text-white transition hover:bg-white/10 sm:w-auto">초기화</button>
             </div>
             <div class="flex gap-2">
-              <button id="btnCopy" class="px-3 py-1.5 text-sm rounded-xl border border-white/20 hover:bg-white/10 text-white w-full sm:w-auto">복사<\/button>
-              <button id="btnDownload" class="px-3 py-1.5 text-sm rounded-xl border border-white/20 hover:bg-white/10 text-white w-full sm:w-auto">다운로드<\/button>
+              <button id="btnCopy" class="rounded-xl border border-white/20 px-3 py-1.5 text-sm text-white transition hover:bg-white/10">복사</button>
+              <button id="btnDownload" class="rounded-xl border border-white/20 px-3 py-1.5 text-sm text-white transition hover:bg-white/10">다운로드</button>
             </div>
           </div>
           <div id="progressWrap" class="mt-3 hidden">
-            <div class="text-xs text-white/60 flex items-center gap-2"><span data-icon></span> 처리 중… <span id="stage" class="ml-2"></span></div>
-            <div class="mt-2 w-full h-2 bg-white/10 rounded-full overflow-hidden"><div id="bar" class="h-2 bg-emerald-400" style="width:0%"></div></div>
-            <div id="err" class="mt-2 hidden text-xs text-rose-200 bg-rose-500/10 border border-rose-400/30 rounded px-2 py-1"></div>
+            <div class="flex items-center gap-2 text-xs text-white/60">
+              <i data-lucide="loader" class="h-4 w-4 animate-spin"></i>
+              <span id="stage"></span>
+            </div>
+            <div class="mt-2 h-2 w-full overflow-hidden rounded-full bg-white/10">
+              <div id="bar" class="h-2 bg-emerald-400" style="width:0%"></div>
+            </div>
+            <div id="err" class="mt-2 hidden rounded border border-rose-400/30 bg-rose-500/10 px-2 py-1 text-xs text-rose-200"></div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 도움말 & 팁 · 사용설명서 (5줄씩) -->
-    <section class="mt-6 grid gap-4 md:grid-cols-2">
-      <div class="rounded-2xl border border-white/10 ring-soft p-4">
+    <section class="mt-8 grid gap-5 md:grid-cols-2">
+      <div class="surface rounded-2xl border border-white/10 ring-soft p-5">
         <div class="flex items-center gap-2 text-sm text-white/80">
-          <i data-lucide="lightbulb" class="w-4 h-4 text-yellow-300"></i>
-          <div class="font-semibold">도움말 & 팁</div>
+          <i data-lucide="lightbulb" class="h-4 w-4 text-yellow-300"></i>
+          <span class="font-semibold">도움말 & 팁</span>
         </div>
-        <ul class="mt-3 list-disc pl-5 text-sm text-white/70 space-y-1.5">
-          <li>이미지 해상도가 높을수록 정확도가 좋아집니다. (권장: 짧은 변 1200px 이상)</li>
-          <li>기울어진 사진은 촬영 전에 반듯하게, 또는 업로드 전 회전/자르기 후 인식하세요.</li>
-          <li>언어를 정확히 지정하면 정확도가 올라갑니다. 다국어 문서는 복합 언어 옵션 사용.</li>
-          <li>개인정보 이미지의 경우, 결과 텍스트를 공유하기 전에 민감정보를 확인하세요.</li>
-          <li>브라우저에서만 처리되어 업로드되지 않습니다. 네트워크는 언어 데이터 다운로드에만 사용됩니다.</li>
+        <ul class="mt-3 space-y-1.5 list-disc pl-5 text-sm text-white/70">
+          <li>짧은 변 기준 1200px 이상의 선명한 이미지를 사용하면 정확도가 크게 향상됩니다.</li>
+          <li>기울어진 스캔본은 먼저 회전·자르기로 정렬하고, 그림자는 제거하세요.</li>
+          <li>다국어 문서는 필요한 언어를 모두 선택하세요. (예: 한국어+영어)</li>
+          <li>개인정보가 포함된 텍스트는 복사·공유 전에 한번 더 검토하세요.</li>
+          <li>한 번 로드된 언어 데이터는 브라우저 캐시에 저장되어 이후 더 빠르게 동작합니다.</li>
         </ul>
       </div>
-
-      <div class="rounded-2xl border border-white/10 ring-soft p-4">
+      <div class="surface rounded-2xl border border-white/10 ring-soft p-5">
         <div class="flex items-center gap-2 text-sm text-white/80">
-          <i data-lucide="help-circle" class="w-4 h-4 text-cyan-300"></i>
-          <div class="font-semibold">사용설명서 & FAQ</div>
+          <i data-lucide="help-circle" class="h-4 w-4 text-cyan-300"></i>
+          <span class="font-semibold">사용설명서 & FAQ</span>
         </div>
-        <ol class="mt-3 list-decimal pl-5 text-sm text-white/70 space-y-1.5">
-          <li><strong>업로드</strong>: 파일 선택/드래그/붙여넣기.</li>
-          <li><strong>언어 선택</strong> 후 <strong>OCR 시작</strong>을 누르면 진행바와 함께 인식합니다.</li>
-          <li>결과는 우측 상자에 표시되며, <strong>복사/다운로드</strong>로 저장할 수 있습니다.</li>
-          <li>정확도가 낮을 땐 해상도·조명·언어 설정을 조정하고, <strong>정확도 우선</strong>을 켜보세요.</li>
-          <li>PDF는 먼저 이미지를 추출해 사용하세요. (향후 PDF 직접 지원 예정)</li>
+        <ol class="mt-3 space-y-1.5 list-decimal pl-5 text-sm text-white/70">
+          <li><strong>이미지 가져오기:</strong> 파일 선택, 드래그앤드롭, 붙여넣기 모두 지원합니다.</li>
+          <li><strong>언어·모드 선택:</strong> 기본은 빠른 모드이며, 정밀도가 필요하면 ‘정확도 우선’을 켜세요.</li>
+          <li><strong>OCR 시작:</strong> 진행 상황과 단계가 표시되며 완료되면 결과가 오른쪽 상자에 나타납니다.</li>
+          <li><strong>결과 활용:</strong> 복사 버튼 또는 텍스트 파일로 다운로드하여 문서 편집에 바로 사용하세요.</li>
+          <li><strong>문제 해결:</strong> 네트워크 차단으로 실패하면 안내 메시지를 확인하고, 언어 데이터를 직접 호스팅하여 사용할 수 있습니다.</li>
         </ol>
       </div>
     </section>
   </main>
 
-  <!-- 공통 푸터 -->
   <div data-include="/partials/footer.html"></div>
 
-  <!-- include 스크립트 (샌드박스에선 실패해도 치명적이지 않음) -->
   <script defer src="/inject-layout.js?v=7"></script>
-  <!-- Fallback include loader: 여러 경로를 순차 시도 (file://, 서브경로 호스팅 대응) -->
   <script>
     (function(){
       async function injectOnce(sel, candidates){
         const host = document.querySelector(sel);
-        if (!host) return;
-        if (host.getAttribute('data-injected') === '1') return;
+        if (!host || host.getAttribute('data-injected') === '1') return;
         for (const p of candidates){
-          try{
+          try {
             const res = await fetch(p, {cache:'no-store'});
             if (!res.ok) continue;
-            const html = await res.text();
-            host.innerHTML = html; host.setAttribute('data-injected','1');
-            try{ window.lucide?.createIcons?.(); }catch{}
+            host.innerHTML = await res.text();
+            host.setAttribute('data-injected','1');
+            try { window.lucide?.createIcons?.(); } catch {}
             return;
-          }catch(_){ /* try next */ }
+          } catch(_){ }
         }
         console.warn('partials include 실패:', sel, candidates);
       }
       function run(){
-        const headerPaths = [
-          '/partials/header.html',
-          'partials/header.html',
-          '/yuchani-tools/partials/header.html',
-          '../partials/header.html'
-        ];
-        const footerPaths = [
-          '/partials/footer.html',
-          'partials/footer.html',
-          '/yuchani-tools/partials/footer.html',
-          '../partials/footer.html'
-        ];
+        const headerPaths = ['/partials/header.html','partials/header.html','/yuchani-tools/partials/header.html','../partials/header.html'];
+        const footerPaths = ['/partials/footer.html','partials/footer.html','/yuchani-tools/partials/footer.html','../partials/footer.html'];
         injectOnce('[data-include="/partials/header.html"]', headerPaths);
         injectOnce('[data-include="/partials/footer.html"]', footerPaths);
       }
@@ -226,12 +214,7 @@
   </script>
 
   <script>
-  // --- 샌드박스 친화: 외부 네트워크 호출 없이 동작하도록 구성 ---
-  // 실제 OCR 엔진(Tesseract.js)은 CDN/언어 데이터 요청이 필요한데, 샌드박스에서는 차단되어 'Failed to fetch'가 발생할 수 있음.
-  // 여기서는 네트워크 호출을 하지 않는 '안전 모드'로 돌리고, 프로덕션 배포 시에만 엔진을 로드하도록 분리.
-
   document.addEventListener('DOMContentLoaded', () => {
-    // 아이콘 (CDN 실패 시에도 무시 가능)
     try { window.lucide?.createIcons?.(); } catch {}
 
     const $ = (s) => document.querySelector(s);
@@ -248,16 +231,17 @@
     const btnDownload = $('#btnDownload');
     const langGroup = document.getElementById('langGroup');
     const langToggle = document.getElementById('langToggle');
-    let currentLang = 'kor';
-    const accurate = $('#accurate');
-    const preserve = $('#preserve');
-
     const progressWrap = $('#progressWrap');
     const bar = $('#bar');
     const stage = $('#stage');
-    const errBox = document.getElementById('err');
+    const errBox = $('#err');
+    const accurate = $('#accurate');
+    const preserve = $('#preserve');
 
+    let currentLang = 'kor';
     let currentBlobUrl = '';
+    let isRunning = false;
+    let tesseractPromise = null;
 
     function resetPreview(){
       if (currentBlobUrl) URL.revokeObjectURL(currentBlobUrl);
@@ -281,77 +265,130 @@
     function onFiles(files){
       const f = files && files[0];
       if (!f) return;
-      if (!f.type.startsWith('image/')){ alert('이미지 파일을 선택해주세요.'); return; }
+      if (!f.type.startsWith('image/')){
+        alert('이미지 파일을 선택해주세요.');
+        return;
+      }
       setPreview(f);
     }
 
-    // 업로드 이벤트
-    fileEl?.addEventListener('change', ()=> onFiles(fileEl.files));
-
-    // 드래그&드롭
-    ['dragenter','dragover'].forEach(ev=>{
-      dropEl?.addEventListener(ev, e=>{ e.preventDefault(); e.stopPropagation(); dropEl.classList.add('bg-white/5'); });
-    });
-    ;['dragleave','dragend'].forEach(ev=>{
-      dropEl?.addEventListener(ev, e=>{ dropEl.classList.remove('bg-white/5'); });
-    });
-    dropEl?.addEventListener('drop', e => {
-      e.preventDefault(); e.stopPropagation(); dropEl.classList.remove('bg-white/5');
-      onFiles(e.dataTransfer?.files);
-    });
-
-    // 붙여넣기 (Ctrl/⌘+V)
-    window.addEventListener('paste', (e)=>{
-      const items = e.clipboardData?.items || [];
-      for (const it of items){
-        if (it.kind === 'file'){
-          const f = it.getAsFile();
-          if (f) onFiles([f]);
-        }
-      }
-    });
-
+    function setStage(text){ if (stage) stage.textContent = text || ''; }
     function setProgress(p){
       progressWrap.classList.remove('hidden');
-      if (bar) bar.style.width = Math.max(0, Math.min(100, p*100)).toFixed(2) + '%';
+      if (bar) bar.style.width = Math.max(0, Math.min(1, p)) * 100 + '%';
     }
-    function setStage(s){ if (stage) stage.textContent = s || ''; }
     function resetProgress(){
-      progressWrap.classList.add('hidden');
       if (bar) bar.style.width = '0%';
-      if (stage) stage.textContent = '';
-      if (errBox){ errBox.classList.add('hidden'); errBox.textContent=''; }
+      setStage('');
+      setTimeout(()=>{ progressWrap.classList.add('hidden'); }, 400);
+    }
+    function showError(msg){
+      if (!errBox) return;
+      errBox.textContent = msg;
+      errBox.classList.remove('hidden');
+    }
+    function clearError(){ errBox?.classList.add('hidden'); if (errBox) errBox.textContent=''; }
+
+    function updateActionState(){
+      const hasText = !!(outputEl.value && outputEl.value.trim().length);
+      btnCopy.disabled = !hasText;
+      btnDownload.disabled = !hasText;
+      btnCopy.classList.toggle('opacity-60', !hasText);
+      btnDownload.classList.toggle('opacity-60', !hasText);
     }
 
-    // --- 샌드박스 안전 모드 OCR(네트워크 호출 없음) ---
-    // 실제 OCR은 불가하므로, 친절한 가이드와 프로덕션 설정 안내만 제공.
+    function loadTesseract(){
+      if (window.Tesseract) return Promise.resolve(window.Tesseract);
+      if (tesseractPromise) return tesseractPromise;
+      tesseractPromise = new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';
+        script.async = true;
+        script.onload = () => {
+          if (window.Tesseract) resolve(window.Tesseract); else reject(new Error('Tesseract.js 로드 실패'));
+        };
+        script.onerror = () => reject(new Error('Tesseract.js 로드 실패 (네트워크 확인)'));
+        document.head.appendChild(script);
+      });
+      return tesseractPromise;
+    }
+
     async function runOcr(){
-      if (preview.classList.contains('hidden')){ alert('먼저 이미지를 선택/붙여넣기 해주세요.'); return; }
+      if (isRunning) return;
+      if (preview.classList.contains('hidden')){
+        alert('먼저 이미지를 선택하거나 붙여넣어 주세요.');
+        return;
+      }
+      clearError();
+      isRunning = true;
+      btnOcr.disabled = true;
+      btnOcr.textContent = '처리 중…';
+      setStage('엔진 로딩 중…');
+      setProgress(0.05);
 
       try {
-        setProgress(0.1); setStage('샌드박스 모드 감지…');
-        // 네트워크 사용 없이 동작: 안내 메시지 출력
-        const help = [
-          '⚠️ 현재 환경은 외부 네트워크가 차단된 샌드박스입니다.',
-          '실제 OCR 엔진(Tesseract.js)과 언어 데이터는 네트워크로 로드해야 하므로,',
-          '여기서는 텍스트 추출 대신 설정 가이드를 표시합니다.',
-          '',
-          '프로덕션 배포 시:',
-          '1) tesseract.js, tesseract-core.wasm.js를 로컬에 호스팅',
-          '2) /tessdata/kor.traineddata 등 필요한 언어를 로컬에 배치',
-          '3) runOcr 내부에서 workerPath/corePath/langPath를 로컬 경로로 지정',
-          '4) 이후 Tesseract.recognize(preview, currentLang, { ... }) 호출'
-        ].join('\n');
+        const Tesseract = await loadTesseract();
+        setStage('언어 데이터 준비…');
+        setProgress(0.15);
 
-        outputEl.value = help;
-        outInfo.textContent = '샌드박스 안내 • 가이드 출력';
+        const langPathBase = accurate?.checked ? 'https://tessdata.projectnaptha.com/4.0.0_best' : 'https://tessdata.projectnaptha.com/4.0.0';
+        const { data } = await Tesseract.recognize(preview, currentLang.replace('+', '+'), {
+          workerPath: 'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/worker.min.js',
+          corePath: 'https://cdn.jsdelivr.net/npm/tesseract.js-core@5/dist/tesseract-core.wasm.js',
+          langPath: langPathBase,
+          gzip: true,
+          logger: (m) => {
+            if (m.status) {
+              const statusMap = {
+                'loading tesseract core': '엔진 로딩…',
+                'initializing tesseract': '엔진 초기화…',
+                'loading language traineddata': '언어 데이터 다운로드…',
+                'initializing api': '엔진 준비…',
+                'recognizing text': '텍스트 인식 중…'
+              };
+              setStage(statusMap[m.status] || m.status);
+            }
+            if (typeof m.progress === 'number') {
+              const base = m.status === 'recognizing text' ? 0.25 : 0.1;
+              setProgress(Math.min(0.98, base + m.progress * 0.75));
+            }
+          }
+        });
+
+        setStage('후처리 중…');
+        setProgress(1);
+
+        let text = data?.text || '';
+        if (!preserve?.checked){
+          text = text.replace(/\s+/g, ' ').trim();
+        }
+        outputEl.value = text;
+        const len = text.trim().length;
+        const conf = data?.confidence ? data.confidence.toFixed(1) : '0.0';
+        outInfo.textContent = `문자 ${len.toLocaleString()}자 • 신뢰도 ${conf}%`;
         outInfo.classList.remove('hidden');
-        setStage('가이드 출력 완료');
+        updateActionState();
       } catch (e){
-        if (errBox){ errBox.textContent = (e && e.message) ? e.message : String(e); errBox.classList.remove('hidden'); }
-        alert('오류: ' + (e.message || e));
+        console.error(e);
+        setStage('실패');
+        const msg = e?.message || String(e);
+        showError(msg.includes('Failed to fetch') ? '언어 데이터를 불러오지 못했습니다. 네트워크 연결을 확인하거나, tessdata를 로컬에 호스팅해 주세요.' : msg);
+        if (!outputEl.value){
+          outputEl.value = [
+            '⚠️ Tesseract.js 엔진 또는 언어 데이터를 불러오지 못했습니다.',
+            '이 도구는 브라우저에서만 처리하지만, 최초 실행 시 언어 데이터를 다운로드해야 합니다.',
+            '네트워크가 차단된 환경이라면 tessdata 파일과 Tesseract.js 스크립트를 로컬에 호스팅한 뒤',
+            'workerPath/corePath/langPath 옵션을 해당 경로로 지정해 주세요.'
+          ].join('\n');
+          outInfo.textContent = '오류 안내';
+          outInfo.classList.remove('hidden');
+          updateActionState();
+        }
       } finally {
-        resetProgress();
+        btnOcr.disabled = false;
+        btnOcr.textContent = 'OCR 시작';
+        isRunning = false;
+        setTimeout(resetProgress, 500);
       }
     }
 
@@ -359,71 +396,109 @@
       resetPreview();
       outputEl.value = '';
       outInfo.classList.add('hidden');
+      updateActionState();
+      clearError();
       resetProgress();
     }
 
-    // 액션 바인딩
-    btnOcr?.addEventListener('click', runOcr);
-    btnClear?.addEventListener('click', clearAll);
-    btnCopy?.addEventListener('click', async ()=>{
-      try { await navigator.clipboard.writeText(outputEl.value || '');
-        btnCopy.textContent = '복사됨'; setTimeout(()=>btnCopy.textContent='복사', 1200);
-      } catch(e){ alert('클립보드 복사 실패: 권한을 확인하세요.'); }
+    // 이벤트 바인딩
+    fileEl?.addEventListener('change', () => onFiles(fileEl.files));
+    ['dragenter','dragover'].forEach(ev => {
+      dropEl?.addEventListener(ev, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropEl.classList.add('bg-white/5');
+      });
     });
-    btnDownload?.addEventListener('click', ()=>{
-      try {
-        const blob = new Blob([outputEl.value || ''], {type:'text/plain;charset=utf-8'});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a'); a.href = url; a.download = 'ocr.txt'; a.click();
-        setTimeout(()=>URL.revokeObjectURL(url), 1000);
-      } catch(e){ alert('다운로드 실패: ' + (e.message||e)); }
+    ['dragleave','dragend'].forEach(ev => {
+      dropEl?.addEventListener(ev, () => dropEl.classList.remove('bg-white/5'));
     });
-
-    // 단축키: Ctrl/Cmd + Enter
-    window.addEventListener('keydown', (e)=>{
-      if ((e.ctrlKey||e.metaKey) && e.key === 'Enter'){
-        e.preventDefault(); runOcr();
+    dropEl?.addEventListener('drop', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      dropEl.classList.remove('bg-white/5');
+      onFiles(e.dataTransfer?.files);
+    });
+    window.addEventListener('paste', (e) => {
+      const items = e.clipboardData?.items || [];
+      for (const item of items){
+        if (item.kind === 'file'){
+          const f = item.getAsFile();
+          if (f) onFiles([f]);
+        }
       }
     });
 
-    // 언어 버튼 상태 토글 (UI 강조)
+    btnOcr?.addEventListener('click', runOcr);
+    btnClear?.addEventListener('click', clearAll);
+    btnCopy?.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(outputEl.value || '');
+        const original = btnCopy.textContent;
+        btnCopy.textContent = '복사됨';
+        setTimeout(() => { btnCopy.textContent = original; }, 1200);
+      } catch {
+        alert('클립보드 복사 권한을 확인해주세요.');
+      }
+    });
+    btnDownload?.addEventListener('click', () => {
+      try {
+        const blob = new Blob([outputEl.value || ''], {type:'text/plain;charset=utf-8'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'ocr.txt';
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      } catch (e){
+        alert('다운로드 실패: ' + (e?.message || e));
+      }
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter'){
+        e.preventDefault();
+        runOcr();
+      }
+    });
+
     if (langGroup){
-      langGroup.addEventListener('click', (e)=>{
+      langGroup.addEventListener('click', (e) => {
         const btn = e.target.closest('.lang-btn');
         if (!btn) return;
         currentLang = btn.dataset.lang;
-        langGroup.querySelectorAll('.lang-btn').forEach(b=>{
+        langGroup.querySelectorAll('.lang-btn').forEach(b => {
           b.classList.remove('bg-black','text-white');
-          b.classList.add('bg-white/10','text-white/80');
+          b.classList.add('bg-white/5','text-white/80');
         });
-        btn.classList.remove('bg-white/10','text-white/80');
         btn.classList.add('bg-black','text-white');
+        btn.classList.remove('bg-white/5','text-white/80');
       });
     }
 
-    // 언어 영역 열기/닫기
     if (langToggle && langGroup){
-      langToggle.addEventListener('click', ()=>{
+      langToggle.addEventListener('click', () => {
         const isHidden = langGroup.classList.toggle('hidden');
         langToggle.setAttribute('aria-expanded', String(!isHidden));
-        // 아이콘 방향 업데이트 (단순 토글)
         const icon = langToggle.querySelector('[data-lucide]');
-        if (icon){ icon.style.transform = isHidden ? 'rotate(-90deg)' : 'rotate(0deg)'; icon.style.transition = 'transform .15s ease'; }
+        if (icon){
+          icon.style.transition = 'transform .2s ease';
+          icon.style.transform = isHidden ? 'rotate(-90deg)' : 'rotate(0deg)';
+        }
       });
     }
 
-    // --- 경량 셀프 테스트 (네트워크 없이 검증 가능) ---
+    updateActionState();
+
+    // 셀프 테스트
     (function selfTest(){
-      const must = [fileEl, dropEl, preview, outputEl, btnOcr, btnClear, btnCopy, btnDownload];
-      console.assert(must.every(Boolean), '필수 요소 누락', must);
-      // 가짜 실행: 결과 영역이 정상적으로 표시되는지
-      outputEl.value = 'SELFTEST: OK';
-      outInfo.textContent = '셀프테스트 • OK';
-      outInfo.classList.remove('hidden');
-      setTimeout(()=>{ outputEl.value=''; outInfo.classList.add('hidden'); }, 200);
+      const essentials = [fileEl, dropEl, preview, outputEl, btnOcr, btnClear, btnCopy, btnDownload];
+      console.assert(essentials.every(Boolean), '필수 요소 누락', essentials);
+      outputEl.value = 'SELFTEST:READY';
+      updateActionState();
+      setTimeout(() => { outputEl.value = ''; updateActionState(); }, 150);
     })();
   });
   </script>
 </body>
 </html>
-

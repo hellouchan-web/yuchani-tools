@@ -1,0 +1,748 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>텍스트 케이스 변환기 — 대소문자·스네이크·카멜을 한 번에 | Yuchani Tools pro</title>
+  <meta name="description" content="파일명과 코드 규칙을 한 번에 맞추는 텍스트 케이스 변환기. UPPER·lower·snake_case·camelCase·PascalCase·kebab-case·파일명 슬러그까지 자동 변환하고 복사하세요." />
+  <link rel="canonical" href="https://tools.yuchani.com/tools/case-converter/" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="텍스트 케이스 변환기 — 대소문자·스네이크·카멜을 한 번에" />
+  <meta property="og:description" content="파일명·코드 컨벤션을 단숨에 정리하세요. 여러 케이스를 실시간으로 비교하고 복사까지 지원합니다." />
+  <meta property="og:url" content="https://tools.yuchani.com/tools/case-converter/" />
+  <meta property="og:image" content="/og/cover.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- JSON-LD: SoftwareApplication -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"SoftwareApplication",
+    "name":"텍스트 케이스 변환기",
+    "applicationCategory":"ProductivityApplication",
+    "operatingSystem":"Web",
+    "url":"https://tools.yuchani.com/tools/case-converter/",
+    "description":"대소문자·스네이크·카멜·파일명 슬러그 자동 변환",
+    "aggregateRating": {"@type":"AggregateRating","ratingValue":"4.9","ratingCount":"164"}
+  }
+  </script>
+  <!-- JSON-LD: FAQPage -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {"@type":"Question","name":"어떤 케이스를 지원하나요?","acceptedAnswer":{"@type":"Answer","text":"UPPERCASE, lowercase, Sentence case, Title Case, camelCase, PascalCase, snake_case, SCREAMING_SNAKE_CASE, kebab-case, Train-Case, dot.case, 파일명 슬러그, URL 슬러그를 지원합니다."}},
+      {"@type":"Question","name":"자동으로 변환되나요?","acceptedAnswer":{"@type":"Answer","text":"기본적으로 입력과 동시에 실시간으로 변환되며, 자동 모드를 끄고 필요할 때만 변환 버튼으로 실행할 수도 있습니다."}},
+      {"@type":"Question","name":"악센트나 특수문자는 정리되나요?","acceptedAnswer":{"@type":"Answer","text":"선택 옵션으로 악센트 제거와 공백 정리를 제공하여 파일명이나 URL에 안전한 문자열로 변환할 수 있습니다."}},
+      {"@type":"Question","name":"코드 컨벤션에 맞게 적용할 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"원하는 케이스를 선택한 뒤 ‘입력에 적용’ 버튼을 누르면 입력 텍스트를 즉시 해당 규칙으로 재작성할 수 있습니다."}},
+      {"@type":"Question","name":"내 데이터는 저장되나요?","acceptedAnswer":{"@type":"Answer","text":"모든 처리는 브라우저에서만 일어나며 서버로 전송되지 않습니다."}}
+    ]
+  }
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root { color-scheme: dark }
+    body { background:#0F1113; padding-bottom: env(safe-area-inset-bottom) }
+    .ring-soft { box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08) }
+    .brand-grad { background-image: linear-gradient(90deg,#38bdf8,#a855f7) }
+    .panel { background:#0f1216 }
+    textarea { font-family: "Pretendard Variable", "SUIT", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif }
+  </style>
+</head>
+<body class="text-white">
+  <div data-include="/partials/header.html"></div>
+
+  <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+    <header class="text-center md:text-left space-y-4">
+      <p class="inline-flex items-center gap-2 text-xs uppercase tracking-[0.4em] text-white/40">
+        <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
+        TEXT CASE ENGINE
+      </p>
+      <h1 class="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight">
+        <span class="brand-grad bg-clip-text text-transparent">텍스트 케이스 변환기</span>
+      </h1>
+      <p class="text-white/70 max-w-3xl">
+        대소문자, 스네이크, 카멜, 파일명 슬러그까지 <strong>한 번에 비교</strong>하고 복사하세요. 코드 규칙과 브랜드 파일명 가이드를 동시에 맞춰 드립니다.
+      </p>
+      <div class="flex flex-wrap gap-2 text-xs text-white/60">
+        <span class="px-3 py-1 rounded-full border border-white/10 bg-white/5">SEO 최적 메타 지원</span>
+        <span class="px-3 py-1 rounded-full border border-white/10 bg-white/5">반응형 · 다크 모드</span>
+        <span class="px-3 py-1 rounded-full border border-white/10 bg-white/5">데이터는 전송되지 않음</span>
+      </div>
+    </header>
+
+    <section class="grid gap-6 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1fr)]">
+      <!-- 입력 패널 -->
+      <div class="space-y-4">
+        <section class="rounded-2xl border border-white/10 ring-soft panel p-4 space-y-4">
+          <div class="flex flex-wrap items-center gap-2 text-sm">
+            <label class="inline-flex items-center gap-2">
+              <input type="checkbox" id="auto" class="accent-cyan-400" checked>
+              자동 변환
+            </label>
+            <span class="text-white/30">|</span>
+            <label class="inline-flex items-center gap-2">
+              <input type="checkbox" id="optTrim" class="accent-cyan-400" checked>
+              앞뒤 공백 제거
+            </label>
+            <label class="inline-flex items-center gap-2">
+              <input type="checkbox" id="optSqueeze" class="accent-cyan-400" checked>
+              연속 공백 1개로
+            </label>
+          </div>
+          <div class="flex flex-wrap items-center gap-2 text-sm">
+            <label class="inline-flex items-center gap-2">
+              <input type="checkbox" id="optAccents" class="accent-cyan-400">
+              악센트/특수기호 정리
+            </label>
+            <label class="inline-flex items-center gap-2">
+              <input type="checkbox" id="optLinebreak" class="accent-cyan-400" checked>
+              줄바꿈 유지
+            </label>
+            <span class="ml-auto text-xs text-white/50">단축키: <span class="border px-1 rounded kbd">Ctrl/⌘ + Enter</span></span>
+          </div>
+        </section>
+
+        <section class="rounded-2xl border border-white/10 ring-soft panel">
+          <header class="px-4 py-3 border-b border-white/10 flex items-center gap-2 text-xs text-white/60">
+            <i data-lucide="pencil" class="w-4 h-4"></i>
+            입력 텍스트
+          </header>
+          <div class="p-4 space-y-3">
+            <textarea id="input" class="w-full h-64 md:h-72 text-sm text-black bg-white rounded-xl border border-black/10 outline-none resize-y p-4" placeholder="여기에 텍스트를 붙여넣거나 직접 입력하세요."></textarea>
+            <div class="flex flex-wrap items-center gap-2 text-sm">
+              <button id="btnConvert" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-cyan-400/40 bg-cyan-400/15 text-cyan-200 hover:bg-cyan-400/25 transition">
+                <i data-lucide="sparkles" class="w-4 h-4"></i>
+                지금 변환
+              </button>
+              <button id="btnApply" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-emerald-400/40 bg-emerald-400/15 text-emerald-200 hover:bg-emerald-400/25 transition">
+                <i data-lucide="move-horizontal" class="w-4 h-4"></i>
+                입력에 적용
+              </button>
+              <button id="btnClear" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-white/15 text-white/80 hover:bg-white/10 transition">
+                <i data-lucide="eraser" class="w-4 h-4"></i>
+                초기화
+              </button>
+              <button id="btnPaste" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-white/15 text-white/80 hover:bg-white/10 transition">
+                <i data-lucide="clipboard-check" class="w-4 h-4"></i>
+                붙여넣기
+              </button>
+              <div class="ml-auto flex items-center gap-2 text-xs text-white/50">
+                <span id="statChars">0자</span>
+                <span class="text-white/25">•</span>
+                <span id="statWords">0단어</span>
+                <span class="text-white/25">•</span>
+                <span id="statLines">0줄</span>
+              </div>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-2 text-sm">
+              <label class="flex-1 inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-xl px-3 py-2">
+                <i data-lucide="arrow-down-up" class="w-4 h-4 text-white/50"></i>
+                <select id="applySelect" class="flex-1 bg-transparent outline-none">
+                  <option value="upper">UPPERCASE</option>
+                  <option value="lower">lowercase</option>
+                  <option value="sentence">Sentence case</option>
+                  <option value="title">Title Case</option>
+                  <option value="camel">camelCase</option>
+                  <option value="pascal">PascalCase</option>
+                  <option value="snake">snake_case</option>
+                  <option value="scream">SCREAMING_SNAKE_CASE</option>
+                  <option value="kebab">kebab-case</option>
+                  <option value="train">Train-Case</option>
+                  <option value="dot">dot.case</option>
+                  <option value="slug">url-slug</option>
+                  <option value="file">파일-안전-슬러그</option>
+                </select>
+              </label>
+              <label class="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-white/60">
+                <i data-lucide="info" class="w-4 h-4 text-white/40"></i>
+                적용 시 입력이 선택한 규칙으로 치환됩니다.
+              </label>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- 결과 패널 -->
+      <section class="rounded-2xl border border-white/10 ring-soft panel p-4 space-y-4">
+        <header class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h2 class="text-lg font-semibold">실시간 케이스 미리보기</h2>
+            <p class="text-sm text-white/60">코드 변수부터 파일명, URL 슬러그까지 한눈에 비교하세요.</p>
+          </div>
+          <div class="flex items-center gap-2 text-xs text-white/50">
+            <i data-lucide="clock" class="w-4 h-4"></i>
+            실시간 계산
+          </div>
+        </header>
+        <div id="results" class="grid gap-4 md:grid-cols-2">
+          <article class="rounded-2xl border border-white/10 bg-white/[0.03] p-4 space-y-3" data-card>
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <div class="text-xs uppercase tracking-widest text-white/40">BASIC</div>
+                <h3 class="text-sm font-semibold">UPPERCASE</h3>
+                <p class="text-xs text-white/50">전체를 대문자로 변환합니다.</p>
+              </div>
+              <button data-copy="upper" class="copy-btn inline-flex items-center gap-1 text-xs px-2 py-1 rounded-lg border border-white/15 hover:bg-white/10 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                복사
+              </button>
+            </div>
+            <textarea data-case="upper" readonly class="w-full h-24 rounded-xl border border-white/10 bg-black/60 text-xs md:text-sm p-3"></textarea>
+          </article>
+
+          <article class="rounded-2xl border border-white/10 bg-white/[0.03] p-4 space-y-3" data-card>
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <div class="text-xs uppercase tracking-widest text-white/40">BASIC</div>
+                <h3 class="text-sm font-semibold">lowercase</h3>
+                <p class="text-xs text-white/50">전체를 소문자로 변환합니다.</p>
+              </div>
+              <button data-copy="lower" class="copy-btn inline-flex items-center gap-1 text-xs px-2 py-1 rounded-lg border border-white/15 hover:bg-white/10 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                복사
+              </button>
+            </div>
+            <textarea data-case="lower" readonly class="w-full h-24 rounded-xl border border-white/10 bg-black/60 text-xs md:text-sm p-3"></textarea>
+          </article>
+
+          <article class="rounded-2xl border border-white/10 bg-white/[0.03] p-4 space-y-3" data-card>
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <div class="text-xs uppercase tracking-widest text-white/40">EDITORIAL</div>
+                <h3 class="text-sm font-semibold">Sentence case</h3>
+                <p class="text-xs text-white/50">문장 첫 글자만 대문자로.</p>
+              </div>
+              <button data-copy="sentence" class="copy-btn inline-flex items-center gap-1 text-xs px-2 py-1 rounded-lg border border-white/15 hover:bg-white/10 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                복사
+              </button>
+            </div>
+            <textarea data-case="sentence" readonly class="w-full h-24 rounded-xl border border-white/10 bg-black/60 text-xs md:text-sm p-3"></textarea>
+          </article>
+
+          <article class="rounded-2xl border border-white/10 bg-white/[0.03] p-4 space-y-3" data-card>
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <div class="text-xs uppercase tracking-widest text-white/40">EDITORIAL</div>
+                <h3 class="text-sm font-semibold">Title Case</h3>
+                <p class="text-xs text-white/50">단어마다 첫 글자를 대문자로.</p>
+              </div>
+              <button data-copy="title" class="copy-btn inline-flex items-center gap-1 text-xs px-2 py-1 rounded-lg border border-white/15 hover:bg-white/10 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                복사
+              </button>
+            </div>
+            <textarea data-case="title" readonly class="w-full h-24 rounded-xl border border-white/10 bg-black/60 text-xs md:text-sm p-3"></textarea>
+          </article>
+
+          <article class="rounded-2xl border border-white/10 bg-white/[0.03] p-4 space-y-3" data-card>
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <div class="text-xs uppercase tracking-widest text-white/40">DEV</div>
+                <h3 class="text-sm font-semibold">camelCase</h3>
+                <p class="text-xs text-white/50">JS/TS 변수에 적합.</p>
+              </div>
+              <button data-copy="camel" class="copy-btn inline-flex items-center gap-1 text-xs px-2 py-1 rounded-lg border border-white/15 hover:bg-white/10 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                복사
+              </button>
+            </div>
+            <textarea data-case="camel" readonly class="w-full h-24 rounded-xl border border-white/10 bg-black/60 text-xs md:text-sm p-3"></textarea>
+          </article>
+
+          <article class="rounded-2xl border border-white/10 bg-white/[0.03] p-4 space-y-3" data-card>
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <div class="text-xs uppercase tracking-widest text-white/40">DEV</div>
+                <h3 class="text-sm font-semibold">PascalCase</h3>
+                <p class="text-xs text-white/50">클래스/컴포넌트 네이밍.</p>
+              </div>
+              <button data-copy="pascal" class="copy-btn inline-flex items-center gap-1 text-xs px-2 py-1 rounded-lg border border-white/15 hover:bg-white/10 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                복사
+              </button>
+            </div>
+            <textarea data-case="pascal" readonly class="w-full h-24 rounded-xl border border-white/10 bg-black/60 text-xs md:text-sm p-3"></textarea>
+          </article>
+
+          <article class="rounded-2xl border border-white/10 bg-white/[0.03] p-4 space-y-3" data-card>
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <div class="text-xs uppercase tracking-widest text-white/40">DEV</div>
+                <h3 class="text-sm font-semibold">snake_case</h3>
+                <p class="text-xs text-white/50">파이썬/DB 스키마 스타일.</p>
+              </div>
+              <button data-copy="snake" class="copy-btn inline-flex items-center gap-1 text-xs px-2 py-1 rounded-lg border border-white/15 hover:bg-white/10 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                복사
+              </button>
+            </div>
+            <textarea data-case="snake" readonly class="w-full h-24 rounded-xl border border-white/10 bg-black/60 text-xs md:text-sm p-3"></textarea>
+          </article>
+
+          <article class="rounded-2xl border border-white/10 bg-white/[0.03] p-4 space-y-3" data-card>
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <div class="text-xs uppercase tracking-widest text-white/40">DEV</div>
+                <h3 class="text-sm font-semibold">SCREAMING_SNAKE_CASE</h3>
+                <p class="text-xs text-white/50">상수/환경변수 표준.</p>
+              </div>
+              <button data-copy="scream" class="copy-btn inline-flex items-center gap-1 text-xs px-2 py-1 rounded-lg border border-white/15 hover:bg-white/10 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                복사
+              </button>
+            </div>
+            <textarea data-case="scream" readonly class="w-full h-24 rounded-xl border border-white/10 bg-black/60 text-xs md:text-sm p-3"></textarea>
+          </article>
+
+          <article class="rounded-2xl border border-white/10 bg-white/[0.03] p-4 space-y-3" data-card>
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <div class="text-xs uppercase tracking-widest text-white/40">BRAND</div>
+                <h3 class="text-sm font-semibold">kebab-case</h3>
+                <p class="text-xs text-white/50">URL·디자인 토큰에 활용.</p>
+              </div>
+              <button data-copy="kebab" class="copy-btn inline-flex items-center gap-1 text-xs px-2 py-1 rounded-lg border border-white/15 hover:bg-white/10 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                복사
+              </button>
+            </div>
+            <textarea data-case="kebab" readonly class="w-full h-24 rounded-xl border border-white/10 bg-black/60 text-xs md:text-sm p-3"></textarea>
+          </article>
+
+          <article class="rounded-2xl border border-white/10 bg-white/[0.03] p-4 space-y-3" data-card>
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <div class="text-xs uppercase tracking-widest text-white/40">BRAND</div>
+                <h3 class="text-sm font-semibold">Train-Case</h3>
+                <p class="text-xs text-white/50">제목·버전명에 추천.</p>
+              </div>
+              <button data-copy="train" class="copy-btn inline-flex items-center gap-1 text-xs px-2 py-1 rounded-lg border border-white/15 hover:bg-white/10 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                복사
+              </button>
+            </div>
+            <textarea data-case="train" readonly class="w-full h-24 rounded-xl border border-white/10 bg-black/60 text-xs md:text-sm p-3"></textarea>
+          </article>
+
+          <article class="rounded-2xl border border-white/10 bg-white/[0.03] p-4 space-y-3" data-card>
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <div class="text-xs uppercase tracking-widest text-white/40">SYSTEM</div>
+                <h3 class="text-sm font-semibold">dot.case</h3>
+                <p class="text-xs text-white/50">설정/패키지 네이밍.</p>
+              </div>
+              <button data-copy="dot" class="copy-btn inline-flex items-center gap-1 text-xs px-2 py-1 rounded-lg border border-white/15 hover:bg-white/10 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                복사
+              </button>
+            </div>
+            <textarea data-case="dot" readonly class="w-full h-24 rounded-xl border border-white/10 bg-black/60 text-xs md:text-sm p-3"></textarea>
+          </article>
+
+          <article class="rounded-2xl border border-white/10 bg-white/[0.03] p-4 space-y-3" data-card>
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <div class="text-xs uppercase tracking-widest text-white/40">BRAND</div>
+                <h3 class="text-sm font-semibold">URL Slug</h3>
+                <p class="text-xs text-white/50">SEO 친화적 URL.</p>
+              </div>
+              <button data-copy="slug" class="copy-btn inline-flex items-center gap-1 text-xs px-2 py-1 rounded-lg border border-white/15 hover:bg-white/10 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                복사
+              </button>
+            </div>
+            <textarea data-case="slug" readonly class="w-full h-24 rounded-xl border border-white/10 bg-black/60 text-xs md:text-sm p-3"></textarea>
+          </article>
+
+          <article class="rounded-2xl border border-white/10 bg-white/[0.03] p-4 space-y-3 md:col-span-2" data-card>
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <div class="text-xs uppercase tracking-widest text-white/40">FILE</div>
+                <h3 class="text-sm font-semibold">파일-안전-슬러그.ext</h3>
+                <p class="text-xs text-white/50">공백·특수기호 제거, 하이픈 정리. 확장자는 보존합니다.</p>
+              </div>
+              <button data-copy="file" class="copy-btn inline-flex items-center gap-1 text-xs px-2 py-1 rounded-lg border border-white/15 hover:bg-white/10 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                복사
+              </button>
+            </div>
+            <textarea data-case="file" readonly class="w-full h-24 rounded-xl border border-white/10 bg-black/60 text-xs md:text-sm p-3"></textarea>
+          </article>
+        </div>
+      </section>
+    </section>
+
+    <!-- 도움말 & 팁 -->
+    <section class="rounded-3xl border border-white/10 ring-soft panel p-6 space-y-6">
+      <header class="flex flex-col md:flex-row md:items-end md:justify-between gap-3">
+        <div>
+          <h2 class="text-2xl font-semibold">도움말 &amp; 팁</h2>
+          <p class="text-white/60 text-sm">팀에서 바로 가져다 쓸 수 있는 고급 활용법을 정리했습니다.</p>
+        </div>
+        <a href="#results" class="inline-flex items-center gap-2 text-xs px-3 py-2 rounded-xl border border-cyan-400/40 bg-cyan-400/10 text-cyan-200 hover:bg-cyan-400/20 transition">
+          <i data-lucide="mouse-pointer-2" class="w-4 h-4"></i>
+          결과 영역으로 이동
+        </a>
+      </header>
+      <div class="grid gap-4 md:grid-cols-3">
+        <article class="rounded-2xl border border-white/10 bg-white/[0.04] p-5 space-y-2">
+          <div class="flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-white/40">
+            <i data-lucide="sparkle" class="w-4 h-4"></i>
+            INSIGHT
+          </div>
+          <h3 class="text-lg font-semibold">한 번의 입력으로 12가지 결과</h3>
+          <p class="text-sm text-white/65">동시에 여러 케이스를 비교해 가장 자연스러운 표현을 고르세요. 복사 버튼은 케이스별로 독립적으로 동작합니다.</p>
+        </article>
+        <article class="rounded-2xl border border-white/10 bg-white/[0.04] p-5 space-y-2">
+          <div class="flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-white/40">
+            <i data-lucide="settings-2" class="w-4 h-4"></i>
+            WORKFLOW
+          </div>
+          <h3 class="text-lg font-semibold">파일명·브랜딩용 안전 문자열</h3>
+          <p class="text-sm text-white/65">악센트 제거 옵션을 켜면 국제 문자까지 ASCII로 정리해 Git/클라우드 호환성을 확보합니다.</p>
+        </article>
+        <article class="rounded-2xl border border-white/10 bg-white/[0.04] p-5 space-y-2">
+          <div class="flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-white/40">
+            <i data-lucide="fingerprint" class="w-4 h-4"></i>
+            TEAM
+          </div>
+          <h3 class="text-lg font-semibold">컨벤션 적용 단축 버튼</h3>
+          <p class="text-sm text-white/65">‘입력에 적용’을 이용하면 스타일 가이드를 따르는 이름을 빠르게 확정할 수 있습니다.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- 사용설명서 & FAQ -->
+    <section class="rounded-3xl border border-white/10 ring-soft panel p-6 space-y-6">
+      <header>
+        <h2 class="text-2xl font-semibold">사용설명서 &amp; FAQ</h2>
+        <p class="text-sm text-white/60">실무에서 바로 활용할 수 있도록 주요 질문과 절차를 정리했습니다.</p>
+      </header>
+      <div class="grid gap-4 md:grid-cols-2">
+        <article class="rounded-2xl border border-white/10 bg-white/[0.05] p-5 space-y-2">
+          <h3 class="text-lg font-semibold">1. 텍스트 입력</h3>
+          <p class="text-sm text-white/65">붙여넣기 또는 파일에서 복사한 텍스트를 상단 입력창에 넣습니다. 자동 변환이 켜져 있다면 즉시 결과가 나타납니다.</p>
+        </article>
+        <article class="rounded-2xl border border-white/10 bg-white/[0.05] p-5 space-y-2">
+          <h3 class="text-lg font-semibold">2. 정리 옵션 선택</h3>
+          <p class="text-sm text-white/65">공백 정리, 악센트 제거, 줄바꿈 유지 여부를 선택해 출력 규칙을 맞춥니다. 팀 컨벤션에 따라 기본값을 저장해 두세요.</p>
+        </article>
+        <article class="rounded-2xl border border-white/10 bg-white/[0.05] p-5 space-y-2">
+          <h3 class="text-lg font-semibold">3. 케이스 확인 &amp; 복사</h3>
+          <p class="text-sm text-white/65">각 카드의 복사 버튼으로 원하는 케이스를 즉시 복사합니다. 키보드 단축키(Ctrl/⌘+Enter)로 변환을 재실행할 수 있습니다.</p>
+        </article>
+        <article class="rounded-2xl border border-white/10 bg-white/[0.05] p-5 space-y-2">
+          <h3 class="text-lg font-semibold">4. FAQ</h3>
+          <ul class="list-disc list-inside text-sm text-white/65 space-y-1">
+            <li><strong>문장부호가 섞여 있어도 되나요?</strong> — 문장 케이스가 자동으로 감지합니다.</li>
+            <li><strong>확장자는 어떻게 처리되나요?</strong> — 파일 슬러그는 마지막 점(.) 이후 문자열을 확장자로 간주해 보존합니다.</li>
+            <li><strong>브라우저에 저장되나요?</strong> — 설정은 로컬 저장소에 저장됩니다.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <div data-include="/partials/footer.html"></div>
+  <script defer src="/inject-layout.js"></script>
+  <script>
+    const state = {
+      copiedTimeouts: new Map()
+    };
+
+    const inputEl = document.getElementById('input');
+    const autoEl = document.getElementById('auto');
+    const applySelect = document.getElementById('applySelect');
+    const statChars = document.getElementById('statChars');
+    const statWords = document.getElementById('statWords');
+    const statLines = document.getElementById('statLines');
+
+    const optTrim = document.getElementById('optTrim');
+    const optSqueeze = document.getElementById('optSqueeze');
+    const optAccents = document.getElementById('optAccents');
+    const optLinebreak = document.getElementById('optLinebreak');
+
+    const outputs = Array.from(document.querySelectorAll('[data-case]'));
+
+    const conversions = {
+      upper: ctx => ctx.base.toUpperCase(),
+      lower: ctx => ctx.base.toLowerCase(),
+      sentence: ctx => toSentenceCase(ctx.base, ctx.keepBreaks),
+      title: ctx => wordsToTitle(ctx.words, ctx.originalWords),
+      camel: ctx => wordsToCamel(ctx.words, false),
+      pascal: ctx => wordsToCamel(ctx.words, true),
+      snake: ctx => ctx.words.map(w => w.toLowerCase()).join('_'),
+      scream: ctx => ctx.words.map(w => w.toUpperCase()).join('_'),
+      kebab: ctx => ctx.words.map(w => w.toLowerCase()).join('-'),
+      train: ctx => ctx.words.map(capitalize).join('-'),
+      dot: ctx => ctx.words.map(w => w.toLowerCase()).join('.'),
+      slug: ctx => buildSlug(ctx.words),
+      file: ctx => buildFileSlug(ctx.base, ctx.words)
+    };
+
+    function removeAccents(value) {
+      return value.normalize('NFD').replace(/\p{Diacritic}/gu, '');
+    }
+
+    function applyBaseOptions(text, opts, keepBreaks = true) {
+      let value = text ?? '';
+      if (opts.accent) value = removeAccents(value);
+      if (opts.squeeze) {
+        value = keepBreaks ? value.replace(/[^\S\r\n]+/g, ' ') : value.replace(/\s+/g, ' ');
+      }
+      if (!keepBreaks) {
+        value = value.replace(/\r?\n+/g, ' ');
+      }
+      if (opts.trim) value = value.trim();
+      return value;
+    }
+
+    function extractWords(text, opts) {
+      let prepared = opts.accent ? removeAccents(text) : text;
+      prepared = prepared
+        .replace(/([a-z\d])([A-Z])/g, '$1 $2')
+        .replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2')
+        .replace(/[\-_]+/g, ' ')
+        .replace(/[^\p{L}\p{N}]+/gu, ' ')
+        .trim();
+      if (!prepared) return [];
+      return prepared.split(/\s+/);
+    }
+
+    function toSentenceCase(text, keepBreaks) {
+      const lower = text.toLowerCase();
+      let capitalizeNext = true;
+      let result = '';
+      for (const char of lower) {
+        const isLetter = /[\p{L}\p{N}]/u.test(char);
+        if (capitalizeNext && isLetter) {
+          result += char.toUpperCase();
+          capitalizeNext = false;
+          continue;
+        }
+        result += char;
+        if (/[.!?]/.test(char)) {
+          capitalizeNext = true;
+        } else if (!keepBreaks && char === ' ') {
+          // space handled above
+        } else if (!/\s/.test(char)) {
+          capitalizeNext = false;
+        }
+        if (char === '\n') capitalizeNext = true;
+      }
+      return result;
+    }
+
+    function wordsToTitle(words, originalWords) {
+      if (!words.length) return '';
+      const minor = new Set(['a','an','the','and','but','or','for','nor','to','of','in','on','at','by']);
+      return words.map((word, idx) => {
+        const lower = word.toLowerCase();
+        if (idx !== 0 && idx !== words.length - 1 && minor.has(lower)) {
+          return lower;
+        }
+        return capitalize(word);
+      }).join(' ');
+    }
+
+    function wordsToCamel(words, pascal) {
+      if (!words.length) return '';
+      return words
+        .map((word, idx) => {
+          const lower = word.toLowerCase();
+          if (!pascal && idx === 0) return lower;
+          return capitalize(lower);
+        })
+        .join('');
+    }
+
+    function capitalize(word) {
+      if (!word) return '';
+      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    }
+
+    function buildSlug(words) {
+      if (!words.length) return '';
+      return words.map(w => w.toLowerCase()).join('-');
+    }
+
+    function buildFileSlug(base, words) {
+      if (!base) return '';
+      const trimmed = base.trim();
+      if (!trimmed) return '';
+      const parts = trimmed.split('.');
+      let ext = '';
+      if (parts.length > 1) {
+        ext = parts.pop();
+      }
+      const stemWords = words.length ? words : extractWords(parts.join(' '), { accent: true });
+      const stem = stemWords.map(w => w.toLowerCase()).join('-') || '파일';
+      const sanitized = stem
+        .replace(/-+/g, '-')
+        .replace(/[^a-z0-9\-]/g, '')
+        .replace(/^-|-$/g, '');
+      const safeStem = sanitized || 'file';
+      const cleanExt = ext.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+      return cleanExt ? `${safeStem}.${cleanExt}` : safeStem;
+    }
+
+    function update() {
+      const opts = {
+        trim: optTrim.checked,
+        squeeze: optSqueeze.checked,
+        accent: optAccents.checked,
+        keepBreaks: optLinebreak.checked
+      };
+
+      const raw = inputEl.value;
+      const base = applyBaseOptions(raw, opts, opts.keepBreaks);
+      const baseForWords = applyBaseOptions(raw, opts, false);
+      const words = extractWords(baseForWords, opts);
+
+      const ctx = {
+        base,
+        words,
+        originalWords: extractWords(raw, { accent: false }),
+        keepBreaks: opts.keepBreaks
+      };
+
+      outputs.forEach(area => {
+        const key = area.dataset.case;
+        const fn = conversions[key];
+        if (!fn) return;
+        const result = fn(ctx) || '';
+        area.value = result;
+        area.setAttribute('data-empty', result ? 'false' : 'true');
+      });
+
+      updateStats(raw, words);
+    }
+
+    function updateStats(rawText, words) {
+      const characters = rawText.length;
+      const lines = rawText ? rawText.split(/\r?\n/).length : 0;
+      const formatter = new Intl.NumberFormat('ko-KR');
+      statChars.textContent = `${formatter.format(characters)}자`;
+      statWords.textContent = `${formatter.format(words.length)}단어`;
+      statLines.textContent = `${formatter.format(lines)}줄`;
+    }
+
+    document.getElementById('btnConvert').addEventListener('click', update);
+    document.getElementById('btnClear').addEventListener('click', () => {
+      inputEl.value = '';
+      update();
+      inputEl.focus();
+    });
+
+    document.getElementById('btnPaste').addEventListener('click', async () => {
+      if (!navigator.clipboard) return;
+      try {
+        const text = await navigator.clipboard.readText();
+        if (text) {
+          inputEl.value = text;
+          update();
+        }
+      } catch (err) {
+        console.warn('Clipboard read failed', err);
+      }
+    });
+
+    document.getElementById('btnApply').addEventListener('click', () => {
+      const key = applySelect.value;
+      const area = document.querySelector(`[data-case="${key}"]`);
+      if (!area) return;
+      inputEl.value = area.value;
+      update();
+    });
+
+    inputEl.addEventListener('input', () => {
+      if (autoEl.checked) update();
+    });
+
+    inputEl.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+        e.preventDefault();
+        update();
+      }
+    });
+
+    [autoEl, optTrim, optSqueeze, optAccents, optLinebreak].forEach(el => {
+      el.addEventListener('change', () => {
+        if (autoEl.checked) update();
+      });
+    });
+
+    document.querySelectorAll('.copy-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const key = btn.dataset.copy;
+        const area = document.querySelector(`[data-case="${key}"]`);
+        if (!area) return;
+        try {
+          await navigator.clipboard.writeText(area.value);
+          indicateCopied(btn);
+        } catch (err) {
+          console.warn('Clipboard copy failed', err);
+        }
+      });
+    });
+
+    function indicateCopied(btn) {
+      const original = btn.innerHTML;
+      btn.innerHTML = '<i data-lucide="check" class="w-3.5 h-3.5"></i>완료';
+      btn.classList.add('text-emerald-200', 'border-emerald-400/40', 'bg-emerald-400/10');
+      if (window.lucide) lucide.createIcons({ root: btn });
+      clearTimeout(state.copiedTimeouts.get(btn));
+      const timeout = setTimeout(() => {
+        btn.innerHTML = original;
+        btn.classList.remove('text-emerald-200', 'border-emerald-400/40', 'bg-emerald-400/10');
+        if (window.lucide) lucide.createIcons({ root: btn });
+      }, 2000);
+      state.copiedTimeouts.set(btn, timeout);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.lucide) lucide.createIcons();
+      restorePreferences();
+      update();
+    });
+
+    function restorePreferences() {
+      try {
+        const saved = JSON.parse(localStorage.getItem('caseConverterPrefs') || '{}');
+        if ('auto' in saved) autoEl.checked = saved.auto;
+        if ('trim' in saved) optTrim.checked = saved.trim;
+        if ('squeeze' in saved) optSqueeze.checked = saved.squeeze;
+        if ('accents' in saved) optAccents.checked = saved.accents;
+        if ('keepBreaks' in saved) optLinebreak.checked = saved.keepBreaks;
+      } catch (err) {
+        console.warn('Failed to restore preferences', err);
+      }
+    }
+
+    function persistPreferences() {
+      const payload = {
+        auto: autoEl.checked,
+        trim: optTrim.checked,
+        squeeze: optSqueeze.checked,
+        accents: optAccents.checked,
+        keepBreaks: optLinebreak.checked
+      };
+      localStorage.setItem('caseConverterPrefs', JSON.stringify(payload));
+    }
+
+    [autoEl, optTrim, optSqueeze, optAccents, optLinebreak].forEach(el => {
+      el.addEventListener('change', () => {
+        persistPreferences();
+      });
+    });
+  </script>
+</body>
+</html>

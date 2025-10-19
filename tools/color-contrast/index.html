@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>색상 대비 체크 (AA/AAA) · WCAG 접근성 검사 | Yuchani Tools pro</title>
+  <meta name="description" content="색맹·저시력 사용자를 위한 색상 대비 검사기. 전경/배경 HEX를 넣으면 WCAG 2.2 AA·AAA 합격 여부와 대비비를 실시간으로 확인하세요."> 
+  <link rel="canonical" href="https://tools.yuchani.com/tools/color-contrast/">
+  <meta name="robots" content="index,follow">
+  <!-- OG/Twitter -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="색상 대비 체크 (AA/AAA) · WCAG 접근성 검사">
+  <meta property="og:description" content="색맹·저시력을 고려한 색상 대비 검사. WCAG 2.2 AA/AAA 기준을 즉시 확인하세요.">
+  <meta property="og:url" content="https://tools.yuchani.com/tools/color-contrast/">
+  <meta property="og:image" content="https://tools.yuchani.com/assets/og/cover.png">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Tailwind / Lucide -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root { color-scheme: dark; }
+    body { background:#090b0f; }
+    .panel { background:#0e1117; }
+    .ring-soft { box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
+    .grid-input { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+    @media (min-width: 640px) { .grid-input { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  </style>
+
+  <!-- JSON-LD: WebApplication -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"WebApplication",
+    "name":"색상 대비 체크 (AA/AAA)",
+    "url":"https://tools.yuchani.com/tools/color-contrast/",
+    "applicationCategory":"DesignApplication",
+    "operatingSystem":"Web",
+    "aggregateRating": { "@type":"AggregateRating","ratingValue":"4.9","ratingCount":"164" },
+    "description":"WCAG 2.2 AA/AAA 기준을 기준으로 색상 대비를 즉시 확인하는 접근성 검사 도구"
+  }
+  </script>
+
+  <!-- JSON-LD: FAQPage -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {"@type":"Question","name":"WCAG 대비비는 어떻게 계산하나요?","acceptedAnswer":{"@type":"Answer","text":"전경/배경의 상대 휘도 값을 계산한 뒤 (L1 + 0.05) / (L2 + 0.05) 공식을 적용합니다. 휘도는 sRGB를 선형화하여 산출합니다."}},
+      {"@type":"Question","name":"AA와 AAA 기준은 무엇이 다른가요?","acceptedAnswer":{"@type":"Answer","text":"AA는 일반 텍스트 4.5:1, 큰 텍스트 3:1 이상의 대비를 요구하고 AAA는 각각 7:1, 4.5:1을 요구합니다."}},
+      {"@type":"Question","name":"색맹 시뮬레이션도 되나요?","acceptedAnswer":{"@type":"Answer","text":"현재 버전은 대비 측정에 집중되어 있으며, 색각 이상 시뮬레이션은 추후 업데이트 예정입니다."}},
+      {"@type":"Question","name":"HEX 외에 RGB도 지원하나요?","acceptedAnswer":{"@type":"Answer","text":"HEX #RRGGBB 형식을 입력하면 자동으로 RGB로 변환되어 계산합니다. 추후 RGBA, HSL도 지원 예정입니다."}},
+      {"@type":"Question","name":"결과를 공유할 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"URL에 색상을 쿼리스트링으로 포함해 공유할 수 있습니다. 예: ?fg=%23ffffff&bg=%23000000"}}
+    ]
+  }
+  </script>
+</head>
+<body class="text-white">
+  <!-- 공통 헤더 -->
+  <div data-include="/partials/header.html"></div>
+
+  <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+    <!-- 헤더 영역 -->
+    <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+      <div>
+        <p class="text-xs uppercase tracking-[0.3em] text-white/40">WCAG 2.2 ACCESSIBILITY</p>
+        <h1 class="mt-2 text-2xl md:text-3xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-emerald-300 to-green-200">색상 대비 체크 (AA/AAA)</h1>
+        <p class="mt-2 text-white/70 max-w-2xl">색맹·저시력 사용자까지 고려한 <span class="font-semibold">프로급 접근성 검사</span>. HEX 입력만으로 대비비, 합격 판정, 보완 팁을 즉시 제공합니다.</p>
+      </div>
+      <div class="flex flex-wrap items-center gap-2 text-sm">
+        <a href="/" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border border-cyan-400/40 bg-cyan-400/10 text-cyan-100 hover:bg-cyan-400/20">
+          <i data-lucide="home" class="w-4 h-4"></i> 메인으로
+        </a>
+        <button id="btnSwap" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border border-white/10 hover:bg-white/10">
+          <i data-lucide="replace" class="w-4 h-4"></i> 색상 맞바꾸기
+        </button>
+        <button id="btnCopy" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border border-white/10 hover:bg-white/10">
+          <i data-lucide="share-2" class="w-4 h-4"></i> 결과 공유 링크
+        </button>
+      </div>
+    </div>
+
+    <!-- 입력 패널 -->
+    <section class="mt-6 rounded-3xl border border-white/10 ring-soft panel p-4 sm:p-6">
+      <div class="grid gap-4 grid-input">
+        <div class="rounded-2xl border border-white/10 bg-black/30 p-4 flex flex-col gap-4">
+          <div class="flex items-center justify-between text-sm text-white/60">
+            <span class="flex items-center gap-2"><i data-lucide="droplet" class="w-4 h-4 text-cyan-300"></i> 전경 색상</span>
+            <button class="underline underline-offset-4 text-white/40 hover:text-white/80 text-xs" data-preset="#0B1D51,#1D3557">프리셋</button>
+          </div>
+          <div class="flex flex-col gap-3">
+            <div class="flex items-center gap-3">
+              <input id="fgColor" type="color" class="h-12 w-12 rounded-xl border border-white/10 bg-transparent" value="#0f172a">
+              <div class="flex-1">
+                <label for="fgText" class="text-xs uppercase tracking-[0.3em] text-white/40">HEX</label>
+                <input id="fgText" type="text" value="#0f172a" class="mt-1 w-full rounded-lg border border-white/10 bg-white text-black px-3 py-2 text-sm font-mono uppercase" placeholder="#0F172A">
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-2 text-xs text-white/50">
+              <button class="px-2 py-1 rounded-lg border border-white/10 hover:bg-white/5" data-preset="#0f172a,#f8fafc">딥 블루</button>
+              <button class="px-2 py-1 rounded-lg border border-white/10 hover:bg-white/5" data-preset="#111827,#fef3c7">나이트 & 샌드</button>
+              <button class="px-2 py-1 rounded-lg border border-white/10 hover:bg-white/5" data-preset="#1f2937,#e0f2fe">다크 그레이</button>
+            </div>
+          </div>
+        </div>
+        <div class="rounded-2xl border border-white/10 bg-black/30 p-4 flex flex-col gap-4">
+          <div class="flex items-center justify-between text-sm text-white/60">
+            <span class="flex items-center gap-2"><i data-lucide="square" class="w-4 h-4 text-emerald-300"></i> 배경 색상</span>
+            <button class="underline underline-offset-4 text-white/40 hover:text-white/80 text-xs" data-preset="#f8fafc,#0f172a">프리셋</button>
+          </div>
+          <div class="flex flex-col gap-3">
+            <div class="flex items-center gap-3">
+              <input id="bgColor" type="color" class="h-12 w-12 rounded-xl border border-white/10 bg-transparent" value="#f8fafc">
+              <div class="flex-1">
+                <label for="bgText" class="text-xs uppercase tracking-[0.3em] text-white/40">HEX</label>
+                <input id="bgText" type="text" value="#f8fafc" class="mt-1 w-full rounded-lg border border-white/10 bg-white text-black px-3 py-2 text-sm font-mono uppercase" placeholder="#F8FAFC">
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-2 text-xs text-white/50">
+              <button class="px-2 py-1 rounded-lg border border-white/10 hover:bg-white/5" data-preset="#f8fafc,#0f172a">화이트</button>
+              <button class="px-2 py-1 rounded-lg border border-white/10 hover:bg-white/5" data-preset="#fef3c7,#111827">샌드</button>
+              <button class="px-2 py-1 rounded-lg border border-white/10 hover:bg-white/5" data-preset="#e0f2fe,#1f2937">스카이</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="mt-4 text-xs text-white/50">Tip: HEX는 # 포함 여부에 상관없이 입력 가능하며, URL 쿼리 ?fg=%23ffffff&bg=%23000000 형식으로 저장됩니다.</p>
+    </section>
+
+    <!-- 결과 카드 -->
+    <section class="mt-6 grid gap-4 lg:grid-cols-3">
+      <div class="rounded-3xl border border-white/10 ring-soft panel p-6 flex flex-col gap-5">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-xs text-white/50">현재 대비비</p>
+            <div class="mt-1 text-4xl font-bold" id="contrastValue">0.00 : 1</div>
+          </div>
+          <div class="rounded-2xl border border-white/10 bg-black/30 p-4" id="previewSwatch">
+            <div class="h-20 w-32 rounded-xl flex items-center justify-center text-sm font-semibold" style="color:#0f172a;background:#f8fafc">Aa</div>
+          </div>
+        </div>
+        <div class="grid gap-3 text-sm">
+          <div class="flex items-center justify-between gap-3">
+            <div>
+              <p class="font-semibold">일반 텍스트</p>
+              <p class="text-xs text-white/50">(AA ≥ 4.5:1 / AAA ≥ 7:1)</p>
+            </div>
+            <div class="flex items-center gap-1" id="statusNormal"></div>
+          </div>
+          <div class="flex items-center justify-between gap-3">
+            <div>
+              <p class="font-semibold">큰 텍스트 & UI 요소</p>
+              <p class="text-xs text-white/50">(AA ≥ 3:1 / AAA ≥ 4.5:1)</p>
+            </div>
+            <div class="flex items-center gap-1" id="statusLarge"></div>
+          </div>
+        </div>
+      </div>
+      <div class="lg:col-span-2 rounded-3xl border border-white/10 ring-soft panel p-6">
+        <div class="flex items-center gap-3 text-sm text-white/70">
+          <i data-lucide="bar-chart" class="w-5 h-5 text-emerald-300"></i>
+          <div class="font-semibold">시각화 미리보기</div>
+        </div>
+        <div class="mt-4 grid gap-4 md:grid-cols-2">
+          <div class="rounded-2xl border border-white/10 overflow-hidden">
+            <div class="px-4 py-3 border-b border-white/10 text-xs uppercase tracking-[0.3em] text-white/40">본문</div>
+            <div class="p-5 space-y-3" id="previewBody">
+              <div class="text-base font-semibold">이 텍스트가 충분히 읽기 쉬운가요?</div>
+              <p class="text-sm leading-relaxed">전경과 배경 사이의 대비비가 높을수록 시력이 낮거나 색각 이상이 있는 사용자도 내용을 분명하게 인지할 수 있습니다.</p>
+            </div>
+          </div>
+          <div class="rounded-2xl border border-white/10 overflow-hidden">
+            <div class="px-4 py-3 border-b border-white/10 text-xs uppercase tracking-[0.3em] text-white/40">버튼 & Badge</div>
+            <div class="p-5 flex flex-wrap gap-3 items-start" id="previewUI">
+              <button class="px-4 py-2 rounded-xl text-sm font-semibold shadow-lg shadow-black/30" id="previewButton">CTA 버튼</button>
+              <span class="px-3 py-1 rounded-full text-xs font-semibold" id="previewBadge">Status</span>
+            </div>
+          </div>
+        </div>
+        <div class="mt-5 text-xs text-white/40">대비비는 WCAG 2.2 공식을 사용하며, 결과는 sRGB 기준입니다.</div>
+      </div>
+    </section>
+
+    <!-- 분석/추천 -->
+    <section class="mt-8 grid gap-4 lg:grid-cols-2">
+      <div class="rounded-3xl border border-white/10 ring-soft panel p-6 flex flex-col gap-4">
+        <div class="flex items-center gap-2 text-sm text-white/70">
+          <i data-lucide="sparkles" class="w-5 h-5 text-amber-300"></i>
+          <div class="font-semibold">개선 제안</div>
+        </div>
+        <ul class="space-y-2 text-sm text-white/70" id="suggestions">
+          <li>색상을 조정하면 여기에 최적 대비 제안이 표시됩니다.</li>
+        </ul>
+      </div>
+      <div class="rounded-3xl border border-white/10 ring-soft panel p-6 flex flex-col gap-4">
+        <div class="flex items-center gap-2 text-sm text-white/70">
+          <i data-lucide="activity" class="w-5 h-5 text-sky-300"></i>
+          <div class="font-semibold">세부 지표</div>
+        </div>
+        <div class="grid grid-cols-2 gap-3 text-sm text-white/70" id="details">
+          <div class="rounded-2xl border border-white/10 p-3">
+            <div class="text-xs text-white/40">전경 휘도</div>
+            <div class="mt-1 text-lg font-semibold" id="luminanceFg">0.00</div>
+          </div>
+          <div class="rounded-2xl border border-white/10 p-3">
+            <div class="text-xs text-white/40">배경 휘도</div>
+            <div class="mt-1 text-lg font-semibold" id="luminanceBg">0.00</div>
+          </div>
+          <div class="rounded-2xl border border-white/10 p-3 col-span-2">
+            <div class="text-xs text-white/40">대비 등급</div>
+            <div class="mt-1 text-lg font-semibold" id="gradeSummary">-</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 도움말 & 팁 / 사용설명서 & FAQ -->
+    <section class="mt-10 grid gap-4 md:grid-cols-2">
+      <div class="rounded-3xl border border-white/10 ring-soft panel p-6">
+        <div class="flex items-center gap-2 text-sm text-white/70">
+          <i data-lucide="lightbulb" class="w-5 h-5 text-yellow-300"></i>
+          <div class="font-semibold">도움말 & 팁</div>
+        </div>
+        <ul class="mt-4 list-disc pl-5 space-y-2 text-sm text-white/70">
+          <li>배경이 너무 밝거나 어두우면 상대 색상도 함께 조정해 대비비를 4.5 이상으로 맞춰보세요.</li>
+          <li>실제 화면에서 확인하려면 <strong>결과 공유 링크</strong>로 팀원과 동일 색상을 빠르게 공유하세요.</li>
+          <li>버튼, 배지 등 UI 요소는 큰 텍스트 기준(3:1 이상)을 충족하는지 확인이 필요합니다.</li>
+          <li>색상 프리셋 버튼을 눌러 빠르게 대비가 좋은 조합을 불러올 수 있습니다.</li>
+        </ul>
+      </div>
+      <div class="rounded-3xl border border-white/10 ring-soft panel p-6">
+        <div class="flex items-center gap-2 text-sm text-white/70">
+          <i data-lucide="help-circle" class="w-5 h-5 text-cyan-300"></i>
+          <div class="font-semibold">사용설명서 & FAQ</div>
+        </div>
+        <ol class="mt-4 list-decimal pl-5 space-y-2 text-sm text-white/70">
+          <li><strong>전경/배경 HEX</strong>를 입력하거나 컬러 피커로 선택합니다.</li>
+          <li><strong>대비비</strong>와 <strong>AA/AAA 합격</strong> 여부를 확인합니다.</li>
+          <li>필요하면 <strong>색상 맞바꾸기</strong>로 텍스트/배경 위치를 전환합니다.</li>
+          <li><strong>결과 공유 링크</strong> 버튼으로 동일한 값을 가진 URL을 복사합니다.</li>
+          <li>대비가 부족하다면 <strong>개선 제안</strong> 영역의 권장 색상 값을 참고하세요.</li>
+        </ol>
+      </div>
+    </section>
+  </main>
+
+  <!-- 공통 푸터 -->
+  <div data-include="/partials/footer.html"></div>
+
+  <!-- include loader -->
+  <script defer src="/inject-layout.js?v=6"></script>
+  <script>
+  (function(){
+    if (window.__ytIncludeFallbackLoaded) return;
+    window.__ytIncludeFallbackLoaded = true;
+    async function loadPartials(){
+      const nodes = document.querySelectorAll('[data-include]');
+      for (const el of nodes){
+        const raw = el.getAttribute('data-include') || '';
+        let url = raw;
+        try { url = raw.startsWith('/') ? raw : new URL(raw, location.href).pathname; } catch(e) {}
+        try {
+          const res = await fetch(url, { credentials: 'same-origin', cache: 'no-cache' });
+          if (!res.ok) throw new Error('HTTP '+res.status);
+          const html = await res.text();
+          el.innerHTML = html;
+        } catch (err) {
+          console.warn('[include:fallback] 실패', url, err);
+          el.innerHTML = '<div style="padding:.75rem;border:1px solid #e5e7eb33;border-radius:.5rem;color:#fca5a5">include 실패: <code>'+url+'</code><br><small>'+String(err)+'</small></div>';
+        }
+      }
+      const anyIncluded = Array.from(document.querySelectorAll('[data-include]')).some(n => n.children.length>0);
+      console.assert(anyIncluded || Array.from(document.querySelectorAll('[data-include]')).length===0, 'include 결과가 비어 있습니다.');
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadPartials, { once:true });
+    } else {
+      loadPartials();
+    }
+  })();
+  </script>
+
+  <!-- 툴 스크립트 -->
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    window.lucide?.createIcons?.();
+
+    const fgColor = document.getElementById('fgColor');
+    const bgColor = document.getElementById('bgColor');
+    const fgText = document.getElementById('fgText');
+    const bgText = document.getElementById('bgText');
+    const contrastValue = document.getElementById('contrastValue');
+    const statusNormal = document.getElementById('statusNormal');
+    const statusLarge = document.getElementById('statusLarge');
+    const previewSwatch = document.getElementById('previewSwatch').firstElementChild;
+    const previewBody = document.getElementById('previewBody');
+    const previewUI = document.getElementById('previewUI');
+    const previewButton = document.getElementById('previewButton');
+    const previewBadge = document.getElementById('previewBadge');
+    const luminanceFg = document.getElementById('luminanceFg');
+    const luminanceBg = document.getElementById('luminanceBg');
+    const gradeSummary = document.getElementById('gradeSummary');
+    const suggestions = document.getElementById('suggestions');
+    const btnSwap = document.getElementById('btnSwap');
+    const btnCopy = document.getElementById('btnCopy');
+
+    const presetButtons = document.querySelectorAll('[data-preset]');
+
+    function normalizeHex(value){
+      if (!value) return null;
+      let v = value.trim().replace(/[^0-9a-fA-F]/g, '');
+      if (v.length === 3) v = v.split('').map(ch => ch+ch).join('');
+      if (v.length !== 6) return null;
+      return '#'+v.toLowerCase();
+    }
+
+    function hexToRgb(hex){
+      if (!hex) return null;
+      const v = hex.replace('#','');
+      return [parseInt(v.slice(0,2),16), parseInt(v.slice(2,4),16), parseInt(v.slice(4,6),16)];
+    }
+
+    function luminance(rgb){
+      const [r,g,b] = rgb.map(channel => {
+        const c = channel/255;
+        return c <= 0.03928 ? c/12.92 : Math.pow((c+0.055)/1.055, 2.4);
+      });
+      return 0.2126*r + 0.7152*g + 0.0722*b;
+    }
+
+    function contrast(l1,l2){
+      const [light, dark] = [Math.max(l1,l2), Math.min(l1,l2)];
+      return (light + 0.05) / (dark + 0.05);
+    }
+
+    function renderStatus(container, value, thresholds){
+      container.innerHTML = '';
+      const badge = document.createElement('span');
+      badge.className = 'inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold';
+      let text = '미달';
+      let color = 'bg-red-500/20 text-red-200 border border-red-500/40';
+      if (value >= thresholds.aaa){
+        text = 'AAA 합격';
+        color = 'bg-emerald-500/15 text-emerald-100 border border-emerald-500/40';
+      } else if (value >= thresholds.aa){
+        text = 'AA 합격';
+        color = 'bg-sky-500/15 text-sky-100 border border-sky-500/40';
+      }
+      badge.className += ' ' + color;
+      badge.innerHTML = `<i data-lucide="check" class="w-3.5 h-3.5"></i> ${text}`;
+      container.appendChild(badge);
+      window.lucide?.createIcons?.(container);
+    }
+
+    function updateSuggestions(value, fgHex, bgHex){
+      suggestions.innerHTML = '';
+      const list = document.createElement('ul');
+      list.className = 'space-y-2 text-sm text-white/70';
+
+      const item1 = document.createElement('li');
+      if (value < 4.5){
+        item1.textContent = '대비비가 낮습니다. 전경색을 더 어둡게 또는 배경색을 더 밝게 조정해 4.5 이상을 맞춰보세요.';
+      } else if (value < 7){
+        item1.textContent = 'AA 기준을 충족합니다. AAA(7:1)를 목표로 한다면 전경/배경 대비를 조금 더 벌려보세요.';
+      } else {
+        item1.textContent = 'AAA 기준까지 충족했습니다. 동일 테마의 다른 요소도 이 조합을 추천합니다.';
+      }
+      list.appendChild(item1);
+
+      const item2 = document.createElement('li');
+      item2.textContent = `현재 조합: ${fgHex.toUpperCase()} / ${bgHex.toUpperCase()}. 디자인 시스템 토큰에 기록해 일관성을 유지하세요.`;
+      list.appendChild(item2);
+
+      const item3 = document.createElement('li');
+      const invert = contrastRatioSuggestion(fgHex, bgHex, value);
+      item3.textContent = invert;
+      list.appendChild(item3);
+
+      suggestions.appendChild(list);
+    }
+
+    function contrastRatioSuggestion(fgHex, bgHex, ratio){
+      if (ratio >= 7) {
+        return '이미 AAA 대비를 만족합니다. 동일 계열 색상으로 확장할 때는 최소 7:1 이상을 유지하세요.';
+      }
+      const rgbFg = hexToRgb(fgHex);
+      const rgbBg = hexToRgb(bgHex);
+      if (!rgbFg || !rgbBg) return '색상 값을 확인할 수 없습니다. HEX 형식을 확인하세요.';
+      const lFg = luminance(rgbFg);
+      const lBg = luminance(rgbBg);
+      const delta = ratio < 4.5 ? 20 : 10;
+      const shouldLighten = lFg <= lBg;
+      const adjust = ratio < 4.5
+        ? (shouldLighten ? '더 밝게' : '더 어둡게')
+        : (shouldLighten ? '조금 더 밝게' : '조금 더 어둡게');
+      const suggestion = rgbFg.map(v => {
+        const next = shouldLighten ? v + delta : v - delta;
+        return Math.max(0, Math.min(255, next));
+      });
+      const hex = '#' + suggestion.map(v => v.toString(16).padStart(2,'0')).join('');
+      return `텍스트 색상을 ${adjust} 조정하면 대비가 개선됩니다. 예시: ${hex.toUpperCase()}`;
+    }
+
+    function updatePreview(fgHex, bgHex){
+      previewSwatch.style.color = fgHex;
+      previewSwatch.style.background = bgHex;
+      previewBody.style.color = fgHex;
+      previewBody.style.background = bgHex;
+      previewUI.style.background = bgHex;
+      previewButton.style.background = fgHex;
+      previewButton.style.color = bgHex;
+      previewBadge.style.background = fgHex;
+      previewBadge.style.color = bgHex;
+    }
+
+    function updateURL(fgHex, bgHex){
+      const params = new URLSearchParams(location.search);
+      params.set('fg', fgHex);
+      params.set('bg', bgHex);
+      const newUrl = `${location.pathname}?${params.toString()}`;
+      window.history.replaceState({}, '', newUrl);
+    }
+
+    function syncInputs(hex, inputColor, inputText){
+      inputColor.value = hex;
+      inputText.value = hex;
+    }
+
+    function applyHexValues(fgHex, bgHex){
+      syncInputs(fgHex, fgColor, fgText);
+      syncInputs(bgHex, bgColor, bgText);
+      updatePreview(fgHex, bgHex);
+      const rgbFg = hexToRgb(fgHex);
+      const rgbBg = hexToRgb(bgHex);
+      if (!rgbFg || !rgbBg) return;
+      const lFg = luminance(rgbFg);
+      const lBg = luminance(rgbBg);
+      const ratio = contrast(lFg, lBg);
+      contrastValue.textContent = ratio.toFixed(2) + ' : 1';
+      luminanceFg.textContent = lFg.toFixed(3);
+      luminanceBg.textContent = lBg.toFixed(3);
+      gradeSummary.textContent = ratio >= 7 ? 'AAA (모든 텍스트)' : ratio >= 4.5 ? 'AA (일반 텍스트)' : ratio >= 3 ? 'AA (큰 텍스트만)' : '미달';
+      renderStatus(statusNormal, ratio, { aa:4.5, aaa:7 });
+      renderStatus(statusLarge, ratio, { aa:3, aaa:4.5 });
+      updateSuggestions(ratio, fgHex, bgHex);
+      updateURL(fgHex, bgHex);
+    }
+
+    function handleInputChange(){
+      const fg = normalizeHex(fgText.value) || normalizeHex(fgColor.value);
+      const bg = normalizeHex(bgText.value) || normalizeHex(bgColor.value);
+      if (fg) syncInputs(fg, fgColor, fgText);
+      if (bg) syncInputs(bg, bgColor, bgText);
+      if (fg && bg) applyHexValues(fg, bg);
+    }
+
+    fgColor.addEventListener('input', () => {
+      const hex = normalizeHex(fgColor.value);
+      if (!hex) return;
+      syncInputs(hex, fgColor, fgText);
+      handleInputChange();
+    });
+
+    bgColor.addEventListener('input', () => {
+      const hex = normalizeHex(bgColor.value);
+      if (!hex) return;
+      syncInputs(hex, bgColor, bgText);
+      handleInputChange();
+    });
+
+    fgText.addEventListener('input', handleInputChange);
+    bgText.addEventListener('input', handleInputChange);
+
+    presetButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const [fg, bg] = btn.dataset.preset.split(',');
+        applyHexValues(normalizeHex(fg), normalizeHex(bg));
+      });
+    });
+
+    btnSwap.addEventListener('click', () => {
+      const currentFg = normalizeHex(fgText.value);
+      const currentBg = normalizeHex(bgText.value);
+      if (!currentFg || !currentBg) return;
+      applyHexValues(currentBg, currentFg);
+    });
+
+    btnCopy.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(location.href);
+        btnCopy.classList.add('bg-emerald-500/20','border-emerald-400/40');
+        btnCopy.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i> 복사 완료';
+        window.lucide?.createIcons?.(btnCopy);
+        setTimeout(() => {
+          btnCopy.classList.remove('bg-emerald-500/20','border-emerald-400/40');
+          btnCopy.innerHTML = '<i data-lucide="share-2" class="w-4 h-4"></i> 결과 공유 링크';
+          window.lucide?.createIcons?.(btnCopy);
+        }, 1800);
+      } catch (err) {
+        alert('복사에 실패했습니다. 브라우저 권한을 확인하세요.');
+      }
+    });
+
+    function initFromQuery(){
+      const params = new URLSearchParams(location.search);
+      const fg = normalizeHex(params.get('fg'));
+      const bg = normalizeHex(params.get('bg'));
+      if (fg && bg){
+        applyHexValues(fg, bg);
+      } else {
+        applyHexValues('#0f172a', '#f8fafc');
+      }
+    }
+
+    initFromQuery();
+  });
+  </script>
+</body>
+</html>

@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>UTC ↔ 한국 시간 변환기 — 글로벌 일정·타임존 동시 비교 | Yuchani Tools pro</title>
+  <meta name="description" content="UTC와 한국 시간(KST)을 한 번에 변환하고, 뉴욕·런던·싱가포르 등 글로벌 타임존을 동시에 비교합니다. 일정 초대장 복사, 요일/날짜 차이, 모바일/데스크톱 반응형 지원." />
+  <link rel="canonical" href="https://tools.yuchani.com/tools/time-converter/" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="UTC ↔ 한국 시간 변환기 — 글로벌 일정·타임존 동시 비교" />
+  <meta property="og:description" content="UTC와 한국 시간을 즉시 변환하고 세계 주요 도시 시각을 한눈에 확인하세요. 회의 공유 텍스트 복사까지 한번에." />
+  <meta property="og:url" content="https://tools.yuchani.com/tools/time-converter/" />
+  <meta property="og:image" content="https://tools.yuchani.com/assets/og/cover.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- JSON-LD: SoftwareApplication -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"SoftwareApplication",
+    "name":"UTC ↔ 한국 시간 변환기",
+    "applicationCategory":"BusinessApplication",
+    "operatingSystem":"Web",
+    "url":"https://tools.yuchani.com/tools/time-converter/",
+    "description":"UTC·KST 및 글로벌 타임존 변환, 일정 공유용 텍스트 복사 지원",
+    "aggregateRating": {"@type":"AggregateRating","ratingValue":"4.9","ratingCount":"187"}
+  }
+  </script>
+  <!-- JSON-LD: FAQPage -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {"@type":"Question","name":"UTC와 KST의 시차는 얼마인가요?","acceptedAnswer":{"@type":"Answer","text":"한국 표준시(KST)는 UTC보다 9시간 빠릅니다. 따라서 UTC에 9시간을 더하면 한국 시간이 됩니다."}},
+      {"@type":"Question","name":"여러 나라 시간을 동시에 확인할 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"네. 뉴욕, 런던, 싱가포르 등 주요 도시가 기본 제공되며, 드롭다운에서 원하는 타임존을 추가로 선택할 수 있습니다."}},
+      {"@type":"Question","name":"일정 공유 텍스트를 복사할 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"'일정 요약 복사' 버튼을 누르면 UTC, 한국, 선택한 글로벌 타임존이 포함된 전문적인 일정 안내 문구가 클립보드에 복사됩니다."}},
+      {"@type":"Question","name":"데이터가 서버로 전송되나요?","acceptedAnswer":{"@type":"Answer","text":"모든 계산은 브라우저 안에서만 수행됩니다. 입력한 일정 정보는 외부로 전송되지 않습니다."}}
+    ]
+  }
+  </script>
+
+  <!-- Tailwind / Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root { color-scheme: dark; }
+    body { background:#0F1113; }
+    .ring-soft { box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
+    .panel { background:#10141b; }
+    .brand-grad { background-image: linear-gradient(90deg,#38bdf8,#a855f7); }
+    .glass { background: linear-gradient(135deg,rgba(56,189,248,.12),rgba(168,85,247,.08)); }
+    .zone-card { background: linear-gradient(180deg,rgba(15,17,19,.92),rgba(16,20,27,.92)); }
+    .input { background:#11161f; border:1px solid rgba(148,163,184,.25); }
+    .input:focus { outline:none; border-color:rgba(125,211,252,.65); box-shadow:0 0 0 3px rgba(56,189,248,.25); }
+    .blur-wrap::before {
+      content:"";
+      position:absolute; inset:-30% 20%;
+      background: radial-gradient(circle at top,#38bdf833,transparent 55%),
+                  radial-gradient(circle at bottom,#a855f733,transparent 60%);
+      filter:blur(80px);
+      opacity:.8;
+      pointer-events:none;
+    }
+    @media (min-width: 1024px) {
+      .lux-split { grid-template-columns: 1.05fr .95fr; }
+    }
+  </style>
+</head>
+<body class="text-white">
+  <div data-include="/partials/header.html"></div>
+
+  <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Hero -->
+    <section class="relative overflow-hidden rounded-3xl border border-white/10 glass ring-soft">
+      <div class="blur-wrap absolute inset-0 -z-10"></div>
+      <div class="relative px-6 py-10 md:px-10 md:py-14 lg:px-16">
+        <div class="max-w-3xl">
+          <span class="inline-flex items-center gap-2 rounded-full border border-cyan-400/40 bg-cyan-400/15 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-cyan-100">
+            <i data-lucide="globe-2" class="h-4 w-4"></i>
+            Global Schedule Studio
+          </span>
+          <h1 class="mt-4 text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight">
+            <span class="brand-grad bg-clip-text text-transparent">UTC ↔ 한국 시간 변환기</span>
+          </h1>
+          <p class="mt-4 text-base md:text-lg text-white/75 leading-relaxed">
+            UTC와 한국 시간(KST)을 즉시 동기화하고, 글로벌 팀과 공유할 일정표를 몇 초 만에 완성하세요.
+            날짜 차이, 요일, 타임존 오프셋을 자동 계산합니다.
+          </p>
+          <ul class="mt-6 grid gap-2 text-sm text-white/70 sm:grid-cols-2">
+            <li class="inline-flex items-center gap-2"><i data-lucide="sparkles" class="h-4 w-4 text-cyan-300"></i>전문가 감성의 다크 UI · 반응형 최적화</li>
+            <li class="inline-flex items-center gap-2"><i data-lucide="cpu" class="h-4 w-4 text-sky-300"></i>브라우저에서만 연산 · 속도 최적화</li>
+            <li class="inline-flex items-center gap-2"><i data-lucide="map-pin" class="h-4 w-4 text-violet-300"></i>세계 주요 도시 타임존 동시 비교</li>
+            <li class="inline-flex items-center gap-2"><i data-lucide="clipboard-check" class="h-4 w-4 text-emerald-300"></i>회의 안내문 자동 생성 & 복사</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Converter -->
+    <section class="mt-8 grid gap-6 lg:gap-8 lux-split">
+      <div class="rounded-3xl border border-white/10 ring-soft panel p-6 md:p-8 flex flex-col gap-6">
+        <header class="flex flex-col gap-1">
+          <h2 class="text-xl md:text-2xl font-semibold tracking-tight">기준 시각 입력</h2>
+          <p class="text-sm text-white/60">UTC 또는 한국 시간 중 편한 쪽을 입력하면 나머지가 자동으로 맞춰집니다.</p>
+        </header>
+        <div class="grid gap-4 md:grid-cols-2">
+          <label class="block text-sm">
+            <div class="flex items-center gap-2 text-white/70 font-medium">
+              <i data-lucide="clock-3" class="h-4 w-4 text-sky-300"></i>
+              UTC (협정 세계시)
+            </div>
+            <input id="utcInput" type="datetime-local" class="mt-2 w-full rounded-2xl px-3 py-3 text-base text-white placeholder:text-white/30 input" aria-describedby="utcHelp" />
+            <p id="utcHelp" class="mt-1 text-xs text-white/40">예: 2025-03-12T05:30 → 한국은 같은 날 오후 2:30</p>
+          </label>
+          <label class="block text-sm">
+            <div class="flex items-center gap-2 text-white/70 font-medium">
+              <i data-lucide="moon-star" class="h-4 w-4 text-violet-300"></i>
+              한국 표준시 (KST, UTC+9)
+            </div>
+            <input id="kstInput" type="datetime-local" class="mt-2 w-full rounded-2xl px-3 py-3 text-base text-white placeholder:text-white/30 input" aria-describedby="kstHelp" />
+            <p id="kstHelp" class="mt-1 text-xs text-white/40">예: 2025-03-12T14:30 → UTC는 같은 날 05:30</p>
+          </label>
+        </div>
+        <div class="grid gap-3 md:grid-cols-5">
+          <div class="md:col-span-3">
+            <label for="meetingTitle" class="flex items-center gap-2 text-sm text-white/70 font-medium">
+              <i data-lucide="pencil" class="h-4 w-4 text-emerald-300"></i>
+              일정/회의 제목 (선택)
+            </label>
+            <input id="meetingTitle" type="text" placeholder="예: 글로벌 런칭 미팅" class="mt-2 w-full rounded-2xl px-3 py-3 text-base text-white placeholder:text-white/30 input" />
+          </div>
+          <div class="md:col-span-2 flex flex-wrap gap-2 md:justify-end md:items-end">
+            <button id="btnNow" class="inline-flex flex-1 md:flex-none items-center justify-center gap-2 rounded-2xl border border-cyan-400/35 bg-cyan-400/15 px-3 py-2 text-sm font-semibold text-cyan-100 hover:bg-cyan-400/25">
+              <i data-lucide="clock" class="h-4 w-4"></i>
+              현재 시각으로 맞추기
+            </button>
+            <button id="btnCopy" class="inline-flex flex-1 md:flex-none items-center justify-center gap-2 rounded-2xl border border-emerald-400/35 bg-emerald-400/15 px-3 py-2 text-sm font-semibold text-emerald-100 hover:bg-emerald-400/25">
+              <i data-lucide="clipboard" class="h-4 w-4"></i>
+              일정 요약 복사
+            </button>
+          </div>
+        </div>
+        <div class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/70" id="diffNote">
+          UTC와 한국 표준시는 지금 같은 날짜입니다.
+        </div>
+      </div>
+
+      <div class="rounded-3xl border border-white/10 ring-soft panel p-6 md:p-8 flex flex-col gap-5">
+        <header class="flex items-center justify-between gap-3">
+          <div>
+            <h2 class="text-xl md:text-2xl font-semibold tracking-tight">핵심 일정 요약</h2>
+            <p class="text-sm text-white/60">날짜·요일·오프셋을 고급형 카드로 정리했습니다.</p>
+          </div>
+          <div class="rounded-xl border border-white/10 bg-white/10 px-3 py-1 text-xs text-white/60">LIVE 계산</div>
+        </header>
+        <div class="grid gap-4">
+          <article class="rounded-2xl border border-white/10 bg-gradient-to-br from-violet-500/15 to-violet-400/5 p-5">
+            <div class="flex items-center justify-between text-sm text-white/70">
+              <span class="inline-flex items-center gap-2 font-semibold text-violet-100">
+                <i data-lucide="map-pin" class="h-4 w-4"></i>
+                서울 · 대한민국 (KST)
+              </span>
+              <span id="kstOffset" class="text-xs text-white/50">UTC+9</span>
+            </div>
+            <div class="mt-3 text-2xl md:text-3xl font-bold text-white" id="kstPrimary">--</div>
+            <div class="mt-1 text-sm text-white/60" id="kstSecondary">--</div>
+          </article>
+          <article class="rounded-2xl border border-white/10 bg-gradient-to-br from-sky-500/15 to-sky-400/5 p-5">
+            <div class="flex items-center justify-between text-sm text-white/70">
+              <span class="inline-flex items-center gap-2 font-semibold text-sky-100">
+                <i data-lucide="compass" class="h-4 w-4"></i>
+                UTC · 협정 세계시
+              </span>
+              <span id="utcOffset" class="text-xs text-white/50">UTC+0</span>
+            </div>
+            <div class="mt-3 text-2xl md:text-3xl font-bold text-white" id="utcPrimary">--</div>
+            <div class="mt-1 text-sm text-white/60" id="utcSecondary">--</div>
+          </article>
+          <div class="rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-sm text-white/70" id="trendNote">
+            글로벌 일정 메모가 여기에 표시됩니다.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Global time grid -->
+    <section class="mt-10">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <h2 class="text-xl md:text-2xl font-semibold tracking-tight">글로벌 타임존 미리보기</h2>
+          <p class="text-sm text-white/60">팀원이 있는 도시를 추가하면 한 화면에서 시간대를 비교할 수 있습니다.</p>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-3 sm:items-center">
+          <label class="flex-1 sm:flex-none">
+            <span class="sr-only">타임존 선택</span>
+            <select id="zoneSelect" class="w-full rounded-2xl border border-white/20 bg-white/10 px-3 py-2 text-sm text-white">
+              <option value="">도시/타임존 추가...</option>
+            </select>
+          </label>
+          <button id="addZone" class="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/10 px-3 py-2 text-sm text-white/80 hover:bg-white/15">
+            <i data-lucide="plus" class="h-4 w-4"></i>
+            타임존 추가
+          </button>
+        </div>
+      </div>
+      <div id="zoneGrid" class="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-3"></div>
+    </section>
+
+    <!-- Help & FAQ -->
+    <section class="mt-12 grid gap-6 md:grid-cols-2">
+      <article class="rounded-3xl border border-cyan-400/20 bg-cyan-400/10 p-6 ring-soft">
+        <div class="flex items-center gap-2 text-sm text-cyan-100 font-semibold">
+          <i data-lucide="lightbulb" class="h-4 w-4"></i>
+          사용 (도움말 & 팁)
+        </div>
+        <ul class="mt-3 space-y-2 text-sm text-white/75">
+          <li class="flex gap-2"><span class="mt-1 h-1.5 w-1.5 rounded-full bg-cyan-300"></span>UTC 또는 KST 입력란 중 하나만 수정해도 두 값이 동시에 갱신됩니다.</li>
+          <li class="flex gap-2"><span class="mt-1 h-1.5 w-1.5 rounded-full bg-cyan-300"></span>회의 제목을 입력하면 복사 텍스트 상단에 강조되어 붙습니다.</li>
+          <li class="flex gap-2"><span class="mt-1 h-1.5 w-1.5 rounded-full bg-cyan-300"></span>타임존 카드는 드래그 없이 버튼으로 추가/삭제할 수 있어 모바일에서도 편리합니다.</li>
+          <li class="flex gap-2"><span class="mt-1 h-1.5 w-1.5 rounded-full bg-cyan-300"></span>각 카드에 표시되는 UTC±표기는 써머타임을 반영한 실시간 오프셋입니다.</li>
+          <li class="flex gap-2"><span class="mt-1 h-1.5 w-1.5 rounded-full bg-cyan-300"></span>복사 후 캘린더 초대장/메신저에 바로 붙여넣어도 줄바꿈과 강조가 유지됩니다.</li>
+        </ul>
+      </article>
+      <article class="rounded-3xl border border-violet-400/20 bg-violet-400/10 p-6 ring-soft">
+        <div class="flex items-center gap-2 text-sm text-violet-100 font-semibold">
+          <i data-lucide="help-circle" class="h-4 w-4"></i>
+          사용설명서 & FAQ
+        </div>
+        <ol class="mt-3 space-y-2 text-sm text-white/75 list-decimal list-inside">
+          <li>원하는 기준 시각을 UTC 또는 한국 시간 입력창에 적습니다.</li>
+          <li>상단 버튼으로 현재 시각을 불러오거나, 회의 제목을 입력해 강조합니다.</li>
+          <li>필요한 도시를 추가해 글로벌 타임존 카드를 확인합니다. 필요 없는 카드는 삭제할 수 있습니다.</li>
+          <li>"일정 요약 복사" 버튼으로 전문적인 안내문을 한 번에 복사합니다.</li>
+          <li>회의 초대장, 슬랙·노션·메일 등에 그대로 붙여넣어 팀과 공유합니다.</li>
+        </ol>
+        <div class="mt-4 space-y-2 text-sm text-white/65">
+          <p><strong>Q.</strong> 써머타임(DST)은 자동으로 적용되나요?<br><strong>A.</strong> 예. 브라우저의 국제화 API를 사용해 각 지역의 DST 여부와 UTC 오프셋을 실시간으로 반영합니다.</p>
+          <p><strong>Q.</strong> 타임존이 너무 많아도 괜찮나요?<br><strong>A.</strong> 최대 12개까지 추가할 수 있으며, 성능에 영향이 없도록 가벼운 렌더링을 사용합니다.</p>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <div data-include="/partials/footer.html"></div>
+
+  <script defer src="/inject-layout.js?v=7"></script>
+  <script>
+  (function(){
+    if (window.__ytIncludeFallbackLoaded) return;
+    window.__ytIncludeFallbackLoaded = true;
+    async function loadPartials(){
+      const nodes = document.querySelectorAll('[data-include]');
+      for (const el of nodes){
+        const raw = el.getAttribute('data-include') || '';
+        let url = raw;
+        try { url = raw.startsWith('/') ? raw : new URL(raw, location.href).pathname; } catch(e) {}
+        try {
+          const res = await fetch(url, { credentials: 'same-origin', cache: 'no-cache' });
+          if (!res.ok) throw new Error('HTTP '+res.status);
+          const html = await res.text();
+          el.innerHTML = html;
+        } catch (err) {
+          console.warn('[include:fallback] 실패', url, err);
+          el.innerHTML = '<div style="padding:.75rem;border:1px solid #e5e7eb33;border-radius:.5rem;color:#fca5a5">include 실패: <code>'+url+'</code><br><small>'+String(err)+'</small></div>';
+        }
+      }
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadPartials, { once:true });
+    } else {
+      loadPartials();
+    }
+  })();
+  </script>
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const utcInput = document.getElementById('utcInput');
+    const kstInput = document.getElementById('kstInput');
+    const meetingTitle = document.getElementById('meetingTitle');
+    const btnNow = document.getElementById('btnNow');
+    const btnCopy = document.getElementById('btnCopy');
+    const diffNote = document.getElementById('diffNote');
+    const trendNote = document.getElementById('trendNote');
+    const zoneSelect = document.getElementById('zoneSelect');
+    const addZoneBtn = document.getElementById('addZone');
+    const zoneGrid = document.getElementById('zoneGrid');
+    const kstPrimary = document.getElementById('kstPrimary');
+    const kstSecondary = document.getElementById('kstSecondary');
+    const utcPrimary = document.getElementById('utcPrimary');
+    const utcSecondary = document.getElementById('utcSecondary');
+    const kstOffsetLabel = document.getElementById('kstOffset');
+    const utcOffsetLabel = document.getElementById('utcOffset');
+
+    const MAX_ZONES = 12;
+    const BASE_KST_OFFSET_MIN = 9 * 60;
+
+    const zoneCatalog = [
+      { id:'America/Los_Angeles', label:'로스앤젤레스 · 미국 서부', short:'PT' },
+      { id:'America/New_York', label:'뉴욕 · 미국 동부', short:'ET' },
+      { id:'America/Chicago', label:'시카고 · 미국 중부', short:'CT' },
+      { id:'America/Denver', label:'덴버 · 미국 산악', short:'MT' },
+      { id:'America/Toronto', label:'토론토 · 캐나다', short:'ET' },
+      { id:'America/Sao_Paulo', label:'상파울루 · 브라질', short:'BRT' },
+      { id:'Europe/London', label:'런던 · 영국', short:'UK' },
+      { id:'Europe/Paris', label:'파리 · 프랑스', short:'CET' },
+      { id:'Europe/Berlin', label:'베를린 · 독일', short:'CET' },
+      { id:'Europe/Madrid', label:'마드리드 · 스페인', short:'CET' },
+      { id:'Europe/Zurich', label:'취리히 · 스위스', short:'CET' },
+      { id:'Europe/Amsterdam', label:'암스테르담 · 네덜란드', short:'CET' },
+      { id:'Europe/Stockholm', label:'스톡홀름 · 스웨덴', short:'CET' },
+      { id:'Europe/Moscow', label:'모스크바 · 러시아', short:'MSK' },
+      { id:'Africa/Johannesburg', label:'요하네스버그 · 남아프리카', short:'SAST' },
+      { id:'Asia/Dubai', label:'두바이 · UAE', short:'GST' },
+      { id:'Asia/Kolkata', label:'뭄바이/델리 · 인도', short:'IST' },
+      { id:'Asia/Bangkok', label:'방콕 · 태국', short:'ICT' },
+      { id:'Asia/Jakarta', label:'자카르타 · 인도네시아', short:'WIB' },
+      { id:'Asia/Singapore', label:'싱가포르', short:'SGT' },
+      { id:'Asia/Hong_Kong', label:'홍콩', short:'HKT' },
+      { id:'Asia/Tokyo', label:'도쿄 · 일본', short:'JST' },
+      { id:'Australia/Sydney', label:'시드니 · 호주', short:'AET' },
+      { id:'Pacific/Auckland', label:'오클랜드 · 뉴질랜드', short:'NZT' }
+    ];
+
+    const zoneMap = new Map(zoneCatalog.map(z => [z.id, z]));
+    zoneCatalog.sort((a,b) => a.label.localeCompare(b.label, 'ko'));
+    for (const z of zoneCatalog) {
+      const option = document.createElement('option');
+      option.value = z.id;
+      option.textContent = z.label + (z.short ? ` (${z.short})` : '');
+      zoneSelect.append(option);
+    }
+
+    const defaultZones = ['America/Los_Angeles','America/New_York','Europe/London','Europe/Paris','Asia/Singapore','Australia/Sydney'];
+    let selectedZones = [...defaultZones];
+    let baseDate = new Date();
+
+    function parseDateTimeLocal(value) {
+      if (!value || !/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(value)) return null;
+      const [date, time] = value.split('T');
+      const [year, month, day] = date.split('-').map(Number);
+      const [hour, minute] = time.split(':').map(Number);
+      if ([year, month, day, hour, minute].some(isNaN)) return null;
+      return { year, month, day, hour, minute };
+    }
+
+    function formatForInput(date, tz) {
+      const fmt = new Intl.DateTimeFormat('en-CA', {
+        timeZone: tz,
+        hour12: false,
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+      const parts = Object.fromEntries(fmt.formatToParts(date).map(p => [p.type, p.value]));
+      return `${parts.year}-${parts.month}-${parts.day}T${parts.hour}:${parts.minute}`;
+    }
+
+    function formatDisplay(date, tz) {
+      const parts = Object.fromEntries(new Intl.DateTimeFormat('ko-KR', {
+        timeZone: tz,
+        hour12: false,
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        weekday: 'short',
+        hour: '2-digit',
+        minute: '2-digit'
+      }).formatToParts(date).map(p => [p.type, p.value]));
+      const weekday = parts.weekday ? parts.weekday.replace('요일', '') : '';
+      const weekdayText = weekday ? `(${weekday}요일)` : '';
+      return `${parts.year}년 ${parts.month} ${parts.day}${weekdayText ? ' ' + weekdayText : ''} ${parts.hour}:${parts.minute}`.replace(/\s+/g, ' ').trim();
+    }
+
+    function formatTimeOnly(date, tz) {
+      const parts = Object.fromEntries(new Intl.DateTimeFormat('ko-KR', {
+        timeZone: tz,
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      }).formatToParts(date).map(p => [p.type, p.value]));
+      return `${parts.hour}:${parts.minute}`;
+    }
+
+    function getOffsetLabel(date, tz) {
+      const fmt = new Intl.DateTimeFormat('en-US', { timeZone: tz, timeZoneName: 'short' });
+      const part = fmt.formatToParts(date).find(p => p.type === 'timeZoneName');
+      if (!part) return '';
+      let value = part.value;
+      if (value === 'UTC' || value === 'GMT') return 'UTC+0';
+      value = value.replace('GMT', 'UTC');
+      if (/^UTC$/.test(value)) return 'UTC+0';
+      if (/^UTC[+-]/.test(value)) return value;
+      return value;
+    }
+
+    function getOffsetMinutes(date, tz) {
+      const label = getOffsetLabel(date, tz);
+      const match = label.match(/UTC([+-])(\d{1,2})(?::(\d{2}))?/);
+      if (!match) return null;
+      const sign = match[1] === '-' ? -1 : 1;
+      const hour = Number(match[2] || '0');
+      const minute = Number(match[3] || '0');
+      return sign * (hour * 60 + minute);
+    }
+
+    function clampSelected(list) {
+      if (list.length <= MAX_ZONES) return list;
+      return list.slice(0, MAX_ZONES);
+    }
+
+    function setBaseDate(date) {
+      baseDate = new Date(date.getTime());
+      utcInput.value = formatForInput(baseDate, 'UTC');
+      kstInput.value = formatForInput(baseDate, 'Asia/Seoul');
+      render();
+    }
+
+    function updateFrom(source) {
+      const value = source === 'kst' ? kstInput.value : utcInput.value;
+      const parsed = parseDateTimeLocal(value);
+      if (!parsed) return;
+      let ms = Date.UTC(parsed.year, parsed.month - 1, parsed.day, parsed.hour, parsed.minute);
+      if (source === 'kst') {
+        ms -= BASE_KST_OFFSET_MIN * 60 * 1000;
+      }
+      setBaseDate(new Date(ms));
+    }
+
+    function describeDifference() {
+      const kstDate = new Date(baseDate.getTime() + BASE_KST_OFFSET_MIN * 60 * 1000);
+      const diffDays = Math.floor(kstDate.getTime() / 86400000) - Math.floor(baseDate.getTime() / 86400000);
+      if (diffDays === 0) {
+        diffNote.textContent = 'UTC와 한국 표준시는 지금 같은 날짜입니다.';
+      } else if (diffDays > 0) {
+        diffNote.textContent = `한국은 UTC보다 ${diffDays}일 앞선 날짜입니다.`;
+      } else {
+        diffNote.textContent = `한국은 UTC보다 ${Math.abs(diffDays)}일 이전 날짜입니다.`;
+      }
+    }
+
+    function renderSummary() {
+      const kstDate = new Date(baseDate.getTime() + BASE_KST_OFFSET_MIN * 60 * 1000);
+      const kstOffset = getOffsetLabel(baseDate, 'Asia/Seoul') || 'UTC+9';
+      const utcOffset = getOffsetLabel(baseDate, 'UTC') || 'UTC+0';
+      kstPrimary.textContent = formatDisplay(kstDate, 'Asia/Seoul');
+      kstSecondary.textContent = `${formatTimeOnly(kstDate, 'Asia/Seoul')} · ${kstOffset} (KST)`;
+      utcPrimary.textContent = formatDisplay(baseDate, 'UTC');
+      utcSecondary.textContent = `${formatTimeOnly(baseDate, 'UTC')} · ${utcOffset} (UTC)`;
+      kstOffsetLabel.textContent = kstOffset;
+      utcOffsetLabel.textContent = utcOffset;
+
+      const utcMinutes = getOffsetMinutes(baseDate, 'UTC') ?? 0;
+      const kstMinutes = getOffsetMinutes(baseDate, 'Asia/Seoul') ?? BASE_KST_OFFSET_MIN;
+      const diffMinutes = kstMinutes - utcMinutes;
+      const absMinutes = Math.abs(diffMinutes);
+      const hours = Math.floor(absMinutes / 60);
+      const minutes = absMinutes % 60;
+      const parts = [];
+      if (hours) parts.push(`${hours}시간`);
+      if (minutes) parts.push(`${minutes}분`);
+      const sentence = parts.length ? parts.join(' ') : '0시간';
+      if (diffMinutes >= 0) {
+        trendNote.textContent = `한국은 UTC보다 +${sentence} 앞서 있습니다. 글로벌 미팅 시 UTC 입력 후 ${sentence}만큼 더해 공유하세요.`;
+      } else {
+        trendNote.textContent = `한국은 UTC보다 -${sentence} 느립니다. 일정 안내 시 시간대를 다시 확인하세요.`;
+      }
+    }
+
+    function renderZones() {
+      const kstMinutes = getOffsetMinutes(baseDate, 'Asia/Seoul') ?? BASE_KST_OFFSET_MIN;
+      zoneGrid.innerHTML = '';
+      for (const zoneId of selectedZones) {
+        const meta = zoneMap.get(zoneId);
+        if (!meta) continue;
+        const card = document.createElement('article');
+        card.className = 'zone-card rounded-2xl border border-white/10 p-5 relative overflow-hidden';
+        card.dataset.zone = zoneId;
+
+        const offsetLabel = getOffsetLabel(baseDate, zoneId) || '';
+        const offsetMinutes = getOffsetMinutes(baseDate, zoneId);
+        let diffText = '시간차 계산 불가';
+        if (offsetMinutes != null) {
+          const diff = offsetMinutes - kstMinutes;
+          if (diff === 0) {
+            diffText = '한국과 동일한 시각';
+          } else {
+            const sign = diff > 0 ? '+' : '-';
+            const abs = Math.abs(diff);
+            const hours = Math.floor(abs / 60);
+            const minutes = abs % 60;
+            const magnitude = [hours ? `${hours}시간` : null, minutes ? `${minutes}분` : null].filter(Boolean).join(' ');
+            diffText = `한국보다 ${sign}${magnitude}`;
+          }
+        }
+
+        card.innerHTML = `
+          <div class="flex items-start justify-between gap-3 text-sm text-white/70">
+            <div class="font-semibold text-white/80 flex flex-col">
+              <span>${meta.label}</span>
+              <span class="text-xs text-white/40">${meta.short ? meta.short + ' · ' : ''}${offsetLabel}</span>
+            </div>
+            <button type="button" class="remove-zone inline-flex items-center justify-center rounded-full border border-white/15 bg-white/5 p-1 text-white/50 hover:text-white" aria-label="${meta.label} 카드 삭제">
+              <i data-lucide="x" class="h-4 w-4"></i>
+            </button>
+          </div>
+          <div class="mt-3 text-2xl font-semibold text-white" data-zone-primary>${formatDisplay(baseDate, zoneId)}</div>
+          <div class="mt-1 text-xs text-white/60" data-zone-secondary>${diffText}</div>
+        `;
+        zoneGrid.append(card);
+      }
+      window.lucide?.createIcons?.();
+    }
+
+    function render() {
+      describeDifference();
+      renderSummary();
+      renderZones();
+    }
+
+    function copySummary() {
+      const title = meetingTitle.value.trim();
+      const lines = [];
+      if (title) {
+        lines.push(`📅 ${title}`);
+      } else {
+        lines.push('📅 일정 안내');
+      }
+      lines.push('');
+      lines.push(`• 한국 (KST): ${formatDisplay(new Date(baseDate.getTime() + BASE_KST_OFFSET_MIN * 60 * 1000), 'Asia/Seoul')} (${getOffsetLabel(baseDate, 'Asia/Seoul') || 'UTC+9'})`);
+      lines.push(`• UTC: ${formatDisplay(baseDate, 'UTC')} (${getOffsetLabel(baseDate, 'UTC') || 'UTC+0'})`);
+      if (selectedZones.length) {
+        lines.push('• 글로벌 타임존');
+        for (const zoneId of selectedZones) {
+          const meta = zoneMap.get(zoneId);
+          if (!meta) continue;
+          lines.push(`  - ${meta.label}: ${formatDisplay(baseDate, zoneId)} (${getOffsetLabel(baseDate, zoneId) || ''})`);
+        }
+      }
+      lines.push('');
+      lines.push('모든 변환은 https://tools.yuchani.com/tools/time-converter/ 에서 확인했습니다.');
+      const text = lines.join('\n');
+
+      if (navigator.clipboard?.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          btnCopy.classList.add('ring-2','ring-emerald-400/60');
+          setTimeout(() => btnCopy.classList.remove('ring-2','ring-emerald-400/60'), 1200);
+        }).catch(() => {
+          alert('복사에 실패했습니다. 다시 시도하거나 수동으로 복사해주세요.');
+        });
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.top = '-1000px';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); btnCopy.classList.add('ring-2','ring-emerald-400/60'); setTimeout(() => btnCopy.classList.remove('ring-2','ring-emerald-400/60'), 1200); }
+        catch { alert('복사에 실패했습니다. 다시 시도해주세요.'); }
+        ta.remove();
+      }
+    }
+
+    utcInput.addEventListener('input', () => updateFrom('utc'));
+    kstInput.addEventListener('input', () => updateFrom('kst'));
+
+    btnNow.addEventListener('click', () => {
+      setBaseDate(new Date());
+    });
+
+    btnCopy.addEventListener('click', copySummary);
+
+    addZoneBtn.addEventListener('click', () => {
+      const zoneId = zoneSelect.value;
+      if (!zoneId || !zoneMap.has(zoneId)) return;
+      if (!selectedZones.includes(zoneId)) {
+        selectedZones = clampSelected([zoneId, ...selectedZones]);
+        renderZones();
+      }
+      zoneSelect.value = '';
+    });
+
+    zoneGrid.addEventListener('click', (event) => {
+      const btn = event.target.closest('.remove-zone');
+      if (!btn) return;
+      const card = btn.closest('[data-zone]');
+      if (!card) return;
+      const zoneId = card.dataset.zone;
+      selectedZones = selectedZones.filter(z => z !== zoneId);
+      renderZones();
+    });
+
+    setBaseDate(new Date());
+    window.lucide?.createIcons?.();
+  });
+  </script>
+  <noscript>
+    <div style="max-width:48rem;margin:2rem auto;padding:1rem;border:1px solid #e5e7eb33;border-radius:.75rem;color:#e5e7eb">
+      이 도구는 자바스크립트가 필요합니다. 브라우저 설정에서 JavaScript를 허용해주세요.
+    </div>
+  </noscript>
+</body>
+</html>

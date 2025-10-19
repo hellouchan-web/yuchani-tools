@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>HTML 미리보기 · 브라우저에서 즉시 렌더 | Yuchani Tools pro</title>
   <meta name="description" content="브라우저에서 HTML 코드를 즉시 렌더링해 결과를 확인하세요. 자동 미리보기, 샘플 템플릿, 복사/붙여넣기 지원. 속도=초고속 · 사용=간편 · 결과물=명확">
+  <meta name="keywords" content="HTML 미리보기, HTML 렌더, 웹 개발 툴, 프론트엔드 도구, HTML 테스트">
   <link rel="canonical" href="https://tools.yuchani.com/tools/html-preview/">
   <meta name="robots" content="index,follow">
   <!-- OG/Twitter -->
@@ -16,6 +17,10 @@
   <meta name="twitter:card" content="summary_large_image">
 
   <!-- Tailwind / Lucide -->
+  <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
+  <link rel="dns-prefetch" href="//cdn.tailwindcss.com">
+  <link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="dns-prefetch" href="//unpkg.com">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
 
@@ -105,7 +110,7 @@
         <div class="px-3 py-2 text-xs text-white/60 border-b border-white/10 flex items-center gap-2">
           <i data-lucide="file-code-2" class="w-4 h-4"></i> HTML 코드
         </div>
-        <textarea id="src" class="w-full h-80 md:h-[32rem] bg-white text-black px-3 py-3 text-sm outline-none resize-y" placeholder="여기에 HTML을 붙여넣으세요"></textarea>
+        <textarea id="src" class="w-full h-80 md:h-[32rem] bg-white text-black px-3 py-3 text-sm outline-none resize-y" placeholder="여기에 HTML을 붙여넣으세요" aria-label="HTML 코드 입력"></textarea>
       </div>
 
       <div class="rounded-2xl border border-white/10 ring-soft overflow-hidden">
@@ -117,7 +122,8 @@
     </section>
 
     <!-- 도움말 & 팁 -->
-    <section class="mt-6 grid gap-4 md:grid-cols-2">
+    <section class="mt-6 grid gap-4 md:grid-cols-2" aria-labelledby="tips-heading">
+      <h2 id="tips-heading" class="sr-only">HTML 미리보기 사용 가이드</h2>
       <div class="rounded-2xl border border-white/10 ring-soft p-4">
         <div class="flex items-center gap-2 text-sm text-white/80">
           <i data-lucide="lightbulb" class="w-4 h-4 text-yellow-300"></i>
@@ -145,6 +151,35 @@
           <li>문제가 있으면 콘솔에서 에러 메시지를 확인합니다.</li>
         </ol>
       </div>
+    </section>
+
+    <!-- SEO 콘텐츠: 기능 설명 -->
+    <section class="mt-8 grid gap-4 lg:grid-cols-3" aria-labelledby="feature-heading">
+      <h2 id="feature-heading" class="sr-only">HTML 미리보기 주요 기능</h2>
+      <article class="rounded-2xl border border-white/10 ring-soft p-5 flex flex-col gap-3 bg-white/5">
+        <div class="flex items-center gap-2 text-sm text-emerald-200">
+          <i data-lucide="rocket" class="w-4 h-4"></i>
+          <span class="uppercase tracking-[0.2em] text-xs">Performance</span>
+        </div>
+        <h3 class="text-lg font-semibold text-white">초고속 렌더링</h3>
+        <p class="text-sm text-white/70 leading-relaxed">srcdoc 기반 미리보기로 페이지 리프레시 없이 결과를 즉시 확인합니다. 입력 디바운스와 CDN 프리커넥트를 적용해 대기 시간을 최소화했습니다.</p>
+      </article>
+      <article class="rounded-2xl border border-white/10 ring-soft p-5 flex flex-col gap-3 bg-white/5">
+        <div class="flex items-center gap-2 text-sm text-cyan-200">
+          <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+          <span class="uppercase tracking-[0.2em] text-xs">Responsive</span>
+        </div>
+        <h3 class="text-lg font-semibold text-white">모바일 · 데스크톱 반응형</h3>
+        <p class="text-sm text-white/70 leading-relaxed">768px 이하에서는 에디터와 미리보기가 상하로 배치되어 모바일에서도 가독성을 유지합니다. 넓은 해상도에서는 듀얼 패널로 전문가 작업 흐름을 제공합니다.</p>
+      </article>
+      <article class="rounded-2xl border border-white/10 ring-soft p-5 flex flex-col gap-3 bg-white/5">
+        <div class="flex items-center gap-2 text-sm text-amber-200">
+          <i data-lucide="shield-check" class="w-4 h-4"></i>
+          <span class="uppercase tracking-[0.2em] text-xs">SEO Ready</span>
+        </div>
+        <h3 class="text-lg font-semibold text-white">SEO & 접근성 최적화</h3>
+        <p class="text-sm text-white/70 leading-relaxed">메타 태그, 구조화 데이터, 스크린 리더용 라벨을 제공해 검색 노출과 접근성을 동시에 고려했습니다. 가벼운 마크업으로 빠른 로딩을 유지합니다.</p>
+      </article>
     </section>
   </main>
 
@@ -201,7 +236,16 @@
 
     // 렌더 함수 (srcdoc 사용: 빠르고 간단, document.write 불필요)
     function render() {
-      out.srcdoc = src.value || '<!doctype html><meta charset="utf-8"><title>빈 문서</title>';
+      const raw = src.value;
+      const value = raw || '<!doctype html><meta charset="utf-8"><title>빈 문서</title>';
+      out.srcdoc = value;
+      try {
+        if (raw) {
+          localStorage.setItem('yt-html-preview', raw);
+        } else {
+          localStorage.removeItem('yt-html-preview');
+        }
+      } catch (_) {}
     }
 
     // 자동 미리보기: 입력 지연(디바운스)
@@ -215,7 +259,11 @@
     // 이벤트
     src.addEventListener('input', autoRender);
     btnRun.addEventListener('click', render);
-    btnClear.addEventListener('click', () => { src.value=''; render(); });
+    btnClear.addEventListener('click', () => {
+      src.value='';
+      try { localStorage.removeItem('yt-html-preview'); } catch (_) {}
+      render();
+    });
 
     // 샘플 템플릿
     btnSample.addEventListener('click', () => {
@@ -266,6 +314,17 @@
         render();
       }
     });
+
+    // 로컬 저장된 코드 로드
+    try {
+      const saved = localStorage.getItem('yt-html-preview');
+      if (saved) {
+        src.value = saved;
+      }
+    } catch (_) {}
+
+    // 자동 미리보기 기본 활성화
+    auto.checked = true;
 
     // 간단 테스트 (개발용)
     console.assert(typeof render === 'function', 'render()가 정의되어야 합니다');

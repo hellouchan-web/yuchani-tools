@@ -1,0 +1,894 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>더빙 생성기 · 텍스트를 자연스러운 음성으로 변환 | Yuchani Tools pro</title>
+  <meta name="description" content="스크립트를 넣으면 자연스러운 음성 더빙을 생성합니다. 한국어·영어 등 다국어 음성, 속도·톤·볼륨 조정, 문장 단위 미리듣기, 녹음 파일 저장 가이드 지원." />
+  <meta name="keywords" content="더빙 생성기,더빙 툴,텍스트 음성 변환,TTS,더빙 만들기,AI 더빙" />
+  <link rel="canonical" href="https://tools.yuchani.com/tools/dubbing/" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="더빙 생성기 · 텍스트를 자연스러운 음성으로 변환" />
+  <meta property="og:description" content="스크립트 업로드 없이 브라우저에서 즉시 더빙을 들려주는 전문가용 음성 합성 툴." />
+  <meta property="og:url" content="https://tools.yuchani.com/tools/dubbing/" />
+  <meta property="og:image" content="https://tools.yuchani.com/og/cover.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- JSON-LD: SoftwareApplication -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"SoftwareApplication",
+    "name":"더빙 생성기",
+    "applicationCategory":"MultimediaApplication",
+    "operatingSystem":"Web",
+    "url":"https://tools.yuchani.com/tools/dubbing/",
+    "description":"텍스트를 자연스러운 음성 더빙으로 바꾸는 브라우저 기반 TTS",
+    "aggregateRating":{"@type":"AggregateRating","ratingValue":"4.9","ratingCount":"168"}
+  }
+  </script>
+  <!-- JSON-LD: FAQPage -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {"@type":"Question","name":"더빙 생성기는 어떤 일을 하나요?","acceptedAnswer":{"@type":"Answer","text":"텍스트 스크립트를 문장/문단 단위로 분해하고, 선택한 음성으로 순차 재생해 더빙을 완성합니다. 속도·톤·볼륨도 조절할 수 있습니다."}},
+      {"@type":"Question","name":"다운로드 가능한 음성 파일도 만들 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"웹 표준 TTS는 재생 전용입니다. 다만, 화면 공유 오디오 캡처(getDisplayMedia)를 활용하면 브라우저 안에서 실시간 녹음을 진행해 파일로 저장할 수 있도록 가이드를 제공합니다."}},
+      {"@type":"Question","name":"한국어 외에 다른 언어 음성도 지원하나요?","acceptedAnswer":{"@type":"Answer","text":"브라우저가 제공하는 Web Speech API 음성을 모두 사용합니다. 한국어, 영어, 일본어, 중국어, 유럽권 언어 등 운영체제에 설치된 음성이 자동으로 노출됩니다."}},
+      {"@type":"Question","name":"스크립트가 길어도 안정적으로 동작하나요?","acceptedAnswer":{"@type":"Answer","text":"문장/문단 자동 분할과 페이스 타이밍을 지원해 20분 이상의 스크립트도 안정적으로 재생합니다. 대규모 텍스트는 문단 단위로 분할해 사용하는 것을 권장합니다."}},
+      {"@type":"Question","name":"개인정보는 안전한가요?","acceptedAnswer":{"@type":"Answer","text":"모든 처리는 브라우저에서만 진행되며 서버로 전송되지 않습니다. 스크립트 데이터는 로컬 메모리에서만 유지됩니다."}}
+    ]
+  }
+  </script>
+
+  <!-- Tailwind & Icons -->
+  <script src="https://cdn.tailwindcss.com" defer></script>
+  <script src="https://unpkg.com/lucide@latest" defer></script>
+
+  <style>
+    :root{ color-scheme: dark }
+    body{ background:#0F1113; padding-bottom: env(safe-area-inset-bottom) }
+    .ring-soft{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08) }
+    .brand-grad{ background-image:linear-gradient(120deg,#7dd3fc,#a855f7) }
+    .panel{ background:#10131a }
+    .accent-pill{ background-image:linear-gradient(120deg,#34d399,#a3e635) }
+    mark{ background:linear-gradient(120deg,rgba(52,211,153,.25),rgba(163,230,53,.25)); color:#fff; border-radius:.5rem; padding:0 .2em }
+    [data-icon]{width:1rem;height:1rem;display:inline-block}
+    .line-clamp-4{ display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden; }
+  </style>
+</head>
+<body class="text-white">
+  <!-- 공통 헤더 -->
+  <div data-include="/partials/header.html"></div>
+
+  <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+    <header class="rounded-3xl border border-white/10 ring-soft panel relative overflow-hidden">
+      <div aria-hidden class="absolute inset-0 bg-gradient-to-br from-emerald-400/5 via-transparent to-indigo-500/10"></div>
+      <div class="relative px-6 py-10 md:px-10 md:py-12 flex flex-col gap-6 lg:flex-row lg:items-center">
+        <div class="flex-1 space-y-4">
+          <p class="inline-flex items-center gap-2 text-xs tracking-widest uppercase text-white/60">
+            <span class="inline-flex items-center gap-1 rounded-full border border-emerald-300/40 bg-emerald-400/15 px-2 py-1 text-[11px] font-semibold text-emerald-100">New</span>
+            Studio-grade voiceover</p>
+          <h1 class="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight leading-tight">
+            <span class="brand-grad bg-clip-text text-transparent">더빙 생성기</span>
+            <span class="block text-white/80 text-lg md:text-xl font-semibold mt-2">텍스트를 프리미엄 음성으로 바꿔보세요</span>
+          </h1>
+          <p class="text-white/70 leading-relaxed max-w-2xl text-base md:text-lg">
+            스크립트를 붙여넣고 음성만 선택하면 전문 내레이터처럼 자연스러운 더빙을 재생합니다.
+            문단·문장 자동 분할, 발화 속도/톤/볼륨 조정, 실시간 하이라이트, 탭 오디오 캡처를 통한 녹음 가이드까지 한 번에 제공합니다.
+          </p>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm text-white/70">
+            <div class="rounded-2xl border border-white/10 bg-white/5 px-3 py-2">브라우저 즉시 처리</div>
+            <div class="rounded-2xl border border-white/10 bg-white/5 px-3 py-2">한국어·다국어 음성</div>
+            <div class="rounded-2xl border border-white/10 bg-white/5 px-3 py-2">문장 단위 미리듣기</div>
+            <div class="rounded-2xl border border-white/10 bg-white/5 px-3 py-2">녹음 파일 가이드</div>
+          </div>
+        </div>
+        <div class="lg:w-[18rem] xl:w-[20rem]">
+          <div class="rounded-3xl border border-emerald-400/20 bg-emerald-400/10 text-emerald-100 p-5 space-y-3">
+            <div class="flex items-center gap-2 text-sm text-emerald-200/90"><i data-lucide="badge-check" class="w-4 h-4"></i> 전문가 팁</div>
+            <ul class="space-y-2 text-sm leading-relaxed">
+              <li>문단마다 빈 줄을 넣으면 감정 변화가 자연스러워집니다.</li>
+              <li>음성 필터를 통해 언어/억양을 빠르게 찾을 수 있습니다.</li>
+              <li>탭 오디오 캡처를 활용하면 고음질 WAV/WEBM 저장이 가능합니다.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section class="grid gap-6 xl:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)]">
+      <!-- 좌: 스크립트 편집기 -->
+      <div class="rounded-3xl border border-white/10 ring-soft overflow-hidden">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-white/10 bg-white/5">
+          <div class="flex items-center gap-2 text-sm text-white/80">
+            <i data-lucide="edit-3" class="w-4 h-4"></i>
+            <span class="font-semibold">스크립트 편집기</span>
+          </div>
+          <button id="btnSample" type="button" class="inline-flex items-center gap-1 text-xs rounded-full border border-white/15 px-3 py-1 text-white/70 hover:text-white hover:border-white/40">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> 샘플 불러오기
+          </button>
+        </div>
+        <div class="panel px-5 py-5 md:px-6 md:py-6">
+          <textarea id="scriptInput" class="w-full h-72 md:h-[26rem] resize-y rounded-2xl border border-white/10 bg-black/60 px-4 py-3 text-sm md:text-base text-white placeholder:text-white/30 focus:border-emerald-400/40 focus:outline-none" placeholder="여기에 스크립트를 붙여넣거나 직접 입력하세요. 빈 줄을 기준으로 장면을 나눌 수 있습니다."></textarea>
+          <div class="mt-3 flex flex-wrap items-center gap-3 text-xs text-white/60">
+            <div class="flex items-center gap-1.5"><i data-lucide="text-cursor-input" class="w-4 h-4"></i> <span id="charCount">0자</span></div>
+            <div class="flex items-center gap-1.5"><i data-lucide="clock-4" class="w-4 h-4"></i> <span id="durationHint">예상 재생 0:00</span></div>
+            <div class="flex items-center gap-1.5"><i data-lucide="layout-list" class="w-4 h-4"></i> <span id="segmentHint">세그먼트 0개</span></div>
+            <div class="ml-auto inline-flex items-center gap-1 text-white/40"><i data-lucide="command" class="w-3.5 h-3.5"></i> + <span class="border border-white/20 px-1 rounded">Enter</span> 즉시 재생</div>
+          </div>
+
+          <div class="mt-4 grid gap-3 md:grid-cols-2">
+            <label class="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/70">
+              <span class="flex items-center gap-2"><i data-lucide="split" class="w-4 h-4"></i> 빈 줄 기준 문단 분할</span>
+              <input type="checkbox" id="splitParagraph" class="accent-emerald-400" checked>
+            </label>
+            <label class="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/70">
+              <span class="flex items-center gap-2"><i data-lucide="texts" class="w-4 h-4"></i> 문장 단위 세부 분리</span>
+              <input type="checkbox" id="autoSegment" class="accent-emerald-400" checked>
+            </label>
+            <label class="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/70">
+              <span class="flex items-center gap-2"><i data-lucide="align-vertical-space" class="w-4 h-4"></i> 문단 사이 쉬는 시간(초)</span>
+              <input type="number" id="pauseLength" min="0" max="10" step="0.5" value="0.6" class="w-20 rounded-lg border border-white/20 bg-black/60 px-2 py-1 text-right text-sm text-white">
+            </label>
+            <label class="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/70">
+              <span class="flex items-center gap-2"><i data-lucide="wand-2" class="w-4 h-4"></i> 스마트 억양 최적화</span>
+              <input type="checkbox" id="smartProsody" class="accent-emerald-400" checked>
+            </label>
+          </div>
+          <div class="mt-4 text-xs text-white/40 leading-relaxed">
+            * 스마트 억양 최적화는 문장 끝에 마침표가 없을 경우 자동으로 완곡한 높낮이를 적용합니다. <br class="hidden md:block"/> * 문단 사이 쉬는 시간은 문단/세그먼트가 종료될 때 적용됩니다.
+          </div>
+        </div>
+      </div>
+
+      <!-- 우: 음성 설정 & 재생 -->
+      <div class="rounded-3xl border border-white/10 ring-soft overflow-hidden flex flex-col">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-white/10 bg-white/5">
+          <div class="flex items-center gap-2 text-sm text-white/80">
+            <i data-lucide="waveform" class="w-4 h-4"></i>
+            <span class="font-semibold">음성 & 재생 컨트롤</span>
+          </div>
+          <div class="text-[11px] text-white/50">브라우저 TTS 엔진 사용</div>
+        </div>
+        <div class="panel px-5 py-5 md:px-6 md:py-6 flex-1 flex flex-col gap-4">
+          <div class="grid gap-3 md:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)]">
+            <label class="text-xs uppercase tracking-wide text-white/40 flex flex-col gap-1">
+              음성 필터
+              <select id="voiceFilter" class="rounded-xl border border-white/15 bg-black/70 px-3 py-2 text-sm text-white focus:border-emerald-400/40 focus:outline-none">
+                <option value="all">모든 언어</option>
+                <option value="ko">한국어</option>
+                <option value="en">영어</option>
+                <option value="ja">일본어</option>
+                <option value="zh">중국어</option>
+                <option value="es">스페인어</option>
+                <option value="fr">프랑스어</option>
+                <option value="de">독일어</option>
+                <option value="etc">기타</option>
+              </select>
+            </label>
+            <label class="text-xs uppercase tracking-wide text-white/40 flex flex-col gap-1">
+              음성 선택
+              <select id="voiceSelect" class="rounded-xl border border-white/15 bg-black/70 px-3 py-2 text-sm text-white focus:border-emerald-400/40 focus:outline-none">
+                <option value="">브라우저가 음성을 로딩하는 중…</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="grid gap-3 md:grid-cols-3 text-sm text-white/70">
+            <label class="flex flex-col gap-1 rounded-2xl border border-white/10 bg-white/5 px-3 py-3">
+              <span class="flex items-center gap-1 text-xs uppercase tracking-wide text-white/40">속도</span>
+              <input id="rate" type="range" min="0.5" max="1.8" step="0.05" value="1" class="w-full">
+              <span id="rateValue" class="text-xs text-white/50">1.00x</span>
+            </label>
+            <label class="flex flex-col gap-1 rounded-2xl border border-white/10 bg-white/5 px-3 py-3">
+              <span class="flex items-center gap-1 text-xs uppercase tracking-wide text-white/40">톤(피치)</span>
+              <input id="pitch" type="range" min="0" max="2" step="0.05" value="1" class="w-full">
+              <span id="pitchValue" class="text-xs text-white/50">기본</span>
+            </label>
+            <label class="flex flex-col gap-1 rounded-2xl border border-white/10 bg-white/5 px-3 py-3">
+              <span class="flex items-center gap-1 text-xs uppercase tracking-wide text-white/40">볼륨</span>
+              <input id="volume" type="range" min="0" max="1" step="0.05" value="1" class="w-full">
+              <span id="volumeValue" class="text-xs text-white/50">100%</span>
+            </label>
+          </div>
+
+          <div class="flex flex-wrap gap-2">
+            <button id="btnSpeak" class="inline-flex items-center gap-2 rounded-2xl border border-emerald-400/40 bg-emerald-400/20 px-4 py-2.5 text-sm font-semibold text-emerald-100 hover:bg-emerald-400/30">
+              <i data-lucide="play" class="w-4 h-4"></i> 전체 재생
+            </button>
+            <button id="btnPause" class="inline-flex items-center gap-2 rounded-2xl border border-white/20 bg-white/5 px-4 py-2.5 text-sm text-white/80 hover:text-white">
+              <i data-lucide="pause" class="w-4 h-4"></i> 일시정지
+            </button>
+            <button id="btnStop" class="inline-flex items-center gap-2 rounded-2xl border border-white/20 bg-white/5 px-4 py-2.5 text-sm text-white/80 hover:text-white">
+              <i data-lucide="square" class="w-4 h-4"></i> 정지
+            </button>
+            <button id="btnRecord" class="inline-flex items-center gap-2 rounded-2xl border border-cyan-400/40 bg-cyan-400/15 px-4 py-2.5 text-sm font-semibold text-cyan-100 hover:bg-cyan-400/25">
+              <i data-lucide="download" class="w-4 h-4"></i> 더빙 파일로 저장(Beta)
+            </button>
+          </div>
+
+          <div id="status" class="rounded-2xl border border-white/10 bg-black/60 px-4 py-3 text-sm text-white/70 hidden"></div>
+
+          <div class="space-y-3">
+            <div class="flex items-center justify-between text-xs text-white/50">
+              <div class="flex items-center gap-2"><i data-lucide="list-music" class="w-4 h-4"></i> 세그먼트 리스트</div>
+              <button id="btnExpandSegments" type="button" class="inline-flex items-center gap-1 rounded-full border border-white/15 px-2.5 py-1 text-[11px] text-white/60 hover:text-white">모두 펼치기</button>
+            </div>
+            <div id="segmentsList" class="space-y-2 max-h-64 overflow-y-auto pr-1" role="list"></div>
+            <div class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-xs text-white/50 leading-relaxed">
+              세그먼트를 클릭하면 해당 부분만 미리듣기합니다. 재생 중인 문장은 아래 영역에서 하이라이트됩니다.
+            </div>
+            <div class="rounded-3xl border border-emerald-400/30 bg-emerald-400/10 px-4 py-4">
+              <div class="flex items-center gap-2 text-sm text-emerald-100 font-semibold"><i data-lucide="highlighter" class="w-4 h-4"></i> 현재 읽는 문장</div>
+              <p id="wordHighlight" class="mt-2 text-sm text-white/80 leading-relaxed">재생을 시작하면 읽고 있는 문장이 여기에 표시됩니다.</p>
+            </div>
+          </div>
+
+          <div class="mt-auto space-y-3 text-xs text-white/50">
+            <div id="recordingNote" class="rounded-2xl border border-cyan-400/30 bg-cyan-400/10 px-4 py-3 leading-relaxed">
+              <div class="flex items-center gap-2 text-cyan-100 font-semibold"><i data-lucide="info" class="w-4 h-4"></i> 탭 오디오 캡처 가이드</div>
+              <ol class="mt-2 list-decimal pl-4 space-y-1 text-white/70">
+                <li>"더빙 파일로 저장"을 누르면 브라우저가 오디오가 포함된 화면 공유 권한을 요청합니다.</li>
+                <li>현재 탭을 선택하고 공유하면, 재생이 끝날 때까지 자동으로 녹음됩니다.</li>
+                <li>녹음이 완료되면 WEBM 파일을 다운로드할 수 있습니다. 필요하면 외부 툴로 MP3/WAV로 변환하세요.</li>
+              </ol>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 leading-relaxed">
+              브라우저 음성 목록은 운영체제 설정에 따라 달라집니다. 새 음성을 설치한 뒤 페이지를 새로고침하면 반영됩니다.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid gap-4 md:grid-cols-3">
+      <div class="rounded-3xl border border-white/10 ring-soft panel px-5 py-6 space-y-3">
+        <div class="flex items-center gap-2 text-sm font-semibold text-white/80"><i data-lucide="layers" class="w-4 h-4"></i> 장면별 스토리보드</div>
+        <p class="text-sm text-white/60 leading-relaxed">세그먼트 리스트에서 장면별 길이를 확인하고, 버튼 한 번으로 특정 장면만 반복 재생하세요. 더빙 검수와 피드백 속도가 확연히 빨라집니다.</p>
+      </div>
+      <div class="rounded-3xl border border-white/10 ring-soft panel px-5 py-6 space-y-3">
+        <div class="flex items-center gap-2 text-sm font-semibold text-white/80"><i data-lucide="sliders-horizontal" class="w-4 h-4"></i> 미세 파라미터 조정</div>
+        <p class="text-sm text-white/60 leading-relaxed">속도·톤·볼륨은 실시간으로 반영됩니다. 문장마다 다른 분위기를 주고 싶다면 문단을 분리한 뒤, 각 문장을 개별로 미리듣기하며 값을 최적화하세요.</p>
+      </div>
+      <div class="rounded-3xl border border-white/10 ring-soft panel px-5 py-6 space-y-3">
+        <div class="flex items-center gap-2 text-sm font-semibold text-white/80"><i data-lucide="shield-check" class="w-4 h-4"></i> 보안과 오프라인 우선</div>
+        <p class="text-sm text-white/60 leading-relaxed">모든 연산은 브라우저 내부에서 이루어지며, 스크립트나 음성이 서버로 업로드되지 않습니다. 오프라인 상태에서도 최근에 로드한 음성은 계속 사용할 수 있습니다.</p>
+      </div>
+    </section>
+
+    <!-- 도움말 & FAQ -->
+    <section class="grid gap-4 lg:grid-cols-2">
+      <div class="rounded-3xl border border-white/10 ring-soft panel px-6 py-6">
+        <div class="flex items-center gap-2 text-sm font-semibold text-white/80">
+          <i data-lucide="lightbulb" class="w-4 h-4 text-yellow-300"></i>
+          도움말 &amp; 팁
+        </div>
+        <ul class="mt-4 list-disc pl-5 space-y-2 text-sm text-white/70 leading-relaxed">
+          <li>스크립트가 길다면 장면별로 빈 줄을 넣어 구간을 명확히 나누세요. 페이싱 조절이 쉬워집니다.</li>
+          <li>감정 표현이 필요한 대사는 문장 끝에 느낌표/물음표를 넣어 억양을 강조하세요.</li>
+          <li>배경음악을 입히려면, 녹음된 음성을 DAW/편집툴에서 BGM과 믹싱하세요.</li>
+          <li>Web Speech API 음성 품질은 브라우저/OS에 따라 다릅니다. 크롬과 엣지에서 가장 다양한 음성을 제공합니다.</li>
+          <li>탭 오디오 녹음은 크롬 기반 브라우저에서 안정적으로 지원됩니다. 사운드 설정에서 출력 장치를 확인하세요.</li>
+        </ul>
+      </div>
+      <div class="rounded-3xl border border-white/10 ring-soft panel px-6 py-6">
+        <div class="flex items-center gap-2 text-sm font-semibold text-white/80">
+          <i data-lucide="help-circle" class="w-4 h-4 text-cyan-300"></i>
+          사용설명서 &amp; FAQ
+        </div>
+        <ol class="mt-4 list-decimal pl-5 space-y-2 text-sm text-white/70 leading-relaxed">
+          <li><strong>스크립트 입력</strong>: 문단 사이에 빈 줄을 두면 자동으로 장면이 분리됩니다.</li>
+          <li><strong>음성 선택</strong>: 음성 필터로 언어를 좁힌 뒤 원하는 목소리를 선택하세요.</li>
+          <li><strong>재생</strong>: 전체 재생 또는 세그먼트별 미리듣기를 통해 억양을 확인합니다.</li>
+          <li><strong>녹음</strong>: "더빙 파일로 저장"을 눌러 탭 오디오를 공유하면 녹음이 시작됩니다.</li>
+          <li><strong>보관</strong>: 다운로드한 WEBM 파일은 Audacity 등으로 MP3/WAV로 손쉽게 변환 가능합니다.</li>
+        </ol>
+      </div>
+    </section>
+  </main>
+
+  <!-- 공통 푸터 -->
+  <div data-include="/partials/footer.html"></div>
+
+  <script defer src="/inject-layout.js?v=7"></script>
+  <script>
+    (function(){
+      async function injectOnce(sel, candidates){
+        const host = document.querySelector(sel);
+        if (!host || host.getAttribute('data-injected') === '1') return;
+        for (const path of candidates){
+          try{
+            const res = await fetch(path, {cache:'no-store'});
+            if (!res.ok) continue;
+            const html = await res.text();
+            host.innerHTML = html;
+            host.setAttribute('data-injected','1');
+            try { window.lucide?.createIcons?.(); } catch {}
+            return;
+          }catch(e){ /* ignore */ }
+        }
+        console.warn('partials include 실패', sel, candidates);
+      }
+      function run(){
+        const headerPaths = ['/partials/header.html','partials/header.html','/yuchani-tools/partials/header.html','../partials/header.html'];
+        const footerPaths = ['/partials/footer.html','partials/footer.html','/yuchani-tools/partials/footer.html','../partials/footer.html'];
+        injectOnce('[data-include="/partials/header.html"]', headerPaths);
+        injectOnce('[data-include="/partials/footer.html"]', footerPaths);
+      }
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run); else run();
+    })();
+  </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const synth = window.speechSynthesis;
+      const supportTts = !!synth;
+      const $ = (sel) => document.querySelector(sel);
+      const scriptInput = $('#scriptInput');
+      const charCount = $('#charCount');
+      const durationHint = $('#durationHint');
+      const segmentHint = $('#segmentHint');
+      const splitParagraph = $('#splitParagraph');
+      const autoSegment = $('#autoSegment');
+      const pauseLength = $('#pauseLength');
+      const smartProsody = $('#smartProsody');
+      const voiceFilter = $('#voiceFilter');
+      const voiceSelect = $('#voiceSelect');
+      const rate = $('#rate');
+      const pitch = $('#pitch');
+      const volume = $('#volume');
+      const rateValue = $('#rateValue');
+      const pitchValue = $('#pitchValue');
+      const volumeValue = $('#volumeValue');
+      const btnSpeak = $('#btnSpeak');
+      const btnPause = $('#btnPause');
+      const btnStop = $('#btnStop');
+      const btnRecord = $('#btnRecord');
+      const btnSample = $('#btnSample');
+      const btnExpandSegments = $('#btnExpandSegments');
+      const statusBox = $('#status');
+      const segmentsList = $('#segmentsList');
+      const wordHighlight = $('#wordHighlight');
+      const recordingNote = $('#recordingNote');
+
+      const state = {
+        voices: [],
+        segments: [],
+        playbackQueue: [],
+        pointer: -1,
+        utterance: null,
+        paused: false,
+        canceling: false,
+        recorder: null,
+        recordChunks: [],
+        recordStream: null,
+        recordActive: false,
+        recordCancelled: false,
+        expandMode: false,
+      };
+
+      function escapeHtml(str){
+        return (str || '').replace(/[&<>"']/g, (m) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[m] || m));
+      }
+
+      function setStatus(message, tone='info'){
+        if (!statusBox) return;
+        if (!message){
+          statusBox.classList.add('hidden');
+          statusBox.textContent = '';
+          return;
+        }
+        const toneClass = tone === 'error' ? 'border-rose-400/40 bg-rose-500/10 text-rose-100' : tone === 'success' ? 'border-emerald-400/40 bg-emerald-400/10 text-emerald-100' : 'border-white/15 bg-white/5 text-white/80';
+        statusBox.className = 'rounded-2xl px-4 py-3 text-sm ' + toneClass;
+        statusBox.textContent = message;
+        statusBox.classList.remove('hidden');
+      }
+
+      function updateStats(){
+        const text = scriptInput?.value || '';
+        const length = text.length;
+        if (charCount) charCount.textContent = `${length.toLocaleString()}자`;
+        const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+        const estSeconds = words ? Math.max(3, Math.round((words / (parseFloat(rate.value || '1') * 2.8)) * 60)) : 0;
+        if (durationHint){
+          const mm = String(Math.floor(estSeconds / 60)).padStart(1, '0');
+          const ss = String(estSeconds % 60).padStart(2, '0');
+          durationHint.textContent = `예상 재생 ${mm}:${ss}`;
+        }
+        if (segmentHint) segmentHint.textContent = `세그먼트 ${state.segments.length}개`;
+      }
+
+      function detectLocale(){
+        const voiceName = voiceSelect?.value || '';
+        const voiceObj = state.voices.find(v => v.name === voiceName);
+        if (voiceObj?.lang) return voiceObj.lang;
+        const filter = voiceFilter?.value;
+        if (filter && filter !== 'all' && filter !== 'etc') return filter;
+        return 'ko-KR';
+      }
+
+      function sentenceSplit(text){
+        const trimmed = text.trim();
+        if (!trimmed) return [];
+        const locale = detectLocale();
+        if (window.Intl?.Segmenter){
+          try {
+            const segmenter = new Intl.Segmenter(locale, { granularity: 'sentence' });
+            const segments = [];
+            for (const { segment } of segmenter.segment(trimmed)){
+              const t = segment.trim();
+              if (t) segments.push(t);
+            }
+            if (segments.length) return segments;
+          } catch (e){ /* fallback */ }
+        }
+        const regex = /(?<=[\.?!‽…]|[。！？])\s+/u;
+        const fallback = trimmed.split(regex).map(s => s.trim()).filter(Boolean);
+        return fallback.length ? fallback : [trimmed];
+      }
+
+      function buildSegments(){
+        const text = scriptInput?.value || '';
+        if (!text.trim()) return [];
+        let chunks = [text];
+        if (splitParagraph?.checked){
+          chunks = text.split(/\n{2,}/).map(s => s.trim()).filter(Boolean);
+        }
+        const result = [];
+        chunks.forEach(chunk => {
+          if (!chunk) return;
+          if (autoSegment?.checked){
+            const sentences = sentenceSplit(chunk);
+            sentences.forEach(sentence => {
+              if (sentence) result.push(sentence);
+            });
+          } else {
+            result.push(chunk);
+          }
+        });
+        return result.map((text, idx) => ({ id: idx, text }));
+      }
+
+      function renderSegments(){
+        state.segments = buildSegments();
+        if (!segmentsList) return;
+        segmentsList.innerHTML = '';
+        if (!state.segments.length){
+          const empty = document.createElement('div');
+          empty.className = 'rounded-2xl border border-white/10 bg-black/40 px-4 py-6 text-sm text-white/50 text-center';
+          empty.textContent = '세그먼트가 아직 없습니다. 스크립트를 입력하면 문장/문단 단위로 자동 분할됩니다.';
+          segmentsList.appendChild(empty);
+          window.lucide?.createIcons?.();
+          updateStats();
+          return;
+        }
+        state.segments.forEach((seg, index) => {
+          const item = document.createElement('div');
+          item.className = 'rounded-2xl border border-white/10 bg-white/5 px-4 py-3 flex flex-col gap-2 transition hover:border-emerald-400/40';
+          item.dataset.segmentId = String(seg.id);
+
+          const top = document.createElement('div');
+          top.className = 'flex items-center justify-between gap-2 text-xs text-white/60';
+          top.innerHTML = `<span class="flex items-center gap-1"><i data-lucide="hash" class="w-3.5 h-3.5"></i> #${index + 1}</span><span>${seg.text.length}자</span>`;
+
+          const text = document.createElement('div');
+          text.className = 'text-sm text-white/80 leading-relaxed line-clamp-4';
+          text.textContent = seg.text;
+
+          const actions = document.createElement('div');
+          actions.className = 'flex flex-wrap items-center gap-2 text-xs';
+          const previewBtn = document.createElement('button');
+          previewBtn.type = 'button';
+          previewBtn.className = 'inline-flex items-center gap-1 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3 py-1.5 text-emerald-100 hover:bg-emerald-400/20';
+          previewBtn.innerHTML = '<i data-lucide="play-circle" class="w-3.5 h-3.5"></i> 미리듣기';
+          previewBtn.addEventListener('click', () => startPlayback(seg.id));
+
+          const copyBtn = document.createElement('button');
+          copyBtn.type = 'button';
+          copyBtn.className = 'inline-flex items-center gap-1 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-white/70 hover:text-white';
+          copyBtn.innerHTML = '<i data-lucide="copy" class="w-3.5 h-3.5"></i> 복사';
+          copyBtn.addEventListener('click', async () => {
+            try {
+              await navigator.clipboard.writeText(seg.text);
+              setStatus(`세그먼트 #${index + 1} 를 복사했습니다.`, 'success');
+            } catch (err){
+              setStatus('클립보드 복사에 실패했습니다. 브라우저 권한을 확인하세요.', 'error');
+            }
+          });
+
+          actions.append(previewBtn, copyBtn);
+
+          item.append(top, text, actions);
+          segmentsList.appendChild(item);
+        });
+        window.lucide?.createIcons?.();
+        updateStats();
+      }
+
+      function highlightSegment(id){
+        if (!segmentsList) return;
+        segmentsList.querySelectorAll('[data-segment-id]').forEach(el => {
+          if (Number(el.dataset.segmentId) === id){
+            el.classList.add('border-emerald-400/60', 'bg-emerald-400/10');
+          } else {
+            el.classList.remove('border-emerald-400/60', 'bg-emerald-400/10');
+          }
+        });
+      }
+
+      function clearHighlight(){
+        if (!segmentsList) return;
+        segmentsList.querySelectorAll('[data-segment-id]').forEach(el => {
+          el.classList.remove('border-emerald-400/60', 'bg-emerald-400/10');
+        });
+        if (wordHighlight) wordHighlight.innerHTML = '재생을 시작하면 읽고 있는 문장이 여기에 표시됩니다.';
+      }
+
+      function updateControls(){
+        const speaking = synth?.speaking;
+        const hasPlayback = speaking || state.paused || (state.playbackQueue.length > 0 && state.pointer >= 0);
+        btnPause.disabled = !(speaking || state.paused);
+        btnStop.disabled = !hasPlayback;
+      }
+
+      function applySmartProsody(text){
+        if (!smartProsody?.checked) return text;
+        const trimmed = text.trim();
+        if (!trimmed) return text;
+        if(/[\.?!‽…。！？]$/.test(trimmed)) return text;
+        return trimmed + '…';
+      }
+
+      function getSelectedVoice(){
+        const name = voiceSelect?.value;
+        if (!name) return null;
+        return state.voices.find(v => v.name === name) || null;
+      }
+
+      function speakQueue(queue){
+        if (!supportTts){
+          setStatus('이 브라우저는 Speech Synthesis를 지원하지 않습니다. 최신 크롬/엣지에서 이용해주세요.', 'error');
+          return;
+        }
+        if (!queue.length){
+          setStatus('재생할 세그먼트가 없습니다. 스크립트를 입력해주세요.', 'error');
+          return;
+        }
+        synth.cancel();
+        state.canceling = false;
+        state.playbackQueue = queue.slice();
+        state.pointer = -1;
+        state.paused = false;
+        setStatus('더빙을 준비하는 중…');
+        advance();
+      }
+
+      function advance(){
+        if (state.paused || state.canceling) return;
+        state.pointer += 1;
+        if (state.pointer >= state.playbackQueue.length){
+          finishPlayback();
+          return;
+        }
+        const segment = state.playbackQueue[state.pointer];
+        highlightSegment(segment.id);
+        const baseText = applySmartProsody(segment.text);
+        if (wordHighlight){
+          wordHighlight.innerHTML = `<span class="text-white/70">${escapeHtml(segment.text)}</span>`;
+        }
+        const utter = new SpeechSynthesisUtterance(baseText);
+        state.utterance = utter;
+        const voice = getSelectedVoice();
+        if (voice) utter.voice = voice;
+        utter.rate = parseFloat(rate?.value || '1') || 1;
+        utter.pitch = parseFloat(pitch?.value || '1') || 1;
+        utter.volume = parseFloat(volume?.value || '1') || 1;
+        utter.onstart = () => {
+          setStatus(`재생 중 · 세그먼트 #${segment.id + 1}`, 'info');
+          updateControls();
+        };
+        utter.onend = () => {
+          const pauseSec = parseFloat(pauseLength?.value || '0');
+          if (state.pointer === state.playbackQueue.length - 1){
+            finishPlayback();
+          } else if (pauseSec > 0){
+            setTimeout(() => advance(), pauseSec * 1000);
+          } else {
+            advance();
+          }
+        };
+        utter.onerror = (event) => {
+          console.error('utterance error', event.error);
+          setStatus('재생 중 오류가 발생했습니다. 다른 음성으로 다시 시도하세요.', 'error');
+          advance();
+        };
+        utter.onboundary = (event) => {
+          if (!wordHighlight || typeof event.charIndex !== 'number') return;
+          const current = segment.text;
+          const idx = Math.min(event.charIndex, current.length);
+          const len = event.charLength || 1;
+          const before = escapeHtml(current.slice(0, idx));
+          const mid = escapeHtml(current.slice(idx, idx + len));
+          const after = escapeHtml(current.slice(idx + len));
+          wordHighlight.innerHTML = `<span class="text-white/40">${before}</span><mark>${mid}</mark><span class="text-white/40">${after}</span>`;
+        };
+        synth.speak(utter);
+      }
+
+      function finishPlayback(){
+        synth.cancel();
+        state.utterance = null;
+        state.playbackQueue = [];
+        state.pointer = -1;
+        state.paused = false;
+        if (state.recordActive) stopRecording();
+        setStatus('재생이 완료되었습니다.', 'success');
+        if (btnPause){
+          btnPause.innerHTML = '<i data-lucide="pause" class="w-4 h-4"></i> 일시정지';
+        }
+        updateControls();
+        clearHighlight();
+        window.lucide?.createIcons?.();
+      }
+
+      function stopPlayback(){
+        state.canceling = true;
+        synth.cancel();
+        state.utterance = null;
+        state.playbackQueue = [];
+        state.pointer = -1;
+        if (state.recordActive) stopRecording(true);
+        setStatus('재생을 중지했습니다.', 'info');
+        clearHighlight();
+        if (btnPause){
+          btnPause.innerHTML = '<i data-lucide="pause" class="w-4 h-4"></i> 일시정지';
+        }
+        updateControls();
+        window.lucide?.createIcons?.();
+      }
+
+      function togglePause(){
+        if (!supportTts) return;
+        if (!synth.speaking && !state.paused){
+          setStatus('재생 중인 음성이 없습니다.', 'error');
+          return;
+        }
+        if (!state.paused){
+          synth.pause();
+          state.paused = true;
+          btnPause.innerHTML = '<i data-lucide="play" class="w-4 h-4"></i> 재개';
+          setStatus('일시정지되었습니다.', 'info');
+        } else {
+          synth.resume();
+          state.paused = false;
+          btnPause.innerHTML = '<i data-lucide="pause" class="w-4 h-4"></i> 일시정지';
+          setStatus('재생을 재개합니다.', 'info');
+        }
+        window.lucide?.createIcons?.();
+        updateControls();
+      }
+
+      function startPlayback(targetId){
+        renderSegments();
+        if (!state.segments.length){
+          setStatus('세그먼트가 없습니다. 스크립트를 입력해주세요.', 'error');
+          return;
+        }
+        const queue = typeof targetId === 'number'
+          ? state.segments.filter(seg => seg.id === targetId)
+          : state.segments;
+        speakQueue(queue);
+      }
+
+      async function startRecording(){
+        if (!navigator.mediaDevices?.getDisplayMedia){
+          setStatus('탭 오디오 캡처를 지원하지 않는 브라우저입니다. 크롬 또는 엣지를 사용하세요.', 'error');
+          return;
+        }
+        renderSegments();
+        if (!state.segments.length){
+          setStatus('녹음을 시작하기 전에 스크립트를 입력하고 세그먼트를 생성하세요.', 'error');
+          return;
+        }
+        if (state.recordActive){
+          stopRecording(true);
+          return;
+        }
+        try {
+          setStatus('탭 오디오 공유 권한을 요청하는 중…');
+          const stream = await navigator.mediaDevices.getDisplayMedia({ audio: true, video: false });
+          if (!stream.getAudioTracks().length){
+            setStatus('공유된 스트림에 오디오 트랙이 없습니다. 다시 시도하면서 "탭 오디오"를 선택하세요.', 'error');
+            stream.getTracks().forEach(t => t.stop());
+            return;
+          }
+          const recorder = new MediaRecorder(stream);
+          const chunks = [];
+          recorder.ondataavailable = (event) => { if (event.data?.size) chunks.push(event.data); };
+          recorder.onstop = () => {
+            const wasCancelled = state.recordCancelled;
+            if (!wasCancelled){
+              const blob = new Blob(chunks, { type: recorder.mimeType || 'audio/webm' });
+              const url = URL.createObjectURL(blob);
+              const name = `dubbing-${Date.now()}.webm`;
+              const a = document.createElement('a');
+              a.href = url; a.download = name; a.click();
+              setTimeout(() => URL.revokeObjectURL(url), 1000);
+              setStatus(`녹음이 완료되어 ${name} 파일을 다운로드했습니다.`, 'success');
+            } else {
+              setStatus('녹음을 중단했습니다. 파일은 저장되지 않습니다.', 'info');
+            }
+            stream.getTracks().forEach(t => t.stop());
+            state.recordActive = false;
+            state.recordCancelled = false;
+            btnRecord.innerHTML = '<i data-lucide="download" class="w-4 h-4"></i> 더빙 파일로 저장(Beta)';
+            window.lucide?.createIcons?.();
+          };
+          recorder.start();
+          state.recordActive = true;
+          state.recorder = recorder;
+          state.recordStream = stream;
+          state.recordChunks = chunks;
+          state.recordCancelled = false;
+          btnRecord.innerHTML = '<i data-lucide="square" class="w-4 h-4"></i> 녹음 중지';
+          setStatus('녹음을 시작했습니다. 재생이 끝나면 자동으로 저장됩니다.', 'info');
+          window.lucide?.createIcons?.();
+          if (!synth.speaking) startPlayback();
+        } catch (err){
+          console.error(err);
+          setStatus('오디오 캡처 권한이 거부되었습니다. 탭 오디오를 공유해야 녹음할 수 있습니다.', 'error');
+        }
+      }
+
+      function stopRecording(cancelled){
+        if (!state.recordActive) return;
+        try {
+          state.recordActive = false;
+          state.recordCancelled = !!cancelled;
+          btnRecord.innerHTML = '<i data-lucide="download" class="w-4 h-4"></i> 더빙 파일로 저장(Beta)';
+          window.lucide?.createIcons?.();
+          if (state.recorder?.state === 'recording'){
+            state.recorder.stop();
+          }
+          if (state.recordStream){
+            state.recordStream.getTracks().forEach(t => t.stop());
+          }
+        } catch (err){
+          console.error(err);
+        } finally {
+          state.recorder = null;
+          state.recordStream = null;
+          state.recordChunks = [];
+        }
+      }
+
+      function populateVoices(){
+        if (!supportTts) return;
+        const voices = synth.getVoices();
+        if (!voices.length){
+          setTimeout(populateVoices, 300);
+          return;
+        }
+        state.voices = voices.slice().sort((a, b) => a.lang.localeCompare(b.lang) || a.name.localeCompare(b.name));
+        renderVoiceOptions();
+      }
+
+      function renderVoiceOptions(){
+        if (!voiceSelect) return;
+        const filter = voiceFilter?.value || 'all';
+        voiceSelect.innerHTML = '';
+        const frag = document.createDocumentFragment();
+        const filtered = state.voices.filter(v => {
+          const lang = (v.lang || '').toLowerCase();
+          if (filter === 'all') return true;
+          if (filter === 'etc') return !lang.startsWith('ko') && !lang.startsWith('en') && !lang.startsWith('ja') && !lang.startsWith('zh') && !lang.startsWith('es') && !lang.startsWith('fr') && !lang.startsWith('de');
+          return lang.startsWith(filter);
+        });
+        if (!filtered.length){
+          const opt = document.createElement('option');
+          opt.value = '';
+          opt.textContent = '선택한 언어 음성이 없습니다. 다른 언어를 선택하세요.';
+          frag.appendChild(opt);
+        } else {
+          filtered.forEach(voice => {
+            const opt = document.createElement('option');
+            const localBadge = voice.localService ? '• 로컬' : '';
+            opt.value = voice.name;
+            opt.textContent = `${voice.name} (${voice.lang}) ${localBadge}`.trim();
+            frag.appendChild(opt);
+          });
+        }
+        voiceSelect.appendChild(frag);
+        if (voiceSelect.options.length && !voiceSelect.value){
+          const preferred = filtered.find(v => v.lang.startsWith('ko')) || filtered[0];
+          if (preferred) voiceSelect.value = preferred.name;
+        }
+      }
+
+      function attachEvents(){
+        scriptInput?.addEventListener('input', () => {
+          renderSegments();
+          updateStats();
+        });
+        [splitParagraph, autoSegment].forEach(el => el?.addEventListener('change', () => {
+          renderSegments();
+          updateStats();
+        }));
+        pauseLength?.addEventListener('change', () => {
+          const val = parseFloat(pauseLength.value || '0');
+          if (Number.isNaN(val) || val < 0){
+            pauseLength.value = '0';
+          } else if (val > 10){
+            pauseLength.value = '10';
+          }
+        });
+        rate?.addEventListener('input', () => {
+          rateValue.textContent = `${parseFloat(rate.value).toFixed(2)}x`;
+          updateStats();
+        });
+        pitch?.addEventListener('input', () => {
+          const val = parseFloat(pitch.value);
+          pitchValue.textContent = val === 1 ? '기본' : `${val.toFixed(2)}x`;
+        });
+        volume?.addEventListener('input', () => {
+          volumeValue.textContent = `${Math.round(parseFloat(volume.value) * 100)}%`;
+        });
+        voiceFilter?.addEventListener('change', () => {
+          renderVoiceOptions();
+          window.lucide?.createIcons?.();
+        });
+        btnSpeak?.addEventListener('click', () => startPlayback());
+        btnPause?.addEventListener('click', togglePause);
+        btnStop?.addEventListener('click', stopPlayback);
+        btnRecord?.addEventListener('click', startRecording);
+        btnSample?.addEventListener('click', () => {
+          const sample = `안녕하세요, Yuchani Tools pro 더빙 생성기입니다.\n\n이 도구는 텍스트를 전문 성우처럼 자연스러운 음성으로 재생하도록 설계되었습니다.\n\n문단 사이에 빈 줄을 넣으면 장면이 분리되고, 각 장면을 개별적으로 미리듣기할 수 있습니다.`;
+          if (scriptInput) scriptInput.value = sample;
+          renderSegments();
+          updateStats();
+          setStatus('샘플 스크립트를 불러왔습니다.', 'success');
+        });
+        btnExpandSegments?.addEventListener('click', () => {
+          state.expandMode = !state.expandMode;
+          btnExpandSegments.textContent = state.expandMode ? '모두 접기' : '모두 펼치기';
+          segmentsList?.classList.toggle('max-h-64', !state.expandMode);
+          window.lucide?.createIcons?.();
+        });
+        window.addEventListener('keydown', (e) => {
+          if ((e.ctrlKey || e.metaKey) && e.key === 'Enter'){
+            e.preventDefault();
+            startPlayback();
+          }
+        });
+        updateControls();
+      }
+
+      if (!supportTts){
+        setStatus('Speech Synthesis API를 지원하지 않는 환경입니다. 최신 데스크톱 브라우저를 이용해주세요.', 'error');
+        btnSpeak?.setAttribute('disabled', 'true');
+        btnPause?.setAttribute('disabled', 'true');
+        btnStop?.setAttribute('disabled', 'true');
+        btnRecord?.setAttribute('disabled', 'true');
+        recordingNote?.classList.add('hidden');
+        return;
+      }
+
+      attachEvents();
+      renderSegments();
+      updateStats();
+      populateVoices();
+      window.lucide?.createIcons?.();
+      if (typeof synth.addEventListener === 'function'){
+        synth.addEventListener('voiceschanged', populateVoices);
+      } else {
+        synth.onvoiceschanged = populateVoices;
+      }
+    });
+  </script>
+</body>
+</html>

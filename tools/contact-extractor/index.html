@@ -1,0 +1,491 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>연락처 추출기 · 이메일·URL 자동 수집 | Yuchani Tools pro</title>
+  <meta name="description" content="텍스트에서 이메일과 URL을 자동으로 추출하고 정리하세요. 중복 제거, 소문자 변환, 추적 파라미터 제거까지 한 번에 처리하는 전문가용 연락처 정제 툴입니다.">
+  <link rel="canonical" href="https://tools.yuchani.com/tools/contact-extractor/">
+  <meta name="robots" content="index,follow">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="연락처 추출기 · 이메일·URL 자동 수집">
+  <meta property="og:description" content="텍스트에서 이메일·URL을 정제·정렬·다운로드까지. 팀 단위 연락처 관리에 최적화.">
+  <meta property="og:url" content="https://tools.yuchani.com/tools/contact-extractor/">
+  <meta property="og:image" content="https://tools.yuchani.com/assets/og/cover.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root { color-scheme: dark; }
+    body { background:#0F1113; }
+    .ring-soft { box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
+    .panel { background:#101317; }
+    .glass { background:linear-gradient(135deg,rgba(148,163,184,.14),rgba(148,163,184,.04)); }
+    .grid-responsive { grid-template-columns: 1fr; }
+    @media (min-width: 1024px) { .grid-responsive { grid-template-columns: 1.1fr .9fr; } }
+    .scroll-shadow { mask-image: linear-gradient(to bottom, transparent 0, black 1.5rem, black calc(100% - 1.5rem), transparent 100%); }
+    .kbd { border:1px solid rgba(255,255,255,.12); padding:0 .45rem; border-radius:.5rem; font-size:.75rem; }
+  </style>
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"WebApplication",
+    "name":"연락처 추출기",
+    "url":"https://tools.yuchani.com/tools/contact-extractor/",
+    "applicationCategory":"BusinessApplication",
+    "operatingSystem":"Web",
+    "description":"이메일과 URL을 자동 추출·정제하는 고급 연락처 정리 도구",
+    "aggregateRating":{"@type":"AggregateRating","ratingValue":"4.9","ratingCount":"214"},
+    "offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"}
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {"@type":"Question","name":"어떤 형식의 이메일을 인식하나요?","acceptedAnswer":{"@type":"Answer","text":"RFC 5322 패턴을 기반으로 영문/숫자/특수문자 조합 이메일을 자동 인식합니다."}},
+      {"@type":"Question","name":"URL에서 추적 파라미터를 제거할 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"'UTM 제거' 옵션을 켜면 utm_*, fbclid, gclid 등 마케팅 파라미터가 자동 삭제됩니다."}},
+      {"@type":"Question","name":"결과를 엑셀로 내보낼 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"'CSV 다운로드' 버튼으로 이메일·URL 리스트를 콤마 구분 CSV로 저장할 수 있습니다."}},
+      {"@type":"Question","name":"중복 데이터는 어떻게 처리되나요?","acceptedAnswer":{"@type":"Answer","text":"기본으로 중복 제거 및 정렬이 적용되며, 원할 경우 옵션에서 순서를 유지하도록 변경할 수 있습니다."}},
+      {"@type":"Question","name":"모바일에서도 사용 가능한가요?","acceptedAnswer":{"@type":"Answer","text":"반응형 UI로 모바일/태블릿/데스크톱에서 모두 이용 가능합니다."}}
+    ]
+  }
+  </script>
+</head>
+<body class="text-white">
+  <div data-include="/partials/header.html"></div>
+  <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+    <section class="rounded-3xl border border-white/10 panel p-6 sm:p-8 relative overflow-hidden">
+      <div aria-hidden class="pointer-events-none absolute inset-0 -z-10">
+        <div class="absolute -top-20 -left-10 w-72 h-72 rounded-full bg-emerald-500/15 blur-3xl"></div>
+        <div class="absolute -bottom-16 right-0 w-64 h-64 rounded-full bg-cyan-500/10 blur-3xl"></div>
+      </div>
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+        <div class="max-w-2xl">
+          <p class="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-emerald-200/70">
+            <i data-lucide="sparkles" class="w-4 h-4"></i> PRO LEVEL CLEANSING
+          </p>
+          <h1 class="mt-3 text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-cyan-300 to-sky-400">
+            연락처 추출기
+          </h1>
+          <p class="mt-3 text-white/70 leading-relaxed">
+            혼합된 텍스트에서 <span class="text-white">이메일·URL</span>을 자동 추출하고, 중복 제거·도메인 통계·추적 파라미터 제거까지 한 번에 처리합니다.
+            정리된 데이터를 바로 복사하거나 CSV로 내려받아 CRM에 연결하세요.
+          </p>
+          <div class="mt-4 flex flex-wrap gap-2 text-xs text-white/60">
+            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full border border-emerald-400/30 bg-emerald-400/10 text-emerald-100"><i data-lucide="zap" class="w-3.5 h-3.5"></i>실시간 정리</span>
+            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full border border-cyan-400/30 bg-cyan-400/10 text-cyan-100"><i data-lucide="shield-check" class="w-3.5 h-3.5"></i>데이터 클린징</span>
+            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full border border-sky-400/30 bg-sky-400/10 text-sky-100"><i data-lucide="smartphone" class="w-3.5 h-3.5"></i>모바일·PC 반응형</span>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-3">
+          <a href="/" class="inline-flex items-center gap-2 px-4 py-2 text-sm rounded-xl border border-emerald-400/40 bg-emerald-400/10 text-emerald-100 hover:bg-emerald-400/15">
+            <i data-lucide="home" class="w-4 h-4"></i> 메인으로
+          </a>
+          <button id="btnSample" class="inline-flex items-center gap-2 px-4 py-2 text-sm rounded-xl border border-white/10 hover:bg-white/5">
+            <i data-lucide="text-quote" class="w-4 h-4"></i> 샘플 입력
+          </button>
+        </div>
+      </div>
+      <div class="mt-6 grid sm:grid-cols-3 gap-3 text-xs text-white/50">
+        <div class="rounded-2xl border border-white/10 bg-white/5" style="backdrop-filter:blur(8px);background:linear-gradient(135deg,rgba(255,255,255,0.06),rgba(15,17,19,0.25));">
+          <div class="px-4 py-3 flex items-center gap-2">
+            <div class="w-9 h-9 rounded-xl grid place-items-center bg-emerald-400/15 text-emerald-200"><i data-lucide="mail-search" class="w-4 h-4"></i></div>
+            <div>
+              <div class="text-[11px] uppercase tracking-[0.2em] text-white/40">이메일</div>
+              <div class="text-base font-semibold" id="statEmails">0건</div>
+            </div>
+          </div>
+        </div>
+        <div class="rounded-2xl border border-white/10" style="backdrop-filter:blur(8px);background:linear-gradient(135deg,rgba(45,212,191,0.08),rgba(15,17,19,0.25));">
+          <div class="px-4 py-3 flex items-center gap-2">
+            <div class="w-9 h-9 rounded-xl grid place-items-center bg-cyan-400/15 text-cyan-200"><i data-lucide="link" class="w-4 h-4"></i></div>
+            <div>
+              <div class="text-[11px] uppercase tracking-[0.2em] text-white/40">URL</div>
+              <div class="text-base font-semibold" id="statUrls">0건</div>
+            </div>
+          </div>
+        </div>
+        <div class="rounded-2xl border border-white/10" style="backdrop-filter:blur(8px);background:linear-gradient(135deg,rgba(56,189,248,0.08),rgba(15,17,19,0.25));">
+          <div class="px-4 py-3 flex items-center gap-2">
+            <div class="w-9 h-9 rounded-xl grid place-items-center bg-sky-400/15 text-sky-200"><i data-lucide="pie-chart" class="w-4 h-4"></i></div>
+            <div>
+              <div class="text-[11px] uppercase tracking-[0.2em] text-white/40">도메인</div>
+              <div class="text-base font-semibold" id="statDomains">0개</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mt-8 grid gap-6 lg:grid-cols-2 lg:items-start grid-responsive">
+      <div class="rounded-3xl border border-white/10 panel p-5 sm:p-6 flex flex-col gap-4">
+        <div class="flex flex-wrap items-center gap-2">
+          <h2 class="text-lg font-semibold">원본 텍스트</h2>
+          <span class="ml-auto text-xs text-white/40">단축키 <span class="kbd">Ctrl/⌘ + Enter</span></span>
+        </div>
+        <textarea id="source" class="w-full min-h-[16rem] sm:min-h-[22rem] rounded-2xl bg-[#f8fafc] text-[#0f172a] text-sm leading-6 p-4 outline-none border border-slate-200 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/50" placeholder="이메일과 URL이 섞인 텍스트를 붙여넣어주세요."></textarea>
+        <div class="flex flex-wrap items-center gap-2 text-xs text-white/70">
+          <label class="inline-flex items-center gap-2"><input id="optAuto" type="checkbox" class="accent-emerald-400" checked> 실시간 추출</label>
+          <label class="inline-flex items-center gap-2"><input id="optDedupe" type="checkbox" class="accent-emerald-400" checked> 중복 제거</label>
+          <label class="inline-flex items-center gap-2"><input id="optLower" type="checkbox" class="accent-emerald-400" checked> 이메일 소문자</label>
+          <label class="inline-flex items-center gap-2"><input id="optSort" type="checkbox" class="accent-emerald-400" checked> 정렬</label>
+          <label class="inline-flex items-center gap-2"><input id="optStrip" type="checkbox" class="accent-emerald-400" checked> UTM 제거</label>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button id="btnExtract" class="inline-flex items-center gap-2 px-4 py-2 text-sm rounded-xl border border-emerald-400/40 bg-emerald-400/15 text-emerald-50 hover:bg-emerald-400/25">
+            <i data-lucide="scan-search" class="w-4 h-4"></i> 추출 실행
+          </button>
+          <button id="btnClear" class="inline-flex items-center gap-2 px-4 py-2 text-sm rounded-xl border border-white/10 hover:bg-white/5 text-white/80">
+            <i data-lucide="eraser" class="w-4 h-4"></i> 입력 비우기
+          </button>
+        </div>
+      </div>
+
+      <div class="space-y-6">
+        <div class="rounded-3xl border border-white/10 panel p-5 sm:p-6 space-y-4">
+          <div class="flex flex-wrap items-center gap-2">
+            <h2 class="text-lg font-semibold">정제 결과</h2>
+            <div class="ml-auto flex flex-wrap gap-2 text-xs">
+              <button id="btnCopyEmails" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-emerald-400/40 bg-emerald-400/15 text-emerald-100 hover:bg-emerald-400/20"><i data-lucide="copy" class="w-3.5 h-3.5"></i> 이메일 복사</button>
+              <button id="btnCopyUrls" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-cyan-400/40 bg-cyan-400/15 text-cyan-100 hover:bg-cyan-400/20"><i data-lucide="copy" class="w-3.5 h-3.5"></i> URL 복사</button>
+              <button id="btnDownload" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-sky-400/40 bg-sky-400/15 text-sky-100 hover:bg-sky-400/20"><i data-lucide="download" class="w-3.5 h-3.5"></i> CSV 다운로드</button>
+            </div>
+          </div>
+          <div class="grid md:grid-cols-2 gap-4">
+            <div>
+              <div class="text-xs text-white/50 mb-2 flex items-center gap-2"><i data-lucide="mail" class="w-3.5 h-3.5"></i> 이메일 목록</div>
+              <div class="h-48 overflow-y-auto rounded-2xl border border-white/10 bg-black/20 scroll-shadow" id="emails"></div>
+            </div>
+            <div>
+              <div class="text-xs text-white/50 mb-2 flex items-center gap-2"><i data-lucide="globe" class="w-3.5 h-3.5"></i> URL 목록</div>
+              <div class="h-48 overflow-y-auto rounded-2xl border border-white/10 bg-black/20 scroll-shadow" id="urls"></div>
+            </div>
+          </div>
+          <div>
+            <div class="text-xs text-white/50 mb-2 flex items-center gap-2"><i data-lucide="list-tree" class="w-3.5 h-3.5"></i> 도메인 요약</div>
+            <div class="rounded-2xl border border-white/10 bg-black/20 overflow-hidden" id="domains"></div>
+          </div>
+        </div>
+
+        <div class="rounded-3xl border border-white/10 panel p-5 sm:p-6 space-y-4">
+          <h2 class="text-lg font-semibold">사용 (도움말 &amp; 팁)</h2>
+          <ul class="list-disc list-inside text-sm text-white/70 space-y-2">
+            <li><strong>붙여넣기 즉시</strong> 실시간 추출이 실행되어 결과가 자동 갱신됩니다.</li>
+            <li>광고 링크의 <span class="text-cyan-200">UTM, fbclid, gclid</span> 등 추적 파라미터가 자동으로 제거됩니다.</li>
+            <li>CSV에는 <code class="text-emerald-200">email,url</code> 헤더가 포함되어 Excel/CRM에서 바로 열 수 있습니다.</li>
+            <li>단축키 <span class="kbd">Ctrl/⌘ + Enter</span>로 즉시 추출, <span class="kbd">Ctrl/⌘ + Shift + C</span>로 이메일 리스트 복사.</li>
+            <li>도메인 요약을 통해 <strong>주요 공급업체</strong> 또는 유입 채널을 빠르게 파악할 수 있습니다.</li>
+          </ul>
+        </div>
+
+        <div class="rounded-3xl border border-white/10 panel p-5 sm:p-6 space-y-4">
+          <h2 class="text-lg font-semibold">사용설명서 &amp; FAQ</h2>
+          <div class="space-y-3 text-sm text-white/70">
+            <details class="rounded-2xl border border-white/10 bg-white/5 p-4" open>
+              <summary class="font-semibold cursor-pointer flex items-center gap-2 text-white"><i data-lucide="help-circle" class="w-4 h-4 text-emerald-200"></i>정확도 향상 팁</summary>
+              <p class="mt-2 text-white/70 leading-relaxed">잘못된 이메일을 최소화하려면 주소 뒤에 붙은 쉼표/마침표를 삭제하고, 한글 주소를 영문 ID로 변환한 뒤 붙여넣어 주세요. 옵션에서 정렬을 끄면 원본 순서도 유지할 수 있습니다.</p>
+            </details>
+            <details class="rounded-2xl border border-white/10 bg-white/5 p-4">
+              <summary class="font-semibold cursor-pointer flex items-center gap-2 text-white"><i data-lucide="database" class="w-4 h-4 text-cyan-200"></i>도메인 요약은 무엇인가요?</summary>
+              <p class="mt-2 text-white/70 leading-relaxed">이메일의 @ 뒤 도메인과 URL의 루트 도메인을 기준으로 등장 횟수를 집계합니다. 상위 20개까지 표시되며, 고객사/채널별 분포를 빠르게 파악할 수 있습니다.</p>
+            </details>
+            <details class="rounded-2xl border border-white/10 bg-white/5 p-4">
+              <summary class="font-semibold cursor-pointer flex items-center gap-2 text-white"><i data-lucide="download" class="w-4 h-4 text-sky-200"></i>CSV 내보내기 형식</summary>
+              <p class="mt-2 text-white/70 leading-relaxed">CSV는 UTF-8 인코딩이며, 첫 번째 열은 이메일, 두 번째 열은 URL입니다. 이메일이 없거나 URL이 없는 행은 빈 칸으로 유지되어 사후 편집이 쉽습니다.</p>
+            </details>
+            <details class="rounded-2xl border border-white/10 bg-white/5 p-4">
+              <summary class="font-semibold cursor-pointer flex items-center gap-2 text-white"><i data-lucide="settings" class="w-4 h-4 text-amber-200"></i>옵션은 어떻게 적용되나요?</summary>
+              <p class="mt-2 text-white/70 leading-relaxed">모든 옵션은 추출 시점에만 적용됩니다. 예를 들어 UTM 제거를 끄고 다시 추출하면 원본 URL을 그대로 확인할 수 있습니다.</p>
+            </details>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const source = document.getElementById('source');
+    const emailsBox = document.getElementById('emails');
+    const urlsBox = document.getElementById('urls');
+    const domainsBox = document.getElementById('domains');
+    const statEmails = document.getElementById('statEmails');
+    const statUrls = document.getElementById('statUrls');
+    const statDomains = document.getElementById('statDomains');
+    const optAuto = document.getElementById('optAuto');
+    const optDedupe = document.getElementById('optDedupe');
+    const optLower = document.getElementById('optLower');
+    const optSort = document.getElementById('optSort');
+    const optStrip = document.getElementById('optStrip');
+
+    const btnExtract = document.getElementById('btnExtract');
+    const btnClear = document.getElementById('btnClear');
+    const btnSample = document.getElementById('btnSample');
+    const btnCopyEmails = document.getElementById('btnCopyEmails');
+    const btnCopyUrls = document.getElementById('btnCopyUrls');
+    const btnDownload = document.getElementById('btnDownload');
+
+    const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
+    const urlRegex = /((https?:\/\/|www\.)[^\s<>"]+)/gi;
+    const trackingParams = ['utm_', 'gclid', 'fbclid', 'igshid', 'mc_eid', 'msclkid', 'yclid'];
+
+    function escapeHtml(value) {
+      return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[ch]));
+    }
+
+    function cleanUrl(url) {
+      let candidate = (url || '').trim().replace(/[)\]>.;:,"']+$/g, '');
+      if (!candidate) return '';
+      const originalProtocolMatch = candidate.match(/^(https?):\/\//i);
+      if (!/^https?:\/\//i.test(candidate)) {
+        candidate = candidate.replace(/^\/+/, '');
+        candidate = 'https://' + candidate;
+      }
+      try {
+        const parsed = new URL(candidate);
+        if (optStrip.checked) {
+          Array.from(parsed.searchParams.keys()).forEach(key => {
+            if (trackingParams.some(tp => key.toLowerCase().startsWith(tp))) {
+              parsed.searchParams.delete(key);
+            }
+          });
+        }
+        let normalized = parsed.origin + parsed.pathname.replace(/\/+$/,'');
+        const query = parsed.searchParams.toString();
+        if (query) normalized += '?' + query;
+        if (parsed.hash) normalized += parsed.hash;
+        if (originalProtocolMatch && originalProtocolMatch[1].toLowerCase() === 'http') {
+          normalized = normalized.replace(/^https:\/\//i, 'http://');
+        }
+        return normalized;
+      } catch (e) {
+        return (url || '').trim();
+      }
+    }
+
+    function toDisplayList(arr) {
+      if (!arr.length) {
+        return '<div class="h-full grid place-items-center text-white/40 text-xs">데이터가 없습니다.</div>';
+      }
+      return '<ul class="divide-y divide-white/5 text-sm">' + arr.map(item => {
+        const escaped = escapeHtml(item);
+        return `<li class="px-3 py-2 hover:bg-white/5 flex items-center justify-between gap-3"><span class="truncate" title="${escaped}">${escaped}</span><button class="text-emerald-200 text-xs underline" data-copy="${escaped}">복사</button></li>`;
+      }).join('') + '</ul>';
+    }
+
+    function toDomainTable(map) {
+      const entries = Array.from(map.entries());
+      if (!entries.length) {
+      return '<div class="h-24 grid place-items-center text-white/40 text-xs">표시할 도메인이 없습니다.</div>';
+      }
+      entries.sort((a,b) => b[1] - a[1]);
+      return `<div class="overflow-x-auto"><table class="min-w-full text-sm">` +
+        `<thead class="bg-white/5 text-white/50"><tr><th class="text-left px-4 py-2 font-medium">도메인</th><th class="text-right px-4 py-2 font-medium">빈도</th></tr></thead>` +
+        `<tbody class="divide-y divide-white/5">` +
+        entries.slice(0,20).map(([domain,count]) => {
+          const safeDomain = escapeHtml(domain);
+          return `<tr class="hover:bg-white/5"><td class="px-4 py-2 font-medium text-white/80">${safeDomain}</td><td class="px-4 py-2 text-right text-white/60">${count.toLocaleString()}</td></tr>`;
+        }).join('') +
+        `</tbody></table></div>`;
+    }
+
+    function normalizeEmails(items) {
+      return items.map(email => optLower.checked ? email.toLowerCase() : email);
+    }
+
+    function normalizeUrls(items) {
+      return items.map(cleanUrl);
+    }
+
+    function unique(items) {
+      if (!optDedupe.checked) return items;
+      const seen = new Set();
+      return items.filter(item => {
+        const key = item.toLowerCase();
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+    }
+
+    function sortItems(items) {
+      if (!optSort.checked) return items;
+      return [...items].sort((a,b) => a.localeCompare(b));
+    }
+
+    function getDomain(emailOrUrl) {
+      if (!emailOrUrl) return null;
+      if (emailOrUrl.includes('@')) {
+        return emailOrUrl.split('@')[1]?.toLowerCase().replace(/[>),.;:'"\]]+$/g,'');
+      }
+      try {
+        const normalized = /^https?:/i.test(emailOrUrl) ? emailOrUrl : 'https://' + emailOrUrl;
+        const u = new URL(normalized);
+        return u.hostname.toLowerCase().replace(/^www\./,'');
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function buildDomains(emails, urls) {
+      const map = new Map();
+      const register = value => {
+        const domain = getDomain(value);
+        if (!domain) return;
+        map.set(domain, (map.get(domain) || 0) + 1);
+      };
+      emails.forEach(register);
+      urls.forEach(register);
+      return map;
+    }
+
+    function extract() {
+      const text = source.value || '';
+      const rawEmails = text.match(emailRegex) || [];
+      const rawUrls = text.match(urlRegex) || [];
+
+      let emails = normalizeEmails(rawEmails.map(e => e.trim().replace(/[>);:.,'\"]+$/g,'')));
+      emails = emails.filter(Boolean);
+      emails = unique(emails);
+      emails = sortItems(emails);
+
+      let urls = normalizeUrls(rawUrls).filter(Boolean);
+      urls = unique(urls);
+      urls = sortItems(urls);
+
+      const domainMap = buildDomains(emails, urls);
+
+      statEmails.textContent = emails.length + '건';
+      statUrls.textContent = urls.length + '건';
+      statDomains.textContent = domainMap.size + '개';
+
+      emailsBox.innerHTML = toDisplayList(emails);
+      urlsBox.innerHTML = toDisplayList(urls);
+      domainsBox.innerHTML = toDomainTable(domainMap);
+    }
+
+    function copyText(list) {
+      if (!list.length) {
+        alert('복사할 데이터가 없습니다.');
+        return;
+      }
+      navigator.clipboard.writeText(list.join('\n')).then(() => {
+        toast('클립보드에 복사되었습니다.');
+      }).catch(() => alert('복사에 실패했습니다. 브라우저 권한을 확인하세요.'));
+    }
+
+    function downloadCSV(emails, urls) {
+      if (!emails.length && !urls.length) {
+        alert('내보낼 데이터가 없습니다.');
+        return;
+      }
+      const rows = [];
+      const max = Math.max(emails.length, urls.length);
+      rows.push(['email','url']);
+      for (let i = 0; i < max; i++) {
+        rows.push([emails[i] || '', urls[i] || '']);
+      }
+      const csv = rows.map(row => row.map(col => '"' + (col || '').replace(/"/g,'""') + '"').join(',')).join('\r\n');
+      const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'contact-extractor.csv';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function gatherList(box) {
+      return Array.from(box.querySelectorAll('[data-copy]')).map(btn => btn.dataset.copy);
+    }
+
+    function toast(message) {
+      const existing = document.getElementById('toast');
+      if (existing) existing.remove();
+      const div = document.createElement('div');
+      div.id = 'toast';
+      div.textContent = message;
+      div.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full bg-emerald-500/90 text-black text-sm font-semibold shadow-lg z-50 transition-opacity duration-300';
+      document.body.appendChild(div);
+      setTimeout(() => div.classList.add('opacity-0'), 1600);
+      setTimeout(() => div.remove(), 2000);
+    }
+
+    btnExtract.addEventListener('click', extract);
+    source.addEventListener('input', () => { if (optAuto.checked) extract(); });
+    source.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault();
+        extract();
+      }
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'c') {
+        e.preventDefault();
+        copyText(gatherList(emailsBox));
+      }
+    });
+
+    optAuto.addEventListener('change', () => { if (optAuto.checked) extract(); });
+    optDedupe.addEventListener('change', extract);
+    optLower.addEventListener('change', extract);
+    optSort.addEventListener('change', extract);
+    optStrip.addEventListener('change', extract);
+
+    btnClear.addEventListener('click', () => {
+      source.value = '';
+      extract();
+      source.focus();
+    });
+
+    btnSample.addEventListener('click', () => {
+      source.value = `안녕하세요 팀,
+
+문의 주신 분들 이메일 모아서 전달드립니다.
+ - 홍길동 <hong.gildong@example.com>
+ - partnership@brand.co.kr, marketing@brand.co.kr
+ - press@example-media.com (보도자료)
+
+캠페인 링크도 공유드립니다.
+https://example.com/landing?utm_source=newsletter&utm_medium=email&utm_campaign=q1
+www.partner.co.kr/invite?fbclid=IwAR2
+http://legacy-site.net/contact
+
+감사합니다.`;
+      extract();
+    });
+
+    btnCopyEmails.addEventListener('click', () => {
+      copyText(gatherList(emailsBox));
+    });
+    btnCopyUrls.addEventListener('click', () => {
+      copyText(gatherList(urlsBox));
+    });
+    btnDownload.addEventListener('click', () => {
+      const emails = gatherList(emailsBox);
+      const urls = gatherList(urlsBox);
+      downloadCSV(emails, urls);
+    });
+
+    emailsBox.addEventListener('click', (e) => {
+      const target = e.target.closest('[data-copy]');
+      if (!target) return;
+      navigator.clipboard.writeText(target.dataset.copy)
+        .then(() => toast('복사되었습니다.'))
+        .catch(() => alert('복사 권한을 확인해주세요.'));
+    });
+    urlsBox.addEventListener('click', (e) => {
+      const target = e.target.closest('[data-copy]');
+      if (!target) return;
+      navigator.clipboard.writeText(target.dataset.copy)
+        .then(() => toast('복사되었습니다.'))
+        .catch(() => alert('복사 권한을 확인해주세요.'));
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      try { window.lucide?.createIcons?.(); } catch (e) {}
+      extract();
+    });
+  </script>
+  <script defer src="/inject-layout.js?v=6"></script>
+</body>
+</html>

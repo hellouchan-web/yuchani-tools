@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>robots.txt &amp; Sitemap 생성기 | Yuchani Tools pro</title>
+  <meta name="description" content="검색엔진 친화적인 robots.txt와 XML Sitemap을 동시에 설계하고 미리보기/복사/다운로드까지 제공하는 전문가용 SEO 기초 세팅 툴입니다. 구글 SEO 최적화, 속도, 반응형 모두 고려했습니다.">
+  <link rel="canonical" href="https://tools.yuchani.com/tools/robots-sitemap/">
+  <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1">
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="robots.txt &amp; Sitemap 생성기 | Yuchani Tools pro">
+  <meta property="og:description" content="검색봇이 좋아하는 robots.txt · XML Sitemap을 동시에 만들어 사이트 크롤링을 가속하세요.">
+  <meta property="og:url" content="https://tools.yuchani.com/tools/robots-sitemap/">
+  <meta property="og:image" content="https://tools.yuchani.com/assets/og/seo.png">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- JSON-LD: WebApplication -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"WebApplication",
+    "name":"robots.txt & Sitemap 생성기",
+    "url":"https://tools.yuchani.com/tools/robots-sitemap/",
+    "applicationCategory":"UtilityApplication",
+    "operatingSystem":"Web",
+    "offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},
+    "description":"검색엔진 최적화용 robots.txt와 XML Sitemap을 동시에 설계하는 무료 툴"
+  }
+  </script>
+
+  <!-- JSON-LD: FAQPage -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {"@type":"Question","name":"robots.txt와 Sitemap은 왜 함께 관리하나요?","acceptedAnswer":{"@type":"Answer","text":"robots.txt는 크롤링 범위를, XML Sitemap은 우선순위와 최신 페이지 정보를 전달합니다. 두 파일을 동시에 유지하면 검색봇이 더 정확하게 사이트를 이해합니다."}},
+      {"@type":"Question","name":"구글 전용 규칙도 만들 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"네. 'Googlebot 특화 규칙' 영역에 허용/차단 경로를 따로 적으면 일반 봇 규칙과 별도로 생성됩니다."}},
+      {"@type":"Question","name":"사이트맵에 수백 개 페이지가 있을 때는 어떻게 하나요?","acceptedAnswer":{"@type":"Answer","text":"이 툴로 샘플 구조를 만든 뒤, CMS 또는 빌드 파이프라인에서 동적으로 URL 목록을 채우도록 자동화를 권장합니다."}}
+    ]
+  }
+  </script>
+
+  <!-- JSON-LD: HowTo -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"HowTo",
+    "name":"robots.txt & Sitemap 생성기 사용법",
+    "description":"기본 URL 입력부터 사전 차단 경로 선택, 사이트맵 URL 추가, 결과 복사까지 단계별 안내",
+    "totalTime":"PT2M",
+    "step":[
+      {"@type":"HowToStep","name":"사이트 기본 URL 입력","text":"https://example.com 형식으로 도메인을 입력하면 자동으로 HTTPS와 슬래시를 정리합니다."},
+      {"@type":"HowToStep","name":"차단/허용 경로 구성","text":"프리셋 체크박스 또는 사용자 정의 입력으로 Allow/Disallow 목록을 구성합니다."},
+      {"@type":"HowToStep","name":"사이트맵 URL 확장","text":"중요한 페이지 경로를 추가하고 갱신 주기/우선순위를 조정합니다."},
+      {"@type":"HowToStep","name":"복사 또는 다운로드","text":"각 결과 영역의 복사/다운로드 버튼으로 서버에 업로드할 파일을 바로 확보합니다."}
+    ]
+  }
+  </script>
+
+  <!-- Tailwind / Lucide -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root { color-scheme: dark; }
+    body { background:#0F1113; }
+    .ring-soft { box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
+    .glass { background: linear-gradient(135deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02)); backdrop-filter: blur(16px); }
+    textarea { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+  </style>
+</head>
+<body class="text-white">
+  <div data-include="/partials/header.html"></div>
+
+  <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
+    <!-- Hero -->
+    <section class="rounded-3xl border border-white/10 glass p-6 md:p-10 shadow-[0_24px_80px_-32px_rgba(56,189,248,0.45)]">
+      <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+        <div class="space-y-4">
+          <div class="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3 py-1 text-xs font-medium text-emerald-100">
+            <i data-lucide="badge-check" class="h-4 w-4"></i>
+            Google SEO · 속도 최적화 · 반응형
+          </div>
+          <div>
+            <h1 class="text-3xl font-semibold tracking-tight md:text-4xl lg:text-5xl">robots.txt &amp; Sitemap 생성기</h1>
+            <p class="mt-3 max-w-2xl text-white/70">검색봇이 사랑하는 구조로 <span class="font-semibold text-cyan-200">크롤링 정책</span>과 <span class="font-semibold text-cyan-200">사이트맵</span>을 동시에 완성하세요. 프리셋/검증 로직/자동 포맷팅을 제공해 업로드 직전 상태까지 완성합니다.</p>
+          </div>
+        </div>
+        <div class="grid gap-2 text-sm text-white/75">
+          <div class="flex items-center gap-2 rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
+            <i data-lucide="search-code" class="h-5 w-5 text-cyan-300"></i>
+            <span>크롤링 범위 시뮬레이션</span>
+          </div>
+          <div class="flex items-center gap-2 rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
+            <i data-lucide="rocket" class="h-5 w-5 text-emerald-300"></i>
+            <span>자동 서식 &amp; 속도 진단</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tool Body -->
+    <section class="mt-8 grid gap-6 lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)]">
+      <!-- Controls -->
+      <div class="space-y-5">
+        <div class="rounded-2xl border border-white/10 ring-soft bg-[#121417] p-5">
+          <div class="flex items-center gap-2 text-sm text-white/80">
+            <i data-lucide="settings" class="h-4 w-4 text-cyan-300"></i>
+            <span class="font-semibold">기본 설정</span>
+          </div>
+          <div class="mt-4 space-y-4 text-sm">
+            <label class="block">
+              <span class="text-white/70">사이트 기본 URL</span>
+              <input id="baseUrl" type="url" inputmode="url" placeholder="https://example.com" class="mt-1 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2.5 text-sm outline-none focus:border-cyan-400/50" value="https://example.com">
+            </label>
+            <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+              <label class="block">
+                <span class="text-white/70">기본 허용 경로</span>
+                <input id="allowDefault" type="text" class="mt-1 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2.5 text-sm outline-none focus:border-cyan-400/50" value="/">
+              </label>
+              <label class="block">
+                <span class="text-white/70">크롤 지연 (초)</span>
+                <input id="crawlDelay" type="number" min="0" max="60" step="1" class="mt-1 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2.5 text-sm outline-none focus:border-cyan-400/50" placeholder="예: 2">
+              </label>
+            </div>
+            <div>
+              <span class="text-white/70">차단 프리셋</span>
+              <div class="mt-2 grid grid-cols-2 gap-2 text-xs text-white/70">
+                <label class="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-black/30 px-3 py-2">
+                  <input type="checkbox" class="accent-cyan-400" data-role="preset" value="/admin/" checked>
+                  <span>/admin/</span>
+                </label>
+                <label class="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-black/30 px-3 py-2">
+                  <input type="checkbox" class="accent-cyan-400" data-role="preset" value="/login/" checked>
+                  <span>/login/</span>
+                </label>
+                <label class="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-black/30 px-3 py-2">
+                  <input type="checkbox" class="accent-cyan-400" data-role="preset" value="/checkout/">
+                  <span>/checkout/</span>
+                </label>
+                <label class="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-black/30 px-3 py-2">
+                  <input type="checkbox" class="accent-cyan-400" data-role="preset" value="/?s=">
+                  <span>/?s= (검색 파라미터)</span>
+                </label>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+              <label class="block">
+                <span class="text-white/70">추가 Disallow</span>
+                <textarea id="disallowCustom" rows="3" placeholder="한 줄에 하나씩 입력" class="mt-1 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-sm outline-none focus:border-cyan-400/50"></textarea>
+              </label>
+              <label class="block">
+                <span class="text-white/70">추가 Allow</span>
+                <textarea id="allowCustom" rows="3" placeholder="한 줄에 하나씩 입력" class="mt-1 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-sm outline-none focus:border-cyan-400/50"></textarea>
+              </label>
+            </div>
+            <label class="block">
+              <span class="text-white/70">추가 Sitemap URL</span>
+              <textarea id="sitemapExtra" rows="2" placeholder="여러 개일 경우 줄바꿈으로 입력" class="mt-1 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-sm outline-none focus:border-cyan-400/50"></textarea>
+            </label>
+          </div>
+        </div>
+
+        <div class="rounded-2xl border border-white/10 ring-soft bg-[#121417] p-5">
+          <div class="flex items-center gap-2 text-sm text-white/80">
+            <i data-lucide="bot" class="h-4 w-4 text-emerald-300"></i>
+            <span class="font-semibold">Googlebot 특화 규칙</span>
+          </div>
+          <p class="mt-2 text-xs text-white/60">Googlebot에만 적용할 허용/차단 경로가 있다면 입력하세요. 비워두면 기본 규칙만 생성됩니다.</p>
+          <div class="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2">
+            <label class="block text-sm">
+              <span class="text-white/70">Googlebot Allow</span>
+              <textarea id="googleAllow" rows="3" class="mt-1 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-sm outline-none focus:border-emerald-400/50" placeholder="예: /rendered/"></textarea>
+            </label>
+            <label class="block text-sm">
+              <span class="text-white/70">Googlebot Disallow</span>
+              <textarea id="googleDisallow" rows="3" class="mt-1 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-sm outline-none focus:border-emerald-400/50" placeholder="예: /experiments/"></textarea>
+            </label>
+          </div>
+        </div>
+
+        <div class="rounded-2xl border border-white/10 ring-soft bg-[#121417] p-5">
+          <div class="flex items-center gap-2 text-sm text-white/80">
+            <i data-lucide="list-plus" class="h-4 w-4 text-cyan-300"></i>
+            <span class="font-semibold">사이트맵 URL 목록</span>
+          </div>
+          <p class="mt-2 text-xs text-white/60">중요 페이지를 단계별로 추가하세요. 상대 경로 또는 절대 URL 모두 지원합니다.</p>
+          <div id="urlEntries" class="mt-3 space-y-3"></div>
+          <div class="mt-4 flex flex-wrap gap-2 text-sm">
+            <button id="addUrl" class="inline-flex items-center gap-2 rounded-xl border border-white/10 px-3 py-2 hover:border-cyan-400/40 hover:text-cyan-200">
+              <i data-lucide="plus" class="h-4 w-4"></i> 페이지 추가
+            </button>
+            <button id="resetUrl" class="inline-flex items-center gap-2 rounded-xl border border-white/10 px-3 py-2 hover:border-rose-400/40 hover:text-rose-200">
+              <i data-lucide="rotate-ccw" class="h-4 w-4"></i> 기본값으로
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Output -->
+      <div class="space-y-5">
+        <div class="rounded-3xl border border-white/10 bg-[#111317] p-6 ring-soft">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <div class="text-sm font-semibold text-white/80">생성된 결과</div>
+              <p class="text-xs text-white/55">입력값을 바꾸면 실시간으로 업데이트됩니다.</p>
+            </div>
+            <div class="flex gap-2 text-sm">
+              <button data-target="robots" class="tab-button rounded-xl border border-cyan-400/30 bg-cyan-400/20 px-3 py-1.5 text-cyan-50">robots.txt</button>
+              <button data-target="sitemap" class="tab-button rounded-xl border border-white/10 bg-white/5 px-3 py-1.5 text-white/70">sitemap.xml</button>
+            </div>
+          </div>
+
+          <div class="mt-4 space-y-4">
+            <div data-pane="robots" class="tab-pane">
+              <div class="flex items-center justify-end gap-2 text-xs">
+                <button data-copy="robots" class="inline-flex items-center gap-1 rounded-lg border border-white/10 px-2.5 py-1 hover:border-cyan-400/40 hover:text-cyan-200"><i data-lucide="copy" class="h-3.5 w-3.5"></i> 복사</button>
+                <button data-download="robots" class="inline-flex items-center gap-1 rounded-lg border border-white/10 px-2.5 py-1 hover:border-emerald-400/40 hover:text-emerald-200"><i data-lucide="download" class="h-3.5 w-3.5"></i> 다운로드</button>
+              </div>
+              <textarea id="robotsOutput" rows="18" readonly class="mt-2 w-full rounded-2xl border border-white/10 bg-black/40 p-4 text-[13px] leading-relaxed text-emerald-100"></textarea>
+            </div>
+            <div data-pane="sitemap" class="tab-pane hidden">
+              <div class="flex items-center justify-end gap-2 text-xs">
+                <button data-copy="sitemap" class="inline-flex items-center gap-1 rounded-lg border border-white/10 px-2.5 py-1 hover:border-cyan-400/40 hover:text-cyan-200"><i data-lucide="copy" class="h-3.5 w-3.5"></i> 복사</button>
+                <button data-download="sitemap" class="inline-flex items-center gap-1 rounded-lg border border-white/10 px-2.5 py-1 hover:border-emerald-400/40 hover:text-emerald-200"><i data-lucide="download" class="h-3.5 w-3.5"></i> 다운로드</button>
+              </div>
+              <textarea id="sitemapOutput" rows="18" readonly class="mt-2 w-full rounded-2xl border border-white/10 bg-black/40 p-4 text-[13px] leading-relaxed text-cyan-100"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid gap-4 md:grid-cols-2">
+          <div class="rounded-2xl border border-white/10 bg-[#121417] p-5 ring-soft">
+            <div class="flex items-center gap-2 text-sm text-white/80">
+              <i data-lucide="lightbulb" class="h-4 w-4 text-yellow-300"></i>
+              <span class="font-semibold">도움말 &amp; 팁</span>
+            </div>
+            <ul class="mt-3 list-disc space-y-2 pl-5 text-sm text-white/70">
+              <li>Disallow 경로는 <code>*</code>와 <code>$</code> 와일드카드를 지원합니다. 특정 확장자를 막을 때 활용하세요.</li>
+              <li>여러 개의 Sitemap 파일이 있으면 줄바꿈으로 추가 입력하거나 URL 목록에 각각 추가하세요.</li>
+              <li>크롤 지연은 서버 부하가 있을 때만 설정하고, 평소에는 비워 두어 빠른 색인을 유도합니다.</li>
+              <li>규칙 변경 후에는 <a href="https://search.google.com/search-console" class="text-cyan-300 underline" target="_blank" rel="noopener">Google Search Console</a>에서 테스트 도구로 검증하세요.</li>
+            </ul>
+          </div>
+          <div class="rounded-2xl border border-white/10 bg-[#121417] p-5 ring-soft">
+            <div class="flex items-center gap-2 text-sm text-white/80">
+              <i data-lucide="help-circle" class="h-4 w-4 text-cyan-300"></i>
+              <span class="font-semibold">사용설명서 &amp; FAQ</span>
+            </div>
+            <ol class="mt-3 list-decimal space-y-2 pl-5 text-sm text-white/70">
+              <li>기본 URL과 허용/차단 경로를 입력합니다.</li>
+              <li>Googlebot에 다른 정책이 있다면 별도 영역에 작성합니다.</li>
+              <li>사이트맵 URL 목록에서 경로·우선순위를 조정합니다.</li>
+              <li>결과 탭에서 복사 또는 다운로드 버튼으로 파일을 받습니다.</li>
+              <li>서버에 업로드한 뒤 검색 콘솔에서 재색인을 요청합니다.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div data-include="/partials/footer.html"></div>
+  <script defer src="/inject-layout.js?v=6"></script>
+  <script>
+  (function(){
+    if (window.__ytIncludeFallbackLoaded) return;
+    window.__ytIncludeFallbackLoaded = true;
+    async function loadPartials(){
+      const nodes = document.querySelectorAll('[data-include]');
+      for (const el of nodes){
+        const raw = el.getAttribute('data-include') || '';
+        let url = raw;
+        try { url = raw.startsWith('/') ? raw : new URL(raw, location.href).pathname; } catch(e) {}
+        try {
+          const res = await fetch(url, { credentials:'same-origin', cache:'no-cache' });
+          if (!res.ok) throw new Error('HTTP '+res.status);
+          const html = await res.text();
+          el.innerHTML = html;
+        } catch (err) {
+          console.warn('[include:fallback] 실패', url, err);
+          el.innerHTML = '<div style="padding:.75rem;border:1px solid rgba(255,255,255,0.12);border-radius:.75rem;color:#fca5a5">include 실패: <code>'+url+'</code><br><small>'+String(err)+'</small></div>';
+        }
+      }
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadPartials, { once:true });
+    } else {
+      loadPartials();
+    }
+  })();
+  </script>
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    window.lucide?.createIcons?.();
+
+    const baseUrl = document.getElementById('baseUrl');
+    const allowDefault = document.getElementById('allowDefault');
+    const crawlDelay = document.getElementById('crawlDelay');
+    const disallowCustom = document.getElementById('disallowCustom');
+    const allowCustom = document.getElementById('allowCustom');
+    const sitemapExtra = document.getElementById('sitemapExtra');
+    const presets = Array.from(document.querySelectorAll('[data-role="preset"]'));
+    const googleAllow = document.getElementById('googleAllow');
+    const googleDisallow = document.getElementById('googleDisallow');
+    const urlEntriesWrap = document.getElementById('urlEntries');
+    const addUrl = document.getElementById('addUrl');
+    const resetUrl = document.getElementById('resetUrl');
+    const robotsOutput = document.getElementById('robotsOutput');
+    const sitemapOutput = document.getElementById('sitemapOutput');
+    const tabButtons = Array.from(document.querySelectorAll('.tab-button'));
+    const tabPanes = Array.from(document.querySelectorAll('.tab-pane'));
+
+    const today = new Date().toISOString().slice(0, 10);
+    let urlData = [];
+
+    function normalizeBase(url){
+      if (!url) return '';
+      let trimmed = url.trim();
+      if (!/^https?:/i.test(trimmed)) trimmed = 'https://' + trimmed.replace(/^\/*/, '');
+      try {
+        const u = new URL(trimmed);
+        u.hash = '';
+        return u.origin;
+      } catch (e) {
+        return trimmed;
+      }
+    }
+
+    function resolvePath(path){
+      const base = normalizeBase(baseUrl.value);
+      if (!path) return base || '';
+      if (/^https?:/i.test(path)) return path.trim();
+      const leading = path.startsWith('/') ? path : '/' + path;
+      return (base || '').replace(/\/$/, '') + leading;
+    }
+
+    function collectLines(area){
+      return (area.value || '')
+        .split(/\r?\n/)
+        .map(s => s.trim())
+        .filter(Boolean);
+    }
+
+    function buildRobots(){
+      const base = normalizeBase(baseUrl.value);
+      const lines = ['# robots.txt generated by Yuchani Tools pro'];
+      lines.push('User-agent: *');
+      const defaultAllow = (allowDefault.value || '').trim();
+      if (defaultAllow) lines.push('Allow: ' + defaultAllow);
+      const allDisallow = [
+        ...presets.filter(el => el.checked).map(el => el.value.trim()).filter(Boolean),
+        ...collectLines(disallowCustom)
+      ];
+      const allAllow = collectLines(allowCustom);
+      allAllow.forEach(item => lines.push('Allow: ' + item));
+      Array.from(new Set(allDisallow)).forEach(item => lines.push('Disallow: ' + item));
+      const delay = (crawlDelay.value || '').trim();
+      if (delay) lines.push('Crawl-delay: ' + delay);
+      lines.push('');
+      const gAllow = collectLines(googleAllow);
+      const gDisallow = collectLines(googleDisallow);
+      if (gAllow.length || gDisallow.length) {
+        lines.push('User-agent: Googlebot');
+        if (defaultAllow) lines.push('Allow: ' + defaultAllow);
+        gAllow.forEach(item => lines.push('Allow: ' + item));
+        gDisallow.forEach(item => lines.push('Disallow: ' + item));
+        if (delay) lines.push('Crawl-delay: ' + delay);
+        lines.push('');
+      }
+      const sitemapUrls = new Set();
+      if (base) sitemapUrls.add(base.replace(/\/$/, '') + '/sitemap.xml');
+      collectLines(sitemapExtra).forEach(item => sitemapUrls.add(resolvePath(item)));
+      Array.from(sitemapUrls).filter(Boolean).forEach(url => lines.push('Sitemap: ' + url));
+      return lines.join('\n');
+    }
+
+    function buildSitemap(){
+      const urls = urlData.length ? urlData : [{ loc: resolvePath('/'), changefreq: 'weekly', priority: '0.7', lastmod: today }];
+      const header = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
+      const footer = '</urlset>';
+      const body = urls.map(item => {
+        const segments = ['  <url>', `    <loc>${item.loc}</loc>`];
+        if (item.lastmod) segments.push(`    <lastmod>${item.lastmod}</lastmod>`);
+        if (item.changefreq) segments.push(`    <changefreq>${item.changefreq}</changefreq>`);
+        if (item.priority) segments.push(`    <priority>${item.priority}</priority>`);
+        segments.push('  </url>');
+        return segments.join('\n');
+      }).join('\n\n');
+      return [header, body, footer].join('\n');
+    }
+
+    function renderUrlInputs(){
+      urlEntriesWrap.innerHTML = '';
+      urlData.forEach((entry, index) => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'rounded-2xl border border-white/10 bg-black/30 p-4 space-y-3';
+        wrapper.innerHTML = `
+          <div class="flex items-center justify-between text-xs text-white/60">
+            <span>URL #${index + 1}</span>
+            <button type="button" data-remove="${index}" class="rounded-lg border border-white/10 px-2 py-1 hover:border-rose-400/40 hover:text-rose-200 text-[11px]">삭제</button>
+          </div>
+          <label class="block text-sm space-y-1">
+            <span class="text-white/70">경로 또는 URL</span>
+            <input data-field="path" data-index="${index}" value="${entry.path}" class="w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2.5 text-sm outline-none focus:border-cyan-400/50" placeholder="예: /, /blog/, https://example.com/about" />
+          </label>
+          <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <label class="block text-xs space-y-1 sm:col-span-1">
+              <span class="text-white/60">갱신 주기</span>
+              <select data-field="changefreq" data-index="${index}" class="w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-sm focus:border-cyan-400/50">
+                ${['always','hourly','daily','weekly','monthly','yearly','never'].map(opt => `<option value="${opt}" ${entry.changefreq===opt?'selected':''}>${opt}</option>`).join('')}
+              </select>
+            </label>
+            <label class="block text-xs space-y-1 sm:col-span-1">
+              <span class="text-white/60">우선순위</span>
+              <input data-field="priority" data-index="${index}" type="number" min="0" max="1" step="0.1" value="${entry.priority}" class="w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-sm focus:border-cyan-400/50" />
+            </label>
+            <label class="block text-xs space-y-1 sm:col-span-1">
+              <span class="text-white/60">최근 수정</span>
+              <input data-field="lastmod" data-index="${index}" type="date" value="${entry.lastmod}" class="w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-sm focus:border-cyan-400/50" />
+            </label>
+          </div>`;
+        urlEntriesWrap.appendChild(wrapper);
+      });
+    }
+
+    function refreshUrlData(){
+      urlData = urlData.map(entry => ({
+        ...entry,
+        loc: resolvePath(entry.path)
+      }));
+    }
+
+    function updateOutputs(){
+      refreshUrlData();
+      robotsOutput.value = buildRobots();
+      sitemapOutput.value = buildSitemap();
+    }
+
+    function addEntry(entry){
+      urlData.push({
+        path: entry?.path || '/',
+        changefreq: entry?.changefreq || 'weekly',
+        priority: entry?.priority || '0.7',
+        lastmod: entry?.lastmod || today,
+        loc: resolvePath(entry?.path || '/')
+      });
+    }
+
+    function initDefaults(){
+      urlData = [];
+      addEntry({ path: '/', changefreq: 'daily', priority: '1.0' });
+      addEntry({ path: '/blog/', changefreq: 'weekly', priority: '0.8' });
+      addEntry({ path: '/contact/', changefreq: 'monthly', priority: '0.5' });
+      renderUrlInputs();
+      updateOutputs();
+    }
+
+    initDefaults();
+
+    addUrl.addEventListener('click', () => {
+      addEntry({ path: '/new-page', changefreq: 'weekly', priority: '0.5' });
+      renderUrlInputs();
+      updateOutputs();
+    });
+
+    resetUrl.addEventListener('click', () => {
+      initDefaults();
+    });
+
+    urlEntriesWrap.addEventListener('input', (event) => {
+      const target = event.target;
+      const idx = Number(target.getAttribute('data-index'));
+      const field = target.getAttribute('data-field');
+      if (Number.isInteger(idx) && field && urlData[idx]) {
+        urlData[idx][field === 'path' ? 'path' : field] = target.value;
+        if (field === 'path') {
+          urlData[idx].loc = resolvePath(target.value);
+        }
+        updateOutputs();
+      }
+    });
+
+    urlEntriesWrap.addEventListener('click', (event) => {
+      const btn = event.target.closest('[data-remove]');
+      if (!btn) return;
+      const idx = Number(btn.getAttribute('data-remove'));
+      if (!Number.isNaN(idx)) {
+        urlData.splice(idx, 1);
+        if (urlData.length === 0) initDefaults(); else {
+          renderUrlInputs();
+          updateOutputs();
+        }
+      }
+    });
+
+    [baseUrl, allowDefault, crawlDelay, disallowCustom, allowCustom, sitemapExtra, googleAllow, googleDisallow].forEach(el => {
+      el.addEventListener('input', () => updateOutputs());
+    });
+
+    presets.forEach(checkbox => checkbox.addEventListener('change', updateOutputs));
+
+    tabButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = btn.getAttribute('data-target');
+        tabButtons.forEach(b => {
+          const active = b === btn;
+          b.classList.toggle('border-cyan-400/30', active);
+          b.classList.toggle('bg-cyan-400/20', active);
+          b.classList.toggle('text-cyan-50', active);
+          b.classList.toggle('border-white/10', !active);
+          b.classList.toggle('bg-white/5', !active);
+          b.classList.toggle('text-white/70', !active);
+        });
+        tabPanes.forEach(pane => {
+          pane.classList.toggle('hidden', pane.getAttribute('data-pane') !== target);
+        });
+      });
+    });
+
+    document.querySelectorAll('[data-copy]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const type = btn.getAttribute('data-copy');
+        const text = type === 'robots' ? robotsOutput.value : sitemapOutput.value;
+        try {
+          await navigator.clipboard.writeText(text);
+          btn.innerHTML = '<i data-lucide="check" class="h-3.5 w-3.5"></i> 복사 완료';
+          window.lucide?.createIcons?.();
+          setTimeout(() => {
+            btn.innerHTML = '<i data-lucide="copy" class="h-3.5 w-3.5"></i> 복사';
+            window.lucide?.createIcons?.();
+          }, 1600);
+        } catch (err) {
+          alert('복사에 실패했습니다. 브라우저 권한을 확인해주세요.');
+        }
+      });
+    });
+
+    document.querySelectorAll('[data-download]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const type = btn.getAttribute('data-download');
+        const blob = new Blob([type === 'robots' ? robotsOutput.value : sitemapOutput.value], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = type === 'robots' ? 'robots.txt' : 'sitemap.xml';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      });
+    });
+
+    // 초기 활성 탭 보장
+    tabButtons[0]?.click();
+
+    // 간단 점검
+    console.assert(robotsOutput.value.includes('User-agent'), 'robots.txt 출력이 비어있습니다.');
+    console.assert(sitemapOutput.value.includes('<urlset'), 'sitemap.xml 출력이 비어있습니다.');
+  });
+  </script>
+</body>
+</html>

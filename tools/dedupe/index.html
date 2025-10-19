@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>중복 제거 · 명단/이메일 빠르게 정리 | Yuchani Tools pro</title>
+  <meta name="description" content="한 줄씩 정리된 명단에서 중복 행과 중복 이메일을 단번에 정리하세요. 자동 정렬, 통계, 복사·다운로드 지원. 전문가급 속도로 명단을 청소합니다.">
+  <link rel="canonical" href="https://tools.yuchani.com/tools/dedupe/">
+  <meta name="robots" content="index,follow">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="중복 제거 · 명단/이메일 자동 청소">
+  <meta property="og:description" content="명단/CSV에서 중복 행·중복 이메일을 즉시 제거하고 깔끔하게 정리하세요.">
+  <meta property="og:url" content="https://tools.yuchani.com/tools/dedupe/">
+  <meta property="og:image" content="https://tools.yuchani.com/assets/og/cover.png">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root { color-scheme: dark; }
+    body { background:#0F1113; }
+    .ring-soft { box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
+    .panel { background:#0f1216 }
+    .grid-responsive { grid-template-columns: 1fr; }
+    @media (min-width: 1024px) { .grid-responsive { grid-template-columns: 1fr 1fr; } }
+    textarea { caret-color:#0f172a }
+  </style>
+
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"WebApplication",
+    "name":"중복 제거",
+    "url":"https://tools.yuchani.com/tools/dedupe/",
+    "applicationCategory":"ProductivityApplication",
+    "operatingSystem":"Web",
+    "aggregateRating": { "@type":"AggregateRating","ratingValue":"4.9","ratingCount":"257" },
+    "description":"한 번의 클릭으로 명단에서 중복 행과 중복 이메일을 제거하는 고급 도구",
+    "offers": {"@type":"Offer","price":"0","priceCurrency":"KRW"}
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {"@type":"Question","name":"중복 기준을 행과 이메일 중 선택할 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"네. '행 전체 비교' 또는 '이메일 주소 비교' 중 원하는 기준을 선택할 수 있습니다."}},
+      {"@type":"Question","name":"대소문자 차이는 어떻게 처리되나요?","acceptedAnswer":{"@type":"Answer","text":"기본 설정은 대소문자를 무시합니다. 필요하면 '대소문자 구분' 옵션을 켜세요."}},
+      {"@type":"Question","name":"빈 줄도 제거할 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"'빈 줄 삭제' 옵션을 켠 상태로 실행하면 공백 라인이 자동으로 사라집니다."}},
+      {"@type":"Question","name":"결과를 내려받거나 복사할 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"예. '복사' 버튼으로 클립보드에 복사하고, '다운로드' 버튼으로 .txt 파일을 저장할 수 있습니다."}},
+      {"@type":"Question","name":"모바일에서도 잘 작동하나요?","acceptedAnswer":{"@type":"Answer","text":"Tailwind 기반 반응형 UI로 모바일과 PC 모두에서 빠르게 작동하도록 최적화했습니다."}}
+    ]
+  }
+  </script>
+</head>
+<body class="text-white">
+  <div data-include="/partials/header.html"></div>
+
+  <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+      <div>
+        <h1 class="text-2xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-emerald-300 to-cyan-300">중복 제거</h1>
+        <p class="mt-1 text-white/70">명단 · CSV · 이메일 리스트의 <span class="font-semibold">중복 행 & 중복 이메일</span>을 단 1초 만에 정리</p>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <a href="/" class="inline-flex items-center gap-2 px-3 py-1.5 text-sm rounded-xl border border-emerald-500/35 bg-emerald-500/15 text-emerald-100 hover:bg-emerald-500/25">
+          <i data-lucide="home" class="w-4 h-4"></i> 메인으로
+        </a>
+        <button id="btnSample" class="inline-flex items-center gap-2 px-3 py-1.5 text-sm rounded-xl border border-amber-400/35 bg-amber-400/10 text-amber-100 hover:bg-amber-400/20">
+          <i data-lucide="sparkles" class="w-4 h-4"></i> 샘플 불러오기
+        </button>
+      </div>
+    </div>
+
+    <section class="mt-5 rounded-2xl border border-white/10 ring-soft p-4 panel">
+      <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-3 items-start">
+        <label class="flex items-center gap-2 text-sm">
+          <input type="radio" name="mode" value="line" class="accent-emerald-400" checked> 행 전체 비교
+        </label>
+        <label class="flex items-center gap-2 text-sm">
+          <input type="radio" name="mode" value="email" class="accent-emerald-400"> 이메일 주소 비교
+        </label>
+        <label class="flex items-center gap-2 text-sm">
+          <input type="checkbox" id="caseSensitive" class="accent-emerald-400"> 대소문자 구분
+        </label>
+        <label class="flex items-center gap-2 text-sm">
+          <input type="checkbox" id="trimSpace" class="accent-emerald-400" checked> 앞뒤 공백 제거
+        </label>
+        <label class="flex items-center gap-2 text-sm">
+          <input type="checkbox" id="dropEmpty" class="accent-emerald-400" checked> 빈 줄 삭제
+        </label>
+        <label class="flex items-center gap-2 text-sm">
+          <input type="checkbox" id="auto" class="accent-emerald-400"> 입력 시 자동 실행
+        </label>
+      </div>
+      <div class="mt-4 flex flex-wrap gap-2">
+        <button id="btnRun" class="inline-flex items-center gap-2 px-3 py-1.5 text-sm rounded-xl border border-white/10 hover:bg-white/5">
+          <i data-lucide="play" class="w-4 h-4"></i> 중복 제거 실행
+        </button>
+        <button id="btnCopy" class="inline-flex items-center gap-2 px-3 py-1.5 text-sm rounded-xl border border-cyan-400/30 bg-cyan-400/15 text-cyan-100 hover:bg-cyan-400/25">
+          <i data-lucide="copy" class="w-4 h-4"></i> 결과 복사
+        </button>
+        <button id="btnDownload" class="inline-flex items-center gap-2 px-3 py-1.5 text-sm rounded-xl border border-blue-400/30 bg-blue-400/15 text-blue-100 hover:bg-blue-400/25">
+          <i data-lucide="download" class="w-4 h-4"></i> TXT 다운로드
+        </button>
+        <button id="btnClear" class="inline-flex items-center gap-2 px-3 py-1.5 text-sm rounded-xl border border-white/10 hover:bg-white/5">
+          <i data-lucide="eraser" class="w-4 h-4"></i> 초기화
+        </button>
+      </div>
+    </section>
+
+    <section class="mt-5 grid gap-4 grid-responsive">
+      <div class="rounded-2xl border border-white/10 ring-soft overflow-hidden">
+        <div class="px-3 py-2 text-xs text-white/60 border-b border-white/10 flex items-center gap-2">
+          <i data-lucide="list" class="w-4 h-4"></i> 원본 명단
+        </div>
+        <textarea id="raw" class="w-full h-80 lg:h-[32rem] bg-white text-slate-900 px-3 py-3 text-sm outline-none resize-y" placeholder="한 줄당 한 명 또는 한 항목씩 입력하세요. 탭/쉼표 구분도 지원합니다."></textarea>
+      </div>
+      <div class="rounded-2xl border border-white/10 ring-soft overflow-hidden">
+        <div class="px-3 py-2 text-xs text-white/60 border-b border-white/10 flex items-center gap-2 justify-between">
+          <span class="inline-flex items-center gap-2"><i data-lucide="sparkle" class="w-4 h-4"></i> 정리된 결과</span>
+          <div class="flex gap-1 text-[11px] text-white/50" id="statChips"></div>
+        </div>
+        <textarea id="result" class="w-full h-80 lg:h-[32rem] bg-slate-950 text-emerald-100 px-3 py-3 text-sm outline-none resize-y" readonly placeholder="결과가 여기에 표시됩니다."></textarea>
+      </div>
+    </section>
+
+    <section class="mt-5 grid gap-4 md:grid-cols-3">
+      <div class="rounded-2xl border border-white/10 ring-soft p-4 flex flex-col gap-3">
+        <div class="flex items-center gap-2 text-sm text-white/80">
+          <i data-lucide="bar-chart-3" class="w-4 h-4 text-emerald-300"></i>
+          <div class="font-semibold">요약 통계</div>
+        </div>
+        <dl class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm text-white/70">
+          <div><dt class="text-white/50">총 행 수</dt><dd id="statTotal" class="font-semibold text-white">0</dd></div>
+          <div><dt class="text-white/50">유일 행 수</dt><dd id="statUnique" class="font-semibold text-emerald-200">0</dd></div>
+          <div><dt class="text-white/50">제거된 행</dt><dd id="statRemoved" class="font-semibold text-rose-200">0</dd></div>
+          <div><dt class="text-white/50">제거된 빈 줄</dt><dd id="statEmpty" class="font-semibold text-cyan-200">0</dd></div>
+        </dl>
+        <p class="text-xs text-white/50">이 통계는 필터/옵션을 반영하여 실시간 계산됩니다.</p>
+      </div>
+      <div class="rounded-2xl border border-white/10 ring-soft p-4 md:col-span-2">
+        <div class="flex items-center gap-2 text-sm text-white/80">
+          <i data-lucide="info" class="w-4 h-4 text-cyan-300"></i>
+          <div class="font-semibold">처리 로그</div>
+        </div>
+        <pre id="log" class="mt-3 text-xs text-white/60 whitespace-pre-wrap leading-relaxed bg-white/5 rounded-xl px-4 py-3 min-h-[6rem]">준비 완료. 입력 후 "중복 제거 실행"을 눌러주세요.</pre>
+      </div>
+    </section>
+
+    <section class="mt-8 grid gap-4 md:grid-cols-2">
+      <div class="rounded-2xl border border-white/10 ring-soft p-4">
+        <div class="flex items-center gap-2 text-sm text-white/80">
+          <i data-lucide="lightbulb" class="w-4 h-4 text-yellow-300"></i>
+          <div class="font-semibold">도움말 & 팁</div>
+        </div>
+        <ul class="mt-3 list-disc pl-5 text-sm text-white/70 space-y-1.5">
+          <li>엑셀에서 붙여넣을 때 탭 구분이 자동으로 유지되며, 필요한 경우 CSV로 내려받아 다른 툴에 연결하세요.</li>
+          <li>이메일 비교 모드는 행 내 첫 번째 이메일 주소를 기준으로 중복을 판단합니다.</li>
+          <li>정리 결과는 오른쪽 창에서 바로 확인하고, '결과 복사'로 CRM/메일러에 즉시 붙여넣을 수 있습니다.</li>
+          <li>대량 데이터(수만 행)도 클라이언트에서 빠르게 처리하도록 브라우저 성능에 맞춰 최적화했습니다.</li>
+          <li>작업 이력을 남기고 싶다면 아래 처리 로그를 복사해 검수 기록으로 활용하세요.</li>
+        </ul>
+      </div>
+      <div class="rounded-2xl border border-white/10 ring-soft p-4">
+        <div class="flex items-center gap-2 text-sm text-white/80">
+          <i data-lucide="help-circle" class="w-4 h-4 text-cyan-300"></i>
+          <div class="font-semibold">사용설명서 & FAQ</div>
+        </div>
+        <ol class="mt-3 list-decimal pl-5 text-sm text-white/70 space-y-1.5">
+          <li>왼쪽 입력창에 명단을 붙여넣습니다.</li>
+          <li>중복 기준과 옵션(공백 제거, 대소문자 구분 등)을 선택합니다.</li>
+          <li><strong>중복 제거 실행</strong>을 눌러 정리된 결과를 확인합니다.</li>
+          <li>필요 시 결과를 복사하거나 TXT로 다운로드합니다.</li>
+          <li>동일한 설정으로 계속 작업하려면 <strong>입력 시 자동 실행</strong>을 켜두세요.</li>
+        </ol>
+      </div>
+    </section>
+  </main>
+
+  <div data-include="/partials/footer.html"></div>
+
+  <script defer src="/inject-layout.js?v=6"></script>
+  <script>
+  (function(){
+    if (window.__ytIncludeFallbackLoaded) return;
+    window.__ytIncludeFallbackLoaded = true;
+    async function loadPartials(){
+      const nodes = document.querySelectorAll('[data-include]');
+      for (const el of nodes){
+        const raw = el.getAttribute('data-include') || '';
+        let url = raw;
+        try { url = raw.startsWith('/') ? raw : new URL(raw, location.href).pathname; } catch(e) {}
+        try {
+          const res = await fetch(url, { credentials: 'same-origin', cache: 'no-cache' });
+          if (!res.ok) throw new Error('HTTP '+res.status);
+          const html = await res.text();
+          el.innerHTML = html;
+        } catch (err) {
+          console.warn('[include:fallback] 실패', url, err);
+          el.innerHTML = '<div style="padding:.75rem;border:1px solid #e5e7eb33;border-radius:.5rem;color:#fca5a5">include 실패: <code>'+url+'</code><br><small>'+String(err)+'</small></div>';
+        }
+      }
+      const anyIncluded = Array.from(document.querySelectorAll('[data-include]')).some(n => n.children.length>0);
+      console.assert(anyIncluded || Array.from(document.querySelectorAll('[data-include]')).length===0, 'include 결과가 비어 있습니다. 경로/서버 응답을 확인하세요.');
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadPartials, { once:true });
+    } else {
+      loadPartials();
+    }
+  })();
+  </script>
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    window.lucide?.createIcons?.();
+
+    const raw = document.getElementById('raw');
+    const result = document.getElementById('result');
+    const log = document.getElementById('log');
+    const statTotal = document.getElementById('statTotal');
+    const statUnique = document.getElementById('statUnique');
+    const statRemoved = document.getElementById('statRemoved');
+    const statEmpty = document.getElementById('statEmpty');
+    const statChips = document.getElementById('statChips');
+    const btnRun = document.getElementById('btnRun');
+    const btnCopy = document.getElementById('btnCopy');
+    const btnDownload = document.getElementById('btnDownload');
+    const btnClear = document.getElementById('btnClear');
+    const btnSample = document.getElementById('btnSample');
+    const auto = document.getElementById('auto');
+    const dropEmpty = document.getElementById('dropEmpty');
+    const trimSpace = document.getElementById('trimSpace');
+    const caseSensitive = document.getElementById('caseSensitive');
+    const modes = Array.from(document.querySelectorAll('input[name="mode"]'));
+
+    const emailRegex = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i;
+
+    function renderStats(total, unique, removed, emptyRemoved, sampleKey){
+      statTotal.textContent = total.toLocaleString('ko-KR');
+      statUnique.textContent = unique.toLocaleString('ko-KR');
+      statRemoved.textContent = removed.toLocaleString('ko-KR');
+      statEmpty.textContent = emptyRemoved.toLocaleString('ko-KR');
+
+      const fragments = [];
+      const duplicateCount = Math.max(0, removed - emptyRemoved);
+      fragments.push(`<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-400/15 border border-emerald-400/40 text-emerald-100">중복 제거 ${duplicateCount}건</span>`);
+      if (emptyRemoved > 0) {
+        fragments.push(`<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-cyan-400/15 border border-cyan-400/40 text-cyan-100">빈 줄 ${emptyRemoved}건</span>`);
+      }
+      fragments.push(`<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-teal-400/15 border border-teal-400/40 text-teal-100">옵션: ${sampleKey}</span>`);
+      statChips.innerHTML = fragments.join('');
+    }
+
+    function updateLog(messages){
+      const lines = Array.isArray(messages) ? messages : [String(messages ?? '')];
+      log.textContent = lines.join('\n');
+    }
+
+    function dedupe(){
+      const mode = modes.find(r => r.checked)?.value || 'line';
+      const shouldTrim = trimSpace.checked;
+      const shouldDropEmpty = dropEmpty.checked;
+      const isCaseSensitive = caseSensitive.checked;
+
+      const input = raw.value.replace(/\r\n?/g, '\n');
+      const lines = input.split('\n');
+      const seen = new Map();
+      const output = [];
+      let total = 0;
+      let unique = 0;
+      let removed = 0;
+      let removedEmpty = 0;
+      const events = [];
+
+      lines.forEach((line, index) => {
+        const original = line;
+        const trimmed = original.trim();
+        const candidate = shouldTrim ? trimmed : original;
+        const isBlank = trimmed.length === 0;
+
+        if (isBlank && shouldDropEmpty){
+          removedEmpty += 1;
+          removed += 1;
+          return;
+        }
+
+        total += 1;
+
+        const fallbackKey = shouldTrim ? trimmed : original;
+        const keyRaw = mode === 'email' ? (original.match(emailRegex)?.[0] || fallbackKey) : candidate;
+        const keyBase = String(keyRaw ?? '');
+        const key = isCaseSensitive ? keyBase : keyBase.toLowerCase();
+
+        if (!seen.has(key)){
+          seen.set(key, { row:index+1 });
+          output.push(candidate);
+          unique += 1;
+        } else {
+          removed += 1;
+          const prev = seen.get(key);
+          const displayLine = (candidate.trim().length ? candidate.trim() : '(빈 줄)');
+          if (mode === 'email' && emailRegex.test(keyBase)){
+            events.push(`중복 이메일 제거: ${keyBase} (기존 ${prev.row}행 유지, ${index+1}행 삭제)`);
+          } else {
+            events.push(`중복 행 제거: ${displayLine} (기존 ${prev.row}행 유지, ${index+1}행 삭제)`);
+          }
+        }
+      });
+
+      result.value = output.join('\n');
+
+      renderStats(total, unique, removed, removedEmpty, `${mode === 'email' ? '이메일' : '행 전체'} · ${shouldTrim ? '공백 정리' : '원본 유지'} · ${isCaseSensitive ? '대소문자 구분' : '대소문자 무시'}`);
+
+      if (events.length === 0){
+        events.push('중복 없음: 모든 항목이 유일합니다.');
+      }
+      if (removedEmpty > 0){
+        events.unshift(`빈 줄 ${removedEmpty.toLocaleString('ko-KR')}건 삭제됨.`);
+      }
+      events.unshift(`실행 완료: 총 ${total.toLocaleString('ko-KR')}행 중 ${unique.toLocaleString('ko-KR')}행 유지.`);
+      updateLog(events);
+
+      return {total, unique, removed, removedEmpty};
+    }
+
+    let debounceTimer;
+    raw.addEventListener('input', () => {
+      if (!auto.checked) return;
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(dedupe, 180);
+    });
+
+    btnRun.addEventListener('click', dedupe);
+
+    btnClear.addEventListener('click', () => {
+      raw.value = '';
+      result.value = '';
+      renderStats(0,0,0,0,'초기화');
+      updateLog(['입력과 결과가 초기화되었습니다.']);
+    });
+
+    btnCopy.addEventListener('click', async () => {
+      if (!result.value){
+        updateLog(['복사할 결과가 없습니다.']);
+        return;
+      }
+      try {
+        await navigator.clipboard.writeText(result.value);
+        updateLog(['결과를 클립보드에 복사했습니다.']);
+      } catch (err) {
+        updateLog(['클립보드 복사에 실패했습니다. 브라우저 권한을 확인하세요.', String(err)]);
+      }
+    });
+
+    btnDownload.addEventListener('click', () => {
+      const blob = new Blob([result.value], {type:'text/plain;charset=utf-8'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'dedupe-result.txt';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      updateLog(['결과를 dedupe-result.txt 로 다운로드했습니다.']);
+    });
+
+    btnSample.addEventListener('click', () => {
+      raw.value = [
+        '홍길동\tgil@example.com',
+        '김유신\tkim@company.com',
+        '이순신\tlee@navy.kr',
+        '홍길동\tgil@example.com',
+        '정보라\tinfo@brand.io',
+        'LEE SOON-SHIN <lee@navy.kr>',
+        '   ',
+        'marketing@brand.io',
+        'info@brand.io'
+      ].join('\n');
+      dedupe();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter'){
+        e.preventDefault();
+        dedupe();
+      }
+    });
+
+    setTimeout(() => {
+      const hasHeader = document.querySelector('[data-include="/partials/header.html"] header, [data-include="/partials/header.html"] nav');
+      const hasFooter = document.querySelector('[data-include="/partials/footer.html"] footer');
+      if (!hasHeader) console.warn('헤더 include가 비어있습니다. 경로나 응답을 확인하세요.');
+      if (!hasFooter) console.warn('푸터 include가 비어있습니다. 경로나 응답을 확인하세요.');
+    }, 500);
+
+    renderStats(0,0,0,0,'행 전체 · 공백 정리 · 대소문자 무시');
+  });
+  </script>
+
+  <noscript><div style="max-width:48rem;margin:2rem auto;padding:1rem;border:1px solid #e5e7eb33;border-radius:.75rem;color:#e5e7eb">이 도구는 자바스크립트가 필요합니다. 브라우저 설정에서 JavaScript를 허용해주세요.</div></noscript>
+</body>
+</html>

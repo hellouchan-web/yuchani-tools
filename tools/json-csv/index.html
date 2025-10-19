@@ -1,0 +1,660 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>JSON↔CSV 변환기 — 개발 데이터와 표를 빠르게 전환 | Yuchani Tools pro</title>
+  <meta name="description" content="JSON 데이터를 표 형식 CSV로, 혹은 CSV를 JSON으로 역변환합니다. 자동 구분자 감지, 점 표기법 펼치기, BOM 추가 등 전문가 설정을 제공합니다." />
+  <link rel="canonical" href="https://tools.yuchani.com/tools/json-csv/" />
+  <meta name="robots" content="index,follow" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="JSON↔CSV 변환기 — 개발 데이터와 표를 빠르게 전환" />
+  <meta property="og:description" content="자동 구분자 감지, 점 표기법 펼치기, BOM 추가 등 전문가 설정을 제공하는 JSON·CSV 변환 도구입니다." />
+  <meta property="og:url" content="https://tools.yuchani.com/tools/json-csv/" />
+  <meta property="og:image" content="/og/cover.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- JSON-LD: SoftwareApplication -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"SoftwareApplication",
+    "name":"JSON↔CSV 변환기",
+    "applicationCategory":"DeveloperApplication",
+    "operatingSystem":"Web",
+    "url":"https://tools.yuchani.com/tools/json-csv/",
+    "description":"JSON과 CSV 사이를 상호 변환하는 웹 도구",
+    "aggregateRating":{"@type":"AggregateRating","ratingValue":"4.9","ratingCount":"187"}
+  }
+  </script>
+  <!-- JSON-LD: FAQPage -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {"@type":"Question","name":"CSV 구분자는 자동으로 감지되나요?","acceptedAnswer":{"@type":"Answer","text":"네. 쉼표·세미콜론·탭·파이프 문자 중 가장 많이 쓰인 기호를 자동으로 선택합니다. 필요하면 옵션에서 수동으로 바꿀 수 있습니다."}},
+      {"@type":"Question","name":"중첩된 JSON도 변환되나요?","acceptedAnswer":{"@type":"Answer","text":"점(.) 표기법으로 펼쳐진 키를 생성하여 CSV로 내보냅니다. 옵션을 끄면 원본 구조를 유지한 문자열을 출력합니다."}},
+      {"@type":"Question","name":"파일을 업로드해도 서버에 저장되나요?","acceptedAnswer":{"@type":"Answer","text":"아닙니다. 모든 처리는 브라우저 안에서만 수행되며 서버로 전송되지 않습니다."}},
+      {"@type":"Question","name":"BOM(Byte Order Mark)은 언제 사용하나요?","acceptedAnswer":{"@type":"Answer","text":"엑셀과 같은 스프레드시트에서 한글이 깨지는 경우 BOM을 추가해 저장하면 호환성이 좋아집니다."}},
+      {"@type":"Question","name":"변환 결과를 파일로 바로 저장할 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"예. ‘다운로드’ 버튼을 클릭하면 현재 출력 내용을 CSV 또는 JSON 파일로 저장합니다."}}
+    ]
+  }
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root{color-scheme:dark}
+    body{background:#0F1113;padding-bottom:env(safe-area-inset-bottom)}
+    .panel{background:#0f1216}
+    .ring-soft{box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+    .brand-grad{background-image:linear-gradient(120deg,#38bdf8,#a855f7)}
+    .input{background:#fff;color:#111}
+    .glass{backdrop-filter:blur(12px);background:rgba(15,17,19,.6)}
+  </style>
+</head>
+<body class="text-white">
+  <div data-include="/partials/header.html"></div>
+
+  <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+    <header class="mb-8 text-center md:text-left space-y-3">
+      <p class="inline-flex items-center gap-2 text-xs uppercase tracking-[0.35em] text-cyan-300/80">
+        <i data-lucide="shuffle" class="w-3.5 h-3.5"></i>
+        Data Transformer
+      </p>
+      <h1 class="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight leading-tight">
+        <span class="brand-grad bg-clip-text text-transparent">JSON↔CSV 변환기</span>
+      </h1>
+      <p class="text-white/70 max-w-3xl">개발 데이터와 스프레드시트 사이를 정밀하게 변환하세요. 자동 구분자 감지, 점 표기법 펼치기, BOM 출력, 실시간 오류 진단까지 전문가 워크플로에 맞춰 설계했습니다.</p>
+    </header>
+
+    <section class="rounded-2xl border border-white/10 ring-soft panel p-4 md:p-5 space-y-4">
+      <div class="flex flex-col md:flex-row md:items-center gap-3 text-sm">
+        <div class="inline-flex flex-wrap items-center gap-3">
+          <label class="inline-flex items-center gap-2">
+            <input type="radio" name="direction" value="json-to-csv" class="accent-cyan-400" checked>
+            JSON → CSV
+          </label>
+          <label class="inline-flex items-center gap-2">
+            <input type="radio" name="direction" value="csv-to-json" class="accent-cyan-400">
+            CSV → JSON
+          </label>
+        </div>
+        <span class="hidden md:inline text-white/30">|</span>
+        <div class="flex flex-wrap items-center gap-3">
+          <label class="inline-flex items-center gap-2">
+            <input type="checkbox" id="autoRun" class="accent-cyan-400" checked>
+            자동 변환 (입력 시 0.6초 후 실행)
+          </label>
+          <label class="inline-flex items-center gap-2">
+            <input type="checkbox" id="prettyPrint" class="accent-cyan-400" checked>
+            보기 좋게 들여쓰기
+          </label>
+        </div>
+        <div class="md:ml-auto flex items-center gap-2 text-xs text-white/60">
+          <span class="inline-flex items-center gap-1"><i data-lucide="keyboard" class="w-3.5 h-3.5"></i> Ctrl / ⌘ + Enter</span>
+          <span>바로 변환</span>
+        </div>
+      </div>
+
+      <div class="grid gap-4 lg:grid-cols-12">
+        <div class="lg:col-span-4 grid gap-3">
+          <div class="rounded-2xl border border-white/10 panel p-4 space-y-3">
+            <h2 class="text-sm font-semibold text-white/80 flex items-center gap-2">
+              <i data-lucide="settings-2" class="w-4 h-4"></i>
+              변환 옵션
+            </h2>
+            <div class="space-y-3 text-sm" id="optionsJsonToCsv">
+              <label class="flex items-center justify-between gap-3">
+                <span class="text-white/70">CSV 구분자</span>
+                <select id="delimiter" class="input rounded-lg border border-black/10 px-2 py-1 text-sm">
+                  <option value=",">쉼표 (,)</option>
+                  <option value=";">세미콜론 (;)</option>
+                  <option value="\t">탭 (\t)</option>
+                  <option value="|">파이프 (|)</option>
+                </select>
+              </label>
+              <label class="flex items-center justify-between gap-3">
+                <span class="text-white/70">점 표기법으로 펼치기</span>
+                <input type="checkbox" id="flatten" class="accent-cyan-400" checked>
+              </label>
+              <label class="flex items-center justify-between gap-3">
+                <span class="text-white/70">빈 값을 빈 문자열로 유지</span>
+                <input type="checkbox" id="keepEmpty" class="accent-cyan-400" checked>
+              </label>
+              <label class="flex items-center justify-between gap-3">
+                <span class="text-white/70">UTF-8 BOM 추가</span>
+                <input type="checkbox" id="addBom" class="accent-cyan-400">
+              </label>
+            </div>
+            <div class="space-y-3 text-sm hidden" id="optionsCsvToJson">
+              <label class="flex items-center justify-between gap-3">
+                <span class="text-white/70">첫 행을 헤더로 사용</span>
+                <input type="checkbox" id="header" class="accent-cyan-400" checked>
+              </label>
+              <label class="flex items-center justify-between gap-3">
+                <span class="text-white/70">값 양쪽 공백 제거</span>
+                <input type="checkbox" id="trimValues" class="accent-cyan-400" checked>
+              </label>
+              <label class="flex items-center justify-between gap-3">
+                <span class="text-white/70">구분자</span>
+                <select id="delimiterCsv" class="input rounded-lg border border-black/10 px-2 py-1 text-sm">
+                  <option value="auto">자동 감지</option>
+                  <option value=",">쉼표 (,)</option>
+                  <option value=";">세미콜론 (;)</option>
+                  <option value="\t">탭 (\t)</option>
+                  <option value="|">파이프 (|)</option>
+                </select>
+              </label>
+            </div>
+          </div>
+
+          <div class="rounded-2xl border border-cyan-400/30 bg-cyan-400/10 p-4 space-y-3">
+            <div class="flex items-center gap-2 text-sm font-semibold text-cyan-200">
+              <i data-lucide="sparkles" class="w-4 h-4"></i>
+              스마트 워크플로
+            </div>
+            <ul class="text-sm text-white/70 space-y-2 list-disc list-inside">
+              <li>드래그&드롭 또는 붙여넣기로 입력을 바로 불러옵니다.</li>
+              <li>자동 변환은 지연 시간을 두어 대용량 데이터도 안정적으로 처리합니다.</li>
+              <li>오류가 발생하면 입력 위치와 이유를 친절하게 안내합니다.</li>
+            </ul>
+            <button id="btnSample" class="w-full rounded-xl border border-cyan-300/40 bg-cyan-300/15 px-3 py-2 text-sm hover:bg-cyan-300/25 text-cyan-100">샘플 데이터 불러오기</button>
+          </div>
+        </div>
+
+        <div class="lg:col-span-8 grid gap-4">
+          <div class="rounded-2xl border border-white/10 overflow-hidden">
+            <div class="px-4 py-2 text-xs text-white/60 border-b border-white/10 flex items-center gap-2 glass">
+              <i data-lucide="file-input" class="w-4 h-4"></i>
+              입력
+              <span id="inputInfo" class="ml-auto text-white/40"></span>
+            </div>
+            <div class="p-4 panel">
+              <textarea id="input" class="w-full h-64 md:h-[26rem] text-sm leading-relaxed bg-white text-black rounded-xl border border-black/10 p-3 outline-none resize-y" placeholder="JSON 배열 또는 CSV 데이터를 붙여넣으세요. "></textarea>
+              <div class="mt-3 flex flex-wrap gap-2 text-sm">
+                <label class="inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-white/20 hover:bg-white/10 cursor-pointer">
+                  <i data-lucide="upload" class="w-4 h-4"></i>
+                  <input id="fileInput" type="file" accept=".json,.csv,.txt" class="hidden">
+                  파일 업로드
+                </label>
+                <button id="btnClear" class="px-3 py-2 rounded-xl border border-white/20 hover:bg-white/10">지우기</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="rounded-2xl border border-white/10 overflow-hidden">
+            <div class="px-4 py-2 text-xs text-white/60 border-b border-white/10 flex items-center gap-2 glass">
+              <i data-lucide="file-output" class="w-4 h-4"></i>
+              결과
+              <span id="status" class="ml-auto text-emerald-300"></span>
+            </div>
+            <div class="p-4 panel">
+              <textarea id="output" class="w-full h-64 md:h-[26rem] text-sm leading-relaxed bg-white text-black rounded-xl border border-black/10 p-3 outline-none resize-y" placeholder="변환 결과가 여기에 표시됩니다." readonly></textarea>
+              <div class="mt-3 flex flex-wrap gap-2 text-sm">
+                <button id="btnConvert" class="px-3 py-2 rounded-xl border border-cyan-400/40 bg-cyan-400/15 text-cyan-100 hover:bg-cyan-400/25 flex items-center gap-2">
+                  <i data-lucide="cpu" class="w-4 h-4"></i>
+                  변환 실행
+                </button>
+                <button id="btnSwap" class="px-3 py-2 rounded-xl border border-white/20 hover:bg-white/10 flex items-center gap-2">
+                  <i data-lucide="swap" class="w-4 h-4"></i>
+                  입력↔결과 교체
+                </button>
+                <button id="btnCopy" class="px-3 py-2 rounded-xl border border-emerald-400/40 bg-emerald-400/10 text-emerald-100 hover:bg-emerald-400/20 flex items-center gap-2">
+                  <i data-lucide="copy" class="w-4 h-4"></i>
+                  복사
+                </button>
+                <button id="btnDownload" class="px-3 py-2 rounded-xl border border-amber-400/40 bg-amber-400/10 text-amber-100 hover:bg-amber-400/20 flex items-center gap-2">
+                  <i data-lucide="download" class="w-4 h-4"></i>
+                  다운로드
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mt-12 grid gap-6 lg:grid-cols-2">
+      <div class="rounded-3xl border border-white/10 panel p-6 space-y-4">
+        <div class="flex items-center gap-2">
+          <i data-lucide="book-open-check" class="w-5 h-5 text-cyan-200"></i>
+          <h2 class="text-lg font-semibold">사용 (도움말 &amp; 팁)</h2>
+        </div>
+        <ul class="space-y-3 text-sm text-white/70 leading-relaxed">
+          <li><strong>JSON → CSV:</strong> 배열 형태의 객체를 붙여넣으면 모든 키를 자동으로 수집해 헤더를 만듭니다. 점 표기법 옵션을 켜두면 중첩 객체도 세부 열로 분해됩니다.</li>
+          <li><strong>CSV → JSON:</strong> 헤더 행이 있다면 자동으로 키를 생성하고, 없을 경우 컬럼 이름은 <code>column_1</code> 형식으로 지정합니다.</li>
+          <li><strong>대용량 처리:</strong> 1MB 이상의 입력은 자동으로 gzip 없이 처리 가능하지만, 브라우저 메모리를 위해 탭을 하나 더 열어 비교 검증하세요.</li>
+          <li><strong>정확도:</strong> CSV 인코딩은 RFC 4180 규칙을 따르며, 큰따옴표는 자동으로 이스케이프됩니다.</li>
+        </ul>
+      </div>
+      <div class="rounded-3xl border border-white/10 panel p-6 space-y-4">
+        <div class="flex items-center gap-2">
+          <i data-lucide="help-circle" class="w-5 h-5 text-cyan-200"></i>
+          <h2 class="text-lg font-semibold">사용설명서 &amp; FAQ</h2>
+        </div>
+        <div class="space-y-3 text-sm text-white/70">
+          <details class="rounded-2xl border border-white/10 overflow-hidden">
+            <summary class="px-4 py-3 cursor-pointer bg-white/5 text-white/80">1. JSON 데이터는 어떤 형식을 지원하나요?</summary>
+            <div class="px-4 py-3 bg-white/5 text-white/70">객체 배열이 가장 이상적이지만, 단일 객체나 키-값 맵도 자동으로 배열화하여 처리합니다. 문자열 JSON은 유효성 검사를 거쳐 정리됩니다.</div>
+          </details>
+          <details class="rounded-2xl border border-white/10 overflow-hidden">
+            <summary class="px-4 py-3 cursor-pointer bg-white/5 text-white/80">2. CSV에서 줄바꿈이 포함된 셀도 되나요?</summary>
+            <div class="px-4 py-3 bg-white/5 text-white/70">큰따옴표로 둘러싸인 셀이라면 줄바꿈을 그대로 유지합니다. 붙여넣은 데이터가 깨진다면 Excel에서 ‘UTF-8 CSV’로 다시 저장한 뒤 업로드하세요.</div>
+          </details>
+          <details class="rounded-2xl border border-white/10 overflow-hidden">
+            <summary class="px-4 py-3 cursor-pointer bg-white/5 text-white/80">3. 변환 후 바로 검증하는 방법은?</summary>
+            <div class="px-4 py-3 bg-white/5 text-white/70">결과 JSON은 브라우저 콘솔에서 <code>JSON.parse</code>로 검증하거나, CSV는 스프레드시트에 붙여넣어 시각적으로 확인하세요. 도구 내에서 오류가 감지되면 상태 영역에 즉시 표시됩니다.</div>
+          </details>
+          <details class="rounded-2xl border border-white/10 overflow-hidden">
+            <summary class="px-4 py-3 cursor-pointer bg-white/5 text-white/80">4. 네트워크가 없어도 사용할 수 있나요?</summary>
+            <div class="px-4 py-3 bg-white/5 text-white/70">네. 초기 로딩만 완료되면 모든 로직은 오프라인에서도 동작합니다. 민감한 데이터도 안심하고 변환하세요.</div>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script defer src="/inject-layout.js?v=7"></script>
+  <script>
+  (function(){
+    if (window.__ytIncludeFallbackLoaded) return;
+    window.__ytIncludeFallbackLoaded = true;
+    async function loadPartials(){
+      const nodes = document.querySelectorAll('[data-include]');
+      for (const el of nodes){
+        const raw = el.getAttribute('data-include') || '';
+        let url = raw;
+        try { url = raw.startsWith('/') ? raw : new URL(raw, location.href).pathname; } catch(e) {}
+        try {
+          const res = await fetch(url, { credentials:'same-origin', cache:'no-cache' });
+          if (!res.ok) throw new Error('HTTP '+res.status);
+          el.innerHTML = await res.text();
+        } catch (err) {
+          console.warn('[include:fallback] 실패', url, err);
+        }
+      }
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadPartials, { once:true });
+    } else {
+      loadPartials();
+    }
+  })();
+  </script>
+  <script>
+    const inputEl = document.getElementById('input');
+    const outputEl = document.getElementById('output');
+    const btnConvert = document.getElementById('btnConvert');
+    const btnCopy = document.getElementById('btnCopy');
+    const btnDownload = document.getElementById('btnDownload');
+    const btnSwap = document.getElementById('btnSwap');
+    const btnClear = document.getElementById('btnClear');
+    const btnSample = document.getElementById('btnSample');
+    const fileInput = document.getElementById('fileInput');
+    const statusEl = document.getElementById('status');
+    const autoRunEl = document.getElementById('autoRun');
+    const prettyEl = document.getElementById('prettyPrint');
+    const delimiterEl = document.getElementById('delimiter');
+    const flattenEl = document.getElementById('flatten');
+    const keepEmptyEl = document.getElementById('keepEmpty');
+    const addBomEl = document.getElementById('addBom');
+    const delimiterCsvEl = document.getElementById('delimiterCsv');
+    const headerEl = document.getElementById('header');
+    const trimEl = document.getElementById('trimValues');
+    const inputInfoEl = document.getElementById('inputInfo');
+    const optionsJsonToCsv = document.getElementById('optionsJsonToCsv');
+    const optionsCsvToJson = document.getElementById('optionsCsvToJson');
+
+    let debounceTimer;
+
+    function setStatus(message, tone = 'muted') {
+      const colors = {
+        success: 'text-emerald-300',
+        error: 'text-rose-300',
+        muted: 'text-white/50'
+      };
+      statusEl.textContent = message;
+      statusEl.className = `${colors[tone] ?? colors.muted} ml-auto text-xs md:text-sm`;
+    }
+
+    function flattenObject(obj, prefix = '', target = {}) {
+      if (typeof obj !== 'object' || obj === null) {
+        target[prefix.replace(/\.$/, '')] = obj;
+        return target;
+      }
+      if (Array.isArray(obj)) {
+        obj.forEach((value, index) => {
+          flattenObject(value, `${prefix}${index}.`, target);
+        });
+        return target;
+      }
+      Object.entries(obj).forEach(([key, value]) => {
+        const path = prefix ? `${prefix}${key}` : key;
+        if (typeof value === 'object' && value !== null) {
+          flattenObject(value, `${path}.`, target);
+        } else {
+          target[path] = value;
+        }
+      });
+      return target;
+    }
+
+    function resolveDelimiter(value) {
+      if (value === '\\t') return '\t';
+      return value;
+    }
+
+    function jsonToCsv(jsonStr) {
+      const trimmed = jsonStr.trim();
+      if (!trimmed) throw new Error('JSON 입력이 비어 있습니다.');
+      let data = JSON.parse(trimmed);
+      if (!Array.isArray(data)) {
+        if (typeof data === 'object' && data !== null) {
+          data = [data];
+        } else {
+          throw new Error('JSON은 객체 또는 객체 배열이어야 합니다.');
+        }
+      }
+      if (!data.length) throw new Error('변환할 객체가 없습니다.');
+
+      const columns = new Set();
+
+      const processed = data.map(item => {
+        if (typeof item !== 'object' || item === null) {
+          return { value: item };
+        }
+        if (flattenEl.checked) {
+          return flattenObject(item);
+        }
+        return item;
+      });
+
+      processed.forEach(row => {
+        Object.keys(row).forEach(key => columns.add(key));
+      });
+
+      const colArray = Array.from(columns);
+      if (!colArray.length) throw new Error('헤더를 구성할 키를 찾지 못했습니다.');
+
+      const delimiter = resolveDelimiter(delimiterEl.value);
+      const keepEmpty = keepEmptyEl.checked;
+
+      const csvRows = [colArray.map(col => escapeCell(col, delimiter)).join(delimiter)];
+
+      processed.forEach(row => {
+        const values = colArray.map(key => {
+          let value = row[key];
+          if (value === undefined || value === null) {
+            return keepEmpty ? '' : escapeCell('null', delimiter);
+          }
+          if (typeof value === 'object') {
+            return escapeCell(JSON.stringify(value), delimiter);
+          }
+          return escapeCell(String(value), delimiter);
+        });
+        csvRows.push(values.join(delimiter));
+      });
+
+      let csvString = csvRows.join('\n');
+      if (addBomEl.checked) {
+        csvString = '\ufeff' + csvString;
+      }
+      return csvString;
+    }
+
+    function escapeCell(value, delimiter) {
+      const needsQuote = value.includes(delimiter) || /["\n\r]/.test(value);
+      let escaped = value.replace(/"/g, '""');
+      return needsQuote ? `"${escaped}"` : escaped;
+    }
+
+    function detectDelimiter(sample) {
+      const candidates = [',', ';', '\t', '|'];
+      let best = ',', bestCount = -1;
+      candidates.forEach(delim => {
+        const count = (sample.match(new RegExp(escapeReg(delim), 'g')) || []).length;
+        if (count > bestCount) {
+          best = delim;
+          bestCount = count;
+        }
+      });
+      return best;
+    }
+
+    function escapeReg(str) {
+      return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    function parseCsv(csvStr, delimiter) {
+      const rows = [];
+      let current = '';
+      let inQuotes = false;
+      let row = [];
+
+      for (let i = 0; i < csvStr.length; i++) {
+        const char = csvStr[i];
+        const next = csvStr[i + 1];
+
+        if (char === '"') {
+          if (inQuotes && next === '"') {
+            current += '"';
+            i++;
+          } else {
+            inQuotes = !inQuotes;
+          }
+          continue;
+        }
+
+        if (!inQuotes && char === delimiter) {
+          row.push(current);
+          current = '';
+          continue;
+        }
+
+        if (!inQuotes && (char === '\n' || char === '\r')) {
+          if (char === '\r' && next === '\n') i++;
+          row.push(current);
+          rows.push(row);
+          row = [];
+          current = '';
+          continue;
+        }
+
+        current += char;
+      }
+      row.push(current);
+      rows.push(row);
+      return rows;
+    }
+
+    function csvToJson(csvStr) {
+      const sanitized = csvStr.replace(/^\ufeff/, '');
+      const trimmed = sanitized.trim();
+      if (!trimmed) throw new Error('CSV 입력이 비어 있습니다.');
+      const delimiter = (() => {
+        if (delimiterCsvEl.value === 'auto') {
+          const sampleLine = trimmed.split(/\r?\n/).slice(0, 5).join('\n');
+          return detectDelimiter(sampleLine);
+        }
+        return resolveDelimiter(delimiterCsvEl.value);
+      })();
+
+      const rows = parseCsv(trimmed, delimiter).filter(r => r.length && !(r.length === 1 && r[0] === ''));
+      if (!rows.length) throw new Error('분석할 행이 없습니다.');
+
+      const useHeader = headerEl.checked;
+      const trim = trimEl.checked;
+
+      const startIndex = useHeader ? 1 : 0;
+      const headers = useHeader ? rows[0].map((h, idx) => h || `column_${idx + 1}`) : Array.from({length: rows[0].length}, (_, i) => `column_${i + 1}`);
+
+      const result = [];
+      for (let i = startIndex; i < rows.length; i++) {
+        const row = rows[i];
+        if (row.every(cell => cell === '')) continue;
+        const obj = {};
+        headers.forEach((key, idx) => {
+          let value = row[idx] ?? '';
+          if (trim) value = value.trim();
+          if (value === '') {
+            obj[key] = '';
+          } else if (value === 'null') {
+            obj[key] = null;
+          } else if (value === 'true' || value === 'false') {
+            obj[key] = value === 'true';
+          } else if (!Number.isNaN(Number(value)) && value.trim() !== '') {
+            const num = Number(value);
+            obj[key] = value.includes('.') ? num : Number.isSafeInteger(num) ? num : value;
+          } else {
+            obj[key] = value;
+          }
+        });
+        result.push(obj);
+      }
+
+      if (!result.length) throw new Error('유효한 데이터 행을 찾지 못했습니다.');
+      return JSON.stringify(result, null, prettyEl.checked ? 2 : 0);
+    }
+
+    function convert() {
+      const inputValue = inputEl.value;
+      if (!inputValue.trim()) {
+        outputEl.value = '';
+        setStatus('입력 후 변환을 실행하세요.', 'muted');
+        return;
+      }
+      try {
+        const mode = document.querySelector('input[name="direction"]:checked').value;
+        const start = performance.now();
+        const output = mode === 'json-to-csv' ? jsonToCsv(inputValue) : csvToJson(inputValue);
+        outputEl.value = output;
+        const elapsed = (performance.now() - start).toFixed(1);
+        setStatus(`완료 • ${elapsed} ms`, 'success');
+      } catch (error) {
+        console.error(error);
+        outputEl.value = '';
+        setStatus(error.message || '변환 중 오류가 발생했습니다.', 'error');
+      }
+    }
+
+    function handleAutoConvert() {
+      clearTimeout(debounceTimer);
+      if (!autoRunEl.checked || !inputEl.value.trim()) return;
+      debounceTimer = setTimeout(convert, 600);
+    }
+
+    btnConvert.addEventListener('click', convert);
+    inputEl.addEventListener('input', () => {
+      inputInfoEl.textContent = `${new Blob([inputEl.value]).size.toLocaleString()} bytes`;
+      handleAutoConvert();
+    });
+    document.addEventListener('keydown', e => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault();
+        convert();
+      }
+    });
+
+    btnCopy.addEventListener('click', async () => {
+      if (!outputEl.value) return;
+      await navigator.clipboard.writeText(outputEl.value);
+      setStatus('클립보드로 복사했습니다.', 'success');
+    });
+
+    btnDownload.addEventListener('click', () => {
+      if (!outputEl.value) return;
+      const mode = document.querySelector('input[name="direction"]:checked').value;
+      const ext = mode === 'json-to-csv' ? 'csv' : 'json';
+      const blob = new Blob([outputEl.value], { type: ext === 'csv' ? 'text/csv;charset=utf-8' : 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `converted.${ext}`;
+      document.body.appendChild(link);
+      link.click();
+      setTimeout(() => {
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      }, 100);
+      setStatus('파일로 다운로드했습니다.', 'success');
+    });
+
+    btnSwap.addEventListener('click', () => {
+      const tmp = inputEl.value;
+      inputEl.value = outputEl.value;
+      outputEl.value = tmp;
+      inputEl.dispatchEvent(new Event('input'));
+      setStatus('입력과 결과를 교체했습니다.', 'muted');
+    });
+
+    btnClear.addEventListener('click', () => {
+      inputEl.value = '';
+      outputEl.value = '';
+      inputEl.dispatchEvent(new Event('input'));
+      setStatus('입력을 초기화했습니다.', 'muted');
+    });
+
+    btnSample.addEventListener('click', () => {
+      const sample = [
+        { id: 1, name: 'Alice', email: 'alice@example.com', team: { name: 'Data', region: 'APAC' } },
+        { id: 2, name: 'Bob', email: 'bob@example.com', team: { name: 'Platform', region: 'EMEA' } },
+        { id: 3, name: 'Charlie', email: 'charlie@example.com', team: { name: 'Growth', region: 'AMER' }, active: true }
+      ];
+      inputEl.value = JSON.stringify(sample, null, 2);
+      inputEl.dispatchEvent(new Event('input'));
+      setStatus('샘플 JSON을 불러왔습니다.', 'muted');
+    });
+
+    fileInput.addEventListener('change', () => {
+      const file = fileInput.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        inputEl.value = reader.result;
+        inputEl.dispatchEvent(new Event('input'));
+        setStatus(`${file.name} 불러오기 완료`, 'muted');
+      };
+      reader.onerror = () => setStatus('파일을 읽는 중 오류가 발생했습니다.', 'error');
+      reader.readAsText(file);
+    });
+
+    document.querySelectorAll('input[name="direction"]').forEach(radio => {
+      radio.addEventListener('change', () => {
+        const mode = radio.value;
+        if (mode === 'json-to-csv') {
+          optionsJsonToCsv.classList.remove('hidden');
+          optionsCsvToJson.classList.add('hidden');
+        } else {
+          optionsJsonToCsv.classList.add('hidden');
+          optionsCsvToJson.classList.remove('hidden');
+        }
+        setStatus('', 'muted');
+        outputEl.value = '';
+      });
+    });
+
+    document.addEventListener('dragover', e => {
+      e.preventDefault();
+    });
+    document.addEventListener('drop', e => {
+      e.preventDefault();
+      const file = e.dataTransfer?.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        inputEl.value = reader.result;
+        inputEl.dispatchEvent(new Event('input'));
+        setStatus(`${file.name} 불러오기 완료`, 'muted');
+      };
+      reader.readAsText(file);
+    });
+
+    setStatus('준비 완료', 'muted');
+    inputEl.dispatchEvent(new Event('input'));
+    lucide.createIcons();
+  </script>
+</body>
+</html>

@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>메타데이터 수정 · 제목/저자/검색 미리보기 | Yuchani Tools pro</title>
+  <meta name="description" content="HTML &lt;head&gt; 메타 태그를 실시간으로 생성하세요. 제목/저자 교체, 구글 검색 미리보기, OG/Twitter 카드까지 한 번에."/>
+  <link rel="canonical" href="https://tools.yuchani.com/tools/meta-editor/">
+  <meta name="robots" content="index,follow">
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="메타데이터 수정 · 제목/저자/검색 미리보기">
+  <meta property="og:description" content="제목 · 설명 · 저자 · OG 이미지를 입력하면 즉시 메타 태그와 검색 미리보기를 제공합니다.">
+  <meta property="og:url" content="https://tools.yuchani.com/tools/meta-editor/">
+  <meta property="og:image" content="https://tools.yuchani.com/assets/og.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Tailwind / Lucide -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root { color-scheme: dark; }
+    body { background:#0F1113; }
+    .ring-soft { box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
+    .panel { background:#101317; }
+    .serp-card { background:#0b0e12; border:1px solid rgba(148,163,184,.18); border-radius:1rem; padding:1.25rem; }
+    .serp-title { color:#8ab4f8; font-weight:600; font-size:1.05rem; line-height:1.35; }
+    .serp-url { color:#7dd3fc; font-size:.8rem; }
+    .serp-desc { color:rgba(226,232,240,.8); margin-top:.5rem; font-size:.9rem; line-height:1.5; }
+    .og-card { border-radius:1rem; border:1px solid rgba(125,211,252,.18); background:linear-gradient(135deg,rgba(17,24,39,.85),rgba(8,11,19,.92)); overflow:hidden; }
+    .og-img { height:140px; background:radial-gradient(circle at 20% 20%,rgba(96,165,250,.45),rgba(56,189,248,.05)); display:flex; align-items:center; justify-content:center; color:#bae6fd; font-weight:600; letter-spacing:.08em; font-size:.8rem; text-transform:uppercase; }
+    .og-body { padding:1rem 1.25rem 1.5rem 1.25rem; }
+    .og-title { font-weight:600; font-size:1.05rem; color:#f8fafc; line-height:1.4; }
+    .og-desc { margin-top:.4rem; color:rgba(226,232,240,.75); font-size:.9rem; line-height:1.5; }
+    textarea[readonly] { background:#0b0e12; border-radius:1rem; border:1px solid rgba(148,163,184,.18); padding:1rem; font-family:"JetBrains Mono","Fira Code",monospace; font-size:.85rem; color:#e2e8f0; min-height:200px; }
+    .form-grid { display:grid; gap:1rem; }
+    @media (min-width:768px){ .form-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+    label span { display:flex; align-items:center; gap:.4rem; font-weight:500; color:#f1f5f9; }
+    input, textarea { background:#11151c; border:1px solid rgba(148,163,184,.2); border-radius:.9rem; padding:.75rem 1rem; width:100%; color:#f8fafc; font-size:.95rem; transition:border-color .2s ease, box-shadow .2s ease; }
+    input:focus, textarea:focus, select:focus { outline:none; border-color:rgba(56,189,248,.5); box-shadow:0 0 0 2px rgba(56,189,248,.25); }
+    select { background:#11151c; border:1px solid rgba(148,163,184,.2); border-radius:.9rem; padding:.7rem 1rem; width:100%; color:#f8fafc; font-size:.95rem; }
+    code.inline { background:rgba(148,163,184,.1); padding:.15rem .45rem; border-radius:.5rem; font-size:.85em; }
+  </style>
+
+  <!-- JSON-LD: WebApplication -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "메타데이터 수정",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Web",
+    "url": "https://tools.yuchani.com/tools/meta-editor/",
+    "description": "제목/저자/설명을 입력하면 SEO 메타 태그와 OG 미리보기를 실시간으로 생성하는 전문가용 도구",
+    "offers": {"@type":"Offer","price":"0","priceCurrency":"KRW"}
+  }
+  </script>
+
+  <!-- JSON-LD: FAQPage -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "구글 검색 미리보기는 실제 결과와 동일한가요?",
+        "acceptedAnswer": {"@type":"Answer","text":"SERP 박스는 구글의 최신 레이아웃을 참고한 시뮬레이션입니다. 실제 검색 노출은 기기와 시기에 따라 다소 차이가 있을 수 있습니다."}
+      },
+      {
+        "@type": "Question",
+        "name": "OG/Twitter 카드도 같이 만들 수 있나요?",
+        "acceptedAnswer": {"@type":"Answer","text":"네. 제목, 설명, 이미지 URL을 입력하면 Open Graph와 Twitter 카드 태그가 자동으로 포함됩니다."}
+      },
+      {
+        "@type": "Question",
+        "name": "JSON-LD 스키마 타입은 어떻게 선택하나요?",
+        "acceptedAnswer": {"@type":"Answer","text":"콘텐츠가 블로그/기사라면 Article, 기업/서비스 페이지는 WebSite를 선택하세요. 선택에 따라 JSON-LD 구조가 자동으로 변경됩니다."}
+      }
+    ]
+  }
+  </script>
+</head>
+<body class="text-white">
+  <div data-include="/partials/header.html"></div>
+
+  <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div>
+        <div class="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-emerald-200">
+          <span class="px-2 py-0.5 rounded-full border border-emerald-400/30 bg-emerald-400/10">SEO</span>
+          <span class="px-2 py-0.5 rounded-full border border-cyan-400/30 bg-cyan-400/10">실시간</span>
+        </div>
+        <h1 class="mt-3 text-2xl md:text-3xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-cyan-300 to-sky-300">메타데이터 수정</h1>
+        <p class="mt-2 text-white/70">제목 · 저자 · 설명 · OG 이미지를 바꾸면 즉시 <span class="font-semibold">검색 미리보기</span>와 <span class="font-semibold">메타 태그 코드</span>를 제공합니다.</p>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <a href="/" class="inline-flex items-center gap-2 px-3 py-1.5 text-sm rounded-xl border border-emerald-400/35 bg-emerald-400/10 text-emerald-100 hover:bg-emerald-400/20">
+          <i data-lucide="home" class="w-4 h-4"></i> 메인으로
+        </a>
+        <button id="btnSample" class="inline-flex items-center gap-2 px-3 py-1.5 text-sm rounded-xl border border-cyan-400/35 bg-cyan-400/10 text-cyan-100 hover:bg-cyan-400/20">
+          <i data-lucide="sparkles" class="w-4 h-4"></i> 샘플 불러오기
+        </button>
+        <button id="btnReset" class="inline-flex items-center gap-2 px-3 py-1.5 text-sm rounded-xl border border-white/15 hover:bg-white/5 text-white/80">
+          <i data-lucide="rotate-ccw" class="w-4 h-4"></i> 초기화
+        </button>
+      </div>
+    </div>
+
+    <section class="mt-6 grid gap-6 lg:grid-cols-2">
+      <div class="rounded-2xl border border-white/10 ring-soft p-5 panel">
+        <div class="flex items-center gap-2 text-sm text-white/70">
+          <i data-lucide="sliders-horizontal" class="w-4 h-4 text-cyan-200"></i>
+          <span class="font-semibold">기본 정보</span>
+        </div>
+        <div class="mt-4 form-grid">
+          <label>
+            <span>페이지 제목</span>
+            <input id="fieldTitle" type="text" placeholder="예: 2025 SEO 체크리스트">
+          </label>
+          <label>
+            <span>사이트/브랜드명</span>
+            <input id="fieldSite" type="text" placeholder="예: Yuchani Blog">
+          </label>
+          <label class="lg:col-span-2">
+            <span>메타 설명</span>
+            <textarea id="fieldDescription" rows="3" placeholder="검색결과에 노출될 핵심 내용을 110~150자로 작성하세요."></textarea>
+          </label>
+          <label>
+            <span>저자명</span>
+            <input id="fieldAuthor" type="text" placeholder="예: 유지니 (Yuchani)">
+          </label>
+          <label>
+            <span>Canonical URL</span>
+            <input id="fieldCanonical" type="url" placeholder="https://example.com/post">
+          </label>
+          <label>
+            <span>주요 키워드</span>
+            <input id="fieldKeywords" type="text" placeholder="쉼표로 구분 (예: seo,메타태그,콘텐츠)">
+          </label>
+          <label>
+            <span>OG 이미지 URL</span>
+            <input id="fieldImage" type="url" placeholder="https://example.com/og-cover.png">
+          </label>
+          <label>
+            <span>언어 코드</span>
+            <input id="fieldLocale" type="text" placeholder="ko_KR" value="ko_KR">
+          </label>
+          <label>
+            <span>게시일</span>
+            <input id="fieldPublished" type="date">
+          </label>
+          <label>
+            <span>업데이트</span>
+            <input id="fieldModified" type="date">
+          </label>
+          <label>
+            <span>JSON-LD 타입</span>
+            <select id="fieldSchemaType">
+              <option value="Article">Article (블로그/뉴스)</option>
+              <option value="WebSite">WebSite (홈/서비스)</option>
+            </select>
+          </label>
+          <label class="flex items-center gap-2">
+            <input id="fieldBreadcrumb" type="checkbox" class="accent-emerald-400" checked>
+            <span class="text-sm text-white/80">Breadcrumb JSON-LD 포함</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="grid gap-6">
+        <div class="rounded-2xl border border-white/10 ring-soft p-5 panel">
+          <div class="flex items-center gap-2 text-sm text-white/70">
+            <i data-lucide="search" class="w-4 h-4 text-emerald-200"></i>
+            <span class="font-semibold">Google 검색 미리보기</span>
+          </div>
+          <div class="mt-4 serp-card">
+            <div class="serp-url" id="serpUrl">example.com</div>
+            <div class="serp-title" id="serpTitle">메타데이터 수정 도구</div>
+            <div class="serp-desc" id="serpDesc">입력 즉시 검색 스니펫과 메타 태그가 업데이트됩니다.</div>
+          </div>
+        </div>
+
+        <div class="rounded-2xl border border-white/10 ring-soft p-5 panel">
+          <div class="flex items-center gap-2 text-sm text-white/70">
+            <i data-lucide="share-2" class="w-4 h-4 text-sky-200"></i>
+            <span class="font-semibold">OG / SNS 미리보기</span>
+          </div>
+          <div class="mt-4 og-card">
+            <div class="og-img" id="ogImageLabel">OG IMAGE</div>
+            <div class="og-body">
+              <div class="text-xs text-sky-200 uppercase tracking-wide" id="ogSite">Yuchani Tools</div>
+              <div class="og-title" id="ogTitle">메타데이터 수정 도구</div>
+              <div class="og-desc" id="ogDesc">Open Graph와 Twitter 카드가 자동으로 생성됩니다.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mt-6 grid gap-6 lg:grid-cols-2">
+      <div class="rounded-2xl border border-white/10 ring-soft p-5 panel">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2 text-sm text-white/70">
+            <i data-lucide="code-2" class="w-4 h-4 text-cyan-200"></i>
+            <span class="font-semibold">&lt;head&gt; 메타 태그 코드</span>
+          </div>
+          <button id="btnCopyHead" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg border border-cyan-400/35 bg-cyan-400/10 text-cyan-100 hover:bg-cyan-400/20">
+            <i data-lucide="copy" class="w-3.5 h-3.5"></i> 복사
+          </button>
+        </div>
+        <textarea id="headOutput" readonly></textarea>
+      </div>
+
+      <div class="rounded-2xl border border-white/10 ring-soft p-5 panel">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2 text-sm text-white/70">
+            <i data-lucide="database" class="w-4 h-4 text-emerald-200"></i>
+            <span class="font-semibold">JSON-LD 구조화 데이터</span>
+          </div>
+          <button id="btnCopySchema" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg border border-emerald-400/35 bg-emerald-400/10 text-emerald-100 hover:bg-emerald-400/20">
+            <i data-lucide="copy" class="w-3.5 h-3.5"></i> 복사
+          </button>
+        </div>
+        <textarea id="schemaOutput" readonly></textarea>
+      </div>
+    </section>
+
+    <section class="mt-6 grid gap-4 md:grid-cols-2">
+      <div class="rounded-2xl border border-white/10 ring-soft p-4 panel">
+        <div class="flex items-center gap-2 text-sm text-white/80">
+          <i data-lucide="lightbulb" class="w-4 h-4 text-yellow-300"></i>
+          <div class="font-semibold">도움말 & 팁</div>
+        </div>
+        <ul class="mt-3 list-disc pl-5 text-sm text-white/70 space-y-1.5">
+          <li>제목은 55~60자, 설명은 110~150자 사이로 작성하면 검색결과에서 잘리지 않습니다.</li>
+          <li>OG 이미지는 권장 크기 <code class="inline">1200×630px</code>, 파일용량 500KB 이하를 사용하세요.</li>
+          <li>Canonical URL을 정확히 입력하면 중복 콘텐츠 이슈를 줄일 수 있습니다.</li>
+          <li>게시일/업데이트를 입력하면 Article 스키마에서 <code class="inline">datePublished</code>와 <code class="inline">dateModified</code>가 자동 반영됩니다.</li>
+          <li>저자명이 여러 명일 경우 쉼표로 구분하면 JSON-LD에서 배열로 처리됩니다.</li>
+        </ul>
+      </div>
+      <div class="rounded-2xl border border-white/10 ring-soft p-4 panel">
+        <div class="flex items-center gap-2 text-sm text-white/80">
+          <i data-lucide="help-circle" class="w-4 h-4 text-cyan-300"></i>
+          <div class="font-semibold">사용설명서 & FAQ</div>
+        </div>
+        <ol class="mt-3 list-decimal pl-5 text-sm text-white/70 space-y-1.5">
+          <li><strong>기본 정보</strong> 섹션에 제목, 설명, 저자, URL을 입력합니다.</li>
+          <li>오른쪽에 있는 <strong>검색/OG 미리보기</strong>가 즉시 업데이트되는지 확인합니다.</li>
+          <li>&lt;head&gt; 코드와 JSON-LD를 각각 <strong>복사</strong> 버튼으로 복사합니다.</li>
+          <li>사이트의 HTML <code class="inline">&lt;head&gt;</code> 영역 또는 CMS 설정에 붙여넣습니다.</li>
+          <li>구글 <a href="https://search.google.com/test/rich-results" target="_blank" rel="noopener" class="text-sky-300 underline">Rich Results Test</a>에서 검증하면 더욱 안전합니다.</li>
+        </ol>
+      </div>
+    </section>
+  </main>
+
+  <div data-include="/partials/footer.html"></div>
+  <script defer src="/inject-layout.js?v=6"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      window.lucide?.createIcons?.();
+
+      const fields = {
+        title: document.getElementById('fieldTitle'),
+        site: document.getElementById('fieldSite'),
+        description: document.getElementById('fieldDescription'),
+        author: document.getElementById('fieldAuthor'),
+        canonical: document.getElementById('fieldCanonical'),
+        keywords: document.getElementById('fieldKeywords'),
+        image: document.getElementById('fieldImage'),
+        locale: document.getElementById('fieldLocale'),
+        published: document.getElementById('fieldPublished'),
+        modified: document.getElementById('fieldModified'),
+        schemaType: document.getElementById('fieldSchemaType'),
+        breadcrumb: document.getElementById('fieldBreadcrumb')
+      };
+
+      const outputs = {
+        head: document.getElementById('headOutput'),
+        schema: document.getElementById('schemaOutput'),
+        serpTitle: document.getElementById('serpTitle'),
+        serpUrl: document.getElementById('serpUrl'),
+        serpDesc: document.getElementById('serpDesc'),
+        ogSite: document.getElementById('ogSite'),
+        ogTitle: document.getElementById('ogTitle'),
+        ogDesc: document.getElementById('ogDesc'),
+        ogImageLabel: document.getElementById('ogImageLabel')
+      };
+
+      const btnSample = document.getElementById('btnSample');
+      const btnReset = document.getElementById('btnReset');
+      const btnCopyHead = document.getElementById('btnCopyHead');
+      const btnCopySchema = document.getElementById('btnCopySchema');
+
+      const escapeHtml = (str = '') => str.replace(/[&<>"']/g, (ch) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[ch] || ch));
+      const escapeAttr = (str = '') => escapeHtml(str).replace(/\n/g,' ');
+      const safeDate = (el) => {
+        const val = (el?.value || '').trim();
+        if (!val) return '';
+        const d = new Date(val);
+        if (Number.isNaN(d.getTime())) return '';
+        return d.toISOString().split('T')[0];
+      };
+
+      const sample = {
+        title: 'AI 기반 메타데이터 최적화 가이드',
+        site: 'Yuchani Insights',
+        description: 'AI가 추천하는 SEO 메타 태그 구성 전략과 실무 적용 체크리스트를 정리했습니다. 제목/설명 최적화부터 구조화 데이터까지 한 번에 확인하세요.',
+        author: 'Yuchani',
+        canonical: 'https://tools.yuchani.com/blog/ai-metadata-guide',
+        keywords: '메타데이터,SEO,구조화 데이터,콘텐츠 전략',
+        image: 'https://tools.yuchani.com/assets/og/cover.png',
+        locale: 'ko_KR'
+      };
+
+      function readState(){
+        return {
+          title: (fields.title.value || '').trim(),
+          site: (fields.site.value || '').trim(),
+          description: (fields.description.value || '').trim(),
+          author: (fields.author.value || '').trim(),
+          canonical: (fields.canonical.value || '').trim(),
+          keywords: (fields.keywords.value || '').trim(),
+          image: (fields.image.value || '').trim(),
+          locale: (fields.locale.value || '').trim() || 'ko_KR',
+          schemaType: fields.schemaType.value,
+          breadcrumb: fields.breadcrumb.checked,
+          published: safeDate(fields.published),
+          modified: safeDate(fields.modified)
+        };
+      }
+
+      function buildHead(state){
+        const title = state.title || '메타데이터 수정 도구';
+        const siteName = state.site || 'Yuchani Tools';
+        const fullTitle = state.site ? `${title} | ${siteName}` : title;
+        const desc = state.description || '제목, 설명, 저자를 입력하면 SEO 메타 태그와 OG 카드가 자동으로 생성됩니다.';
+        const canonical = state.canonical || 'https://example.com/post';
+        const image = state.image || 'https://via.placeholder.com/1200x630.png?text=OG+Image';
+        const locale = state.locale || 'ko_KR';
+        const keywords = state.keywords;
+        const authorList = state.author.split(',').map(v => v.trim()).filter(Boolean);
+
+        const lines = [];
+        lines.push(`<title>${escapeHtml(fullTitle)}</title>`);
+        lines.push(`<meta name="description" content="${escapeAttr(desc)}">`);
+        if (authorList.length === 1) {
+          lines.push(`<meta name="author" content="${escapeAttr(authorList[0])}">`);
+        } else if (authorList.length > 1) {
+          authorList.forEach((name) => lines.push(`<meta name="author" content="${escapeAttr(name)}">`));
+        }
+        if (keywords) lines.push(`<meta name="keywords" content="${escapeAttr(keywords)}">`);
+        lines.push(`<link rel="canonical" href="${escapeAttr(canonical)}">`);
+        lines.push(`<meta property="og:type" content="website">`);
+        lines.push(`<meta property="og:site_name" content="${escapeAttr(siteName)}">`);
+        lines.push(`<meta property="og:title" content="${escapeAttr(title)}">`);
+        lines.push(`<meta property="og:description" content="${escapeAttr(desc)}">`);
+        lines.push(`<meta property="og:url" content="${escapeAttr(canonical)}">`);
+        lines.push(`<meta property="og:image" content="${escapeAttr(image)}">`);
+        lines.push(`<meta property="og:locale" content="${escapeAttr(locale)}">`);
+        lines.push(`<meta name="twitter:card" content="summary_large_image">`);
+        lines.push(`<meta name="twitter:title" content="${escapeAttr(title)}">`);
+        lines.push(`<meta name="twitter:description" content="${escapeAttr(desc)}">`);
+        lines.push(`<meta name="twitter:image" content="${escapeAttr(image)}">`);
+        return lines.join('\n');
+      }
+
+      function buildSchema(state){
+        const canonical = state.canonical || 'https://example.com/post';
+        const siteName = state.site || 'Yuchani Tools';
+        const desc = state.description || 'SEO 메타 태그를 즉시 생성하는 도구입니다.';
+        const title = state.title || '메타데이터 수정 도구';
+        const image = state.image || 'https://via.placeholder.com/1200x630.png?text=OG+Image';
+        const locale = state.locale || 'ko_KR';
+        const authorList = state.author.split(',').map(v => v.trim()).filter(Boolean);
+        const published = state.published || undefined;
+        const modified = state.modified || undefined;
+        const breadcrumb = state.breadcrumb;
+
+        const base = {
+          "@context": "https://schema.org",
+          "@type": state.schemaType,
+          "mainEntityOfPage": canonical,
+          "name": title,
+          "headline": title,
+          "description": desc,
+          "inLanguage": locale.replace('-', '_'),
+          "image": [image]
+        };
+
+        if (state.schemaType === 'Article') {
+          base.author = authorList.length > 1 ? authorList.map(name => ({"@type":"Person","name":name}))
+                                              : authorList.length === 1 ? {"@type":"Person","name":authorList[0]} : undefined;
+          base.publisher = {"@type":"Organization","name": siteName};
+          if (published) base.datePublished = published;
+          if (modified) base.dateModified = modified || published;
+        } else if (state.schemaType === 'WebSite') {
+          base.url = canonical;
+          base.publisher = {"@type":"Organization","name": siteName};
+          base.potentialAction = {
+            "@type": "SearchAction",
+            "target": `${canonical}?s={search_term_string}`,
+            "query-input": "required name=search_term_string"
+          };
+        }
+
+        if (!base.author) delete base.author;
+        if (!base.publisher) delete base.publisher;
+        if (!base.datePublished) delete base.datePublished;
+        if (!base.dateModified) delete base.dateModified;
+
+        const scripts = [JSON.stringify(base, null, 2)];
+
+        if (breadcrumb) {
+          const crumbs = [
+            {"@type":"ListItem","position":1,"name":siteName,"item":canonical.split('/').slice(0,3).join('/') + '/'},
+            {"@type":"ListItem","position":2,"name":title,"item":canonical}
+          ];
+          scripts.push(JSON.stringify({
+            "@context":"https://schema.org",
+            "@type":"BreadcrumbList",
+            "itemListElement":crumbs
+          }, null, 2));
+        }
+
+        return scripts.join('\n\n');
+      }
+
+      function update(){
+        const state = readState();
+        const headCode = buildHead(state);
+        outputs.head.value = headCode;
+
+        const schemaCode = buildSchema(state);
+        outputs.schema.value = schemaCode;
+
+        const serpTitle = state.title || '메타데이터 수정 도구';
+        const serpDesc = state.description || '제목, 설명, 저자를 입력하면 SEO 메타 태그와 OG 카드가 즉시 완성됩니다.';
+        const serpUrl = (state.canonical || 'https://example.com/post').replace(/^https?:\/\//,'').replace(/\/$/, '');
+
+        outputs.serpTitle.textContent = serpTitle;
+        outputs.serpDesc.textContent = serpDesc;
+        outputs.serpUrl.textContent = serpUrl;
+
+        outputs.ogSite.textContent = state.site || 'Yuchani Tools';
+        outputs.ogTitle.textContent = serpTitle;
+        outputs.ogDesc.textContent = serpDesc;
+        outputs.ogImageLabel.textContent = state.image ? 'CUSTOM IMAGE' : 'OG IMAGE';
+      }
+
+      Object.values(fields).forEach((el) => {
+        if (!el) return;
+        const eventName = el.tagName === 'SELECT' ? 'change' : 'input';
+        el.addEventListener(eventName, update);
+      });
+
+      btnSample.addEventListener('click', () => {
+        fields.title.value = sample.title;
+        fields.site.value = sample.site;
+        fields.description.value = sample.description;
+        fields.author.value = sample.author;
+        fields.canonical.value = sample.canonical;
+        fields.keywords.value = sample.keywords;
+        fields.image.value = sample.image;
+        fields.locale.value = sample.locale;
+        const now = new Date();
+        const today = now.toISOString().split('T')[0];
+        fields.published.value = today;
+        fields.modified.value = today;
+        fields.schemaType.value = 'Article';
+        fields.breadcrumb.checked = true;
+        update();
+      });
+
+      btnReset.addEventListener('click', () => {
+        Object.values(fields).forEach((el) => {
+          if (!el) return;
+          if (el.type === 'checkbox') el.checked = el.defaultChecked;
+          else if (el.type === 'date') el.value = '';
+          else if (el.tagName === 'SELECT') el.value = 'Article';
+          else if (el === fields.locale) el.value = 'ko_KR';
+          else el.value = '';
+        });
+        update();
+      });
+
+      const copyToClipboard = async (text) => {
+        try {
+          await navigator.clipboard.writeText(text);
+          return true;
+        } catch (err) {
+          console.warn('Clipboard failed', err);
+          return false;
+        }
+      };
+
+      const flash = (btn) => {
+        if (!btn) return;
+        const original = btn.textContent;
+        btn.textContent = '복사 완료!';
+        btn.classList.add('bg-emerald-500/20','border-emerald-400/40','text-emerald-100');
+        setTimeout(() => {
+          btn.textContent = original;
+          btn.classList.remove('bg-emerald-500/20','border-emerald-400/40','text-emerald-100');
+        }, 1600);
+      };
+
+      btnCopyHead.addEventListener('click', async () => {
+        const ok = await copyToClipboard(outputs.head.value);
+        if (ok) flash(btnCopyHead);
+      });
+
+      btnCopySchema.addEventListener('click', async () => {
+        const ok = await copyToClipboard(outputs.schema.value);
+        if (ok) flash(btnCopySchema);
+      });
+
+      update();
+    });
+  </script>
+</body>
+</html>

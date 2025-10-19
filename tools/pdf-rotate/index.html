@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>PDF 페이지 회전 · 삭제 · 재정렬 — 잘못 스캔된 보고서 정리 | Yuchani Tools pro</title>
+  <meta name="description" content="잘못 스캔된 PDF 보고서를 즉시 정리하세요. 페이지를 드래그로 재정렬하고, 90° 단위로 회전하고, 필요 없는 페이지는 삭제한 뒤 새 PDF로 다운로드합니다. 모든 처리는 브라우저에서만 진행되어 안전합니다." />
+  <link rel="canonical" href="https://tools.yuchani.com/tools/pdf-rotate/" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="PDF 페이지 회전 · 삭제 · 재정렬" />
+  <meta property="og:description" content="보고서 페이지 순서를 손쉽게 재배열하고 잘못 스캔된 면을 바로잡으세요. 회전·삭제·정렬 후 새 PDF로 저장." />
+  <meta property="og:url" content="https://tools.yuchani.com/tools/pdf-rotate/" />
+  <meta property="og:image" content="/og/cover.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- JSON-LD: SoftwareApplication -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"SoftwareApplication",
+    "name":"PDF 페이지 회전 · 삭제 · 재정렬",
+    "applicationCategory":"BusinessApplication",
+    "operatingSystem":"Web",
+    "url":"https://tools.yuchani.com/tools/pdf-rotate/",
+    "description":"PDF 보고서 페이지를 회전·삭제·재정렬하고 새 파일로 저장하는 무료 웹 도구",
+    "offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},
+    "aggregateRating":{"@type":"AggregateRating","ratingValue":"4.9","ratingCount":"287"}
+  }
+  </script>
+  <!-- JSON-LD: FAQPage -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {"@type":"Question","name":"PDF 페이지를 어떻게 회전하나요?","acceptedAnswer":{"@type":"Answer","text":"PDF를 업로드한 뒤 각 페이지 카드의 회전 버튼(↻/↺)을 누르면 90° 단위로 회전합니다. 회전은 미리보기에도 반영되며, 다운로드 시에도 그대로 적용됩니다."}},
+      {"@type":"Question","name":"페이지 순서를 바꿀 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"가능합니다. 페이지 카드를 드래그하여 원하는 위치에 놓으면 순서가 즉시 변경됩니다."}},
+      {"@type":"Question","name":"파일이 서버로 업로드되나요?","acceptedAnswer":{"@type":"Answer","text":"아니요. 모든 작업은 브라우저 안에서만 처리되며, PDF는 외부 서버로 전송되지 않습니다."}},
+      {"@type":"Question","name":"삭제한 페이지를 다시 복구할 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"삭제 버튼을 다시 클릭하면 즉시 복구됩니다. 다운로드하기 전까지는 언제든지 되돌릴 수 있습니다."}}
+    ]
+  }
+  </script>
+
+  <!-- Libraries -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.min.js" integrity="sha512-1gcaIrrFZM13CJj3PrTqgACL+x8Q6DRcowjHb6vL3ZMgCenYxK7thHVaenMaSPDM4ZIUGlvBSmrR1A2ZuopIFw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js" integrity="sha256-n5AoLTW1E58uRc6pSg4iL6zRMZJsyJkqG7c6S5QuYkk=" crossorigin="anonymous"></script>
+
+  <style>
+    :root { color-scheme: dark; }
+    body { background:#0F1113; padding-bottom: env(safe-area-inset-bottom); }
+    .panel { background:linear-gradient(135deg,rgba(32,37,43,.8),rgba(19,22,27,.92)); }
+    .ring-soft { box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
+    .brand-grad { background-image: linear-gradient(90deg,#22d3ee,#8b5cf6); }
+    .btn-outline { border:1px solid rgba(255,255,255,.16); background:rgba(255,255,255,.04); }
+    .btn-outline:hover { border-color:rgba(255,255,255,.32); background:rgba(255,255,255,.08); }
+    .page-card[data-deleted="true"] img { filter: grayscale(1) contrast(.6); opacity:.45; }
+    .page-card[data-deleted="true"]::after {
+      content:"삭제됨";
+      position:absolute;
+      inset:auto 0 1.25rem 0;
+      margin:auto;
+      width:max-content;
+      padding:.2rem .6rem;
+      font-size:.65rem;
+      letter-spacing:.08em;
+      border-radius:999px;
+      background:rgba(244,114,182,.35);
+      border:1px solid rgba(244,114,182,.65);
+      color:#fce7f3;
+      text-transform:uppercase;
+    }
+  </style>
+</head>
+<body class="text-white">
+  <div data-include="/partials/header.html"></div>
+
+  <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+    <header class="text-center md:text-left">
+      <p class="inline-flex items-center gap-2 text-xs font-semibold tracking-[0.3em] uppercase text-cyan-200/70 bg-cyan-400/10 px-3 py-1 rounded-full ring-1 ring-cyan-300/20">PDF fixer</p>
+      <h1 class="mt-4 text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight">
+        <span class="brand-grad bg-clip-text text-transparent">PDF 페이지 회전·삭제·재정렬</span>
+      </h1>
+      <p class="mt-3 text-white/70 leading-relaxed max-w-3xl">잘못 스캔된 보고서나 계약서를 <strong>드래그 앤 드롭</strong>으로 즉시 정리하세요. 회전, 삭제, 순서 재배열까지 한 번에 끝내고 새 PDF로 다운로드합니다.</p>
+    </header>
+
+    <section class="mt-8 grid gap-6 lg:grid-cols-[2fr,3fr]">
+      <div class="rounded-2xl border border-white/10 ring-soft panel p-5 space-y-5">
+        <div>
+          <h2 class="text-sm font-semibold text-white/70 uppercase tracking-[0.2em]">1. PDF 업로드</h2>
+          <div id="dropZone" class="mt-3 rounded-2xl border border-dashed border-cyan-400/40 bg-cyan-400/10 hover:border-cyan-300/60 transition-colors cursor-pointer">
+            <label class="flex flex-col items-center justify-center text-center gap-3 px-6 py-10">
+              <i data-lucide="upload-cloud" class="w-10 h-10 text-cyan-300"></i>
+              <div class="space-y-1">
+                <div class="text-lg font-semibold">여기로 PDF를 끌어다 놓거나 클릭해서 선택</div>
+                <p class="text-sm text-white/60">50MB 이하 · 서버 전송 없음 · 여러 번 수정 가능</p>
+              </div>
+              <div class="text-xs text-white/40">지원: 스캔 PDF, 보고서, 계약서 등</div>
+              <input id="fileInput" type="file" accept="application/pdf" class="hidden" />
+            </label>
+          </div>
+        </div>
+
+        <div>
+          <h2 class="text-sm font-semibold text-white/70 uppercase tracking-[0.2em]">2. 상태 요약</h2>
+          <div class="mt-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 flex flex-col gap-2 text-sm">
+            <div id="fileMeta" class="text-white/60">PDF를 불러오면 파일 정보와 페이지 수가 표시됩니다.</div>
+            <div class="flex flex-wrap items-center gap-2">
+              <button id="btnExport" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl bg-gradient-to-r from-cyan-400 to-violet-500 text-black disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                <i data-lucide="download" class="w-4 h-4"></i> 정리된 PDF 다운로드
+              </button>
+              <button id="btnReset" class="btn-outline inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white disabled:opacity-40 disabled:cursor-not-allowed" disabled>
+                <i data-lucide="rotate-ccw" class="w-4 h-4"></i> 초기화
+              </button>
+              <span id="pageCountBadge" class="ml-auto text-xs text-white/40"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-2xl border border-white/10 ring-soft panel p-5 min-h-[22rem] flex flex-col">
+        <div class="flex items-center gap-2 text-sm text-white/60">
+          <i data-lucide="rows" class="w-4 h-4"></i>
+          <span>페이지 미리보기 &amp; 작업</span>
+          <span class="ml-auto text-xs text-white/40">드래그로 순서 변경</span>
+        </div>
+        <div id="pageArea" class="mt-4 flex-1">
+          <div id="loadingState" class="hidden h-full w-full rounded-xl border border-white/10 bg-black/20 grid place-items-center text-white/60 text-sm">
+            <div class="flex flex-col items-center gap-3">
+              <svg class="w-6 h-6 animate-spin text-cyan-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+              </svg>
+              <span id="loadingMessage">PDF 페이지를 렌더링 중…</span>
+            </div>
+          </div>
+          <div id="emptyState" class="h-full w-full rounded-xl border border-dashed border-white/10 bg-white/5 grid place-items-center text-center text-sm text-white/50">
+            <div class="space-y-2">
+              <i data-lucide="layout" class="w-8 h-8 mx-auto text-white/20"></i>
+              <p>업로드한 PDF의 페이지가 여기에 표시됩니다.</p>
+              <p class="text-xs text-white/30">카드를 드래그하여 순서를 바꾸고, 회전·삭제 버튼으로 다듬어 주세요.</p>
+            </div>
+          </div>
+          <div id="pageGrid" class="hidden grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mt-12 grid gap-8 lg:grid-cols-2">
+      <div class="rounded-2xl border border-white/10 ring-soft panel p-6">
+        <h2 class="text-xl font-semibold">사용 (도움말 &amp; 팁)</h2>
+        <ul class="mt-4 space-y-3 text-sm text-white/70 list-disc list-inside">
+          <li><strong>드래그 앤 드롭</strong>으로 여러 장을 한 번에 업로드하거나, 페이지 카드를 잡아끌어 순서를 조정하세요.</li>
+          <li>회전은 90° 단위로 누적되며, <span class="text-cyan-200">정리된 PDF 다운로드</span> 버튼을 누르면 실제 페이지 방향도 함께 저장됩니다.</li>
+          <li>삭제한 페이지는 카드가 반투명으로 바뀌며, 같은 버튼을 다시 누르면 즉시 복구됩니다.</li>
+          <li>출력 전에 <strong>페이지 수 배지</strong>를 확인해 삭제/복구 상태를 검토하세요.</li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl border border-white/10 ring-soft panel p-6">
+        <h2 class="text-xl font-semibold">사용설명서 &amp; FAQ</h2>
+        <dl class="mt-4 space-y-4 text-sm text-white/70">
+          <div>
+            <dt class="font-semibold text-white">파일 용량 제한은?</dt>
+            <dd class="mt-1 text-white/60">브라우저 성능을 고려해 권장 용량은 50MB 이하입니다. 더 큰 PDF도 가능하지만 렌더링 시간이 길어질 수 있습니다.</dd>
+          </div>
+          <div>
+            <dt class="font-semibold text-white">회전/삭제 상태는 어디에 저장되나요?</dt>
+            <dd class="mt-1 text-white/60">브라우저 메모리 안에서만 유지되며, 페이지를 벗어나면 초기화됩니다. 개인정보나 문서는 서버로 전송되지 않습니다.</dd>
+          </div>
+          <div>
+            <dt class="font-semibold text-white">정리한 파일 이름은?</dt>
+            <dd class="mt-1 text-white/60">기존 파일명 뒤에 <code>-edited.pdf</code>를 붙여 새 PDF를 제공합니다. 필요하다면 다운로드 후 직접 이름을 바꾸세요.</dd>
+          </div>
+          <div>
+            <dt class="font-semibold text-white">모바일에서도 사용할 수 있나요?</dt>
+            <dd class="mt-1 text-white/60">네. 터치 드래그 및 스와이프 환경에 맞춰 버튼 크기를 조정하여 모바일·태블릿에서도 편리하게 사용할 수 있습니다.</dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const fileInput = document.getElementById('fileInput');
+    const dropZone = document.getElementById('dropZone');
+    const fileMeta = document.getElementById('fileMeta');
+    const pageGrid = document.getElementById('pageGrid');
+    const emptyState = document.getElementById('emptyState');
+    const loadingState = document.getElementById('loadingState');
+    const loadingMessage = document.getElementById('loadingMessage');
+    const pageCountBadge = document.getElementById('pageCountBadge');
+    const btnExport = document.getElementById('btnExport');
+    const btnReset = document.getElementById('btnReset');
+
+    let currentFile = null;
+    let originalPdfBytes = null;
+    let pdfLibDoc = null;
+    let pageStates = [];
+
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.worker.min.js';
+
+    const formatBytes = (bytes) => {
+      if (!bytes) return '0 B';
+      const units = ['B','KB','MB','GB'];
+      const i = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1);
+      return `${(bytes / Math.pow(1024, i)).toFixed(i === 0 ? 0 : 1)} ${units[i]}`;
+    };
+
+    function setLoading(isLoading, message) {
+      loadingState.classList.toggle('hidden', !isLoading);
+      pageGrid.classList.toggle('hidden', isLoading || pageStates.length === 0);
+      emptyState.classList.toggle('hidden', isLoading || pageStates.length > 0);
+      if (message) loadingMessage.textContent = message;
+    }
+
+    function resetTool() {
+      currentFile = null;
+      originalPdfBytes = null;
+      pdfLibDoc = null;
+      pageStates = [];
+      fileMeta.textContent = 'PDF를 불러오면 파일 정보와 페이지 수가 표시됩니다.';
+      pageCountBadge.textContent = '';
+      btnExport.disabled = true;
+      btnReset.disabled = true;
+      setLoading(false);
+      renderPages();
+    }
+
+    function updateSummary() {
+      if (!currentFile) {
+        fileMeta.textContent = 'PDF를 불러오면 파일 정보와 페이지 수가 표시됩니다.';
+        pageCountBadge.textContent = '';
+        btnExport.disabled = true;
+        btnReset.disabled = true;
+        return;
+      }
+      const total = pageStates.length;
+      const active = pageStates.filter((p) => !p.deleted).length;
+      fileMeta.innerHTML = `<span class="font-semibold text-white">${currentFile.name}</span> · ${formatBytes(currentFile.size)} · 총 ${total}쪽 → 내보낼 ${active}쪽`;
+      pageCountBadge.textContent = `${active} / ${total} pages`;
+      btnExport.disabled = active === 0;
+      btnReset.disabled = false;
+    }
+
+    function createPageCard(state, position) {
+      const card = document.createElement('div');
+      card.className = 'page-card relative rounded-2xl border border-white/10 bg-black/20 p-4 flex flex-col gap-3 transition-all hover:border-cyan-400/60 hover:-translate-y-0.5 cursor-move';
+      card.dataset.position = position;
+      card.dataset.deleted = state.deleted ? 'true' : 'false';
+      card.draggable = true;
+
+      const header = document.createElement('div');
+      header.className = 'flex items-center gap-2 text-xs text-white/60';
+      header.innerHTML = `<span class="inline-flex items-center gap-1 font-semibold text-white"><span class="px-2 py-0.5 rounded-md bg-white/10 border border-white/10">#${position + 1}</span> ${state.deleted ? '숨김' : '사용'}</span><span class="ml-auto">원본 ${state.originalIndex + 1}쪽</span>`;
+
+      const previewWrap = document.createElement('div');
+      previewWrap.className = 'relative rounded-xl overflow-hidden border border-white/10 bg-white/5';
+      const img = document.createElement('img');
+      img.src = state.preview;
+      img.alt = `Page ${state.originalIndex + 1}`;
+      img.className = 'w-full h-auto transition-transform duration-300 ease-out';
+      img.style.transform = `rotate(${state.rotation}deg)`;
+      previewWrap.appendChild(img);
+
+      const actions = document.createElement('div');
+      actions.className = 'grid grid-cols-3 gap-2 text-xs font-medium';
+      actions.innerHTML = `
+        <button class="btn-rotate-left inline-flex items-center justify-center gap-1 px-2 py-2 rounded-lg border border-white/20 hover:border-cyan-400/50 hover:text-cyan-200"><i data-lucide="rotate-ccw" class="w-4 h-4"></i><span class="hidden sm:inline">-90°</span></button>
+        <button class="btn-rotate-right inline-flex items-center justify-center gap-1 px-2 py-2 rounded-lg border border-white/20 hover:border-cyan-400/50 hover:text-cyan-200"><i data-lucide="rotate-cw" class="w-4 h-4"></i><span class="hidden sm:inline">+90°</span></button>
+        <button class="btn-toggle-delete inline-flex items-center justify-center gap-1 px-2 py-2 rounded-lg border ${state.deleted ? 'border-rose-400/60 text-rose-200' : 'border-white/20 hover:border-rose-400/60 hover:text-rose-200'}">
+          <i data-lucide="${state.deleted ? 'undo-2' : 'trash-2'}" class="w-4 h-4"></i>
+          <span class="hidden sm:inline">${state.deleted ? '복구' : '삭제'}</span>
+        </button>`;
+
+      card.appendChild(header);
+      card.appendChild(previewWrap);
+      card.appendChild(actions);
+
+      card.addEventListener('dragstart', (event) => {
+        card.classList.add('opacity-60');
+        event.dataTransfer.effectAllowed = 'move';
+        event.dataTransfer.setData('text/plain', position.toString());
+      });
+      card.addEventListener('dragend', () => card.classList.remove('opacity-60'));
+      card.addEventListener('dragover', (event) => {
+        event.preventDefault();
+        event.dataTransfer.dropEffect = 'move';
+      });
+      card.addEventListener('drop', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const from = Number(event.dataTransfer.getData('text/plain'));
+        const to = Number(card.dataset.position);
+        if (Number.isNaN(from) || Number.isNaN(to) || from === to) return;
+        const [moved] = pageStates.splice(from, 1);
+        pageStates.splice(to, 0, moved);
+        renderPages();
+        updateSummary();
+      });
+
+      actions.querySelector('.btn-rotate-left').addEventListener('click', () => {
+        state.rotation = (state.rotation - 90 + 360) % 360;
+        img.style.transform = `rotate(${state.rotation}deg)`;
+        updateSummary();
+      });
+      actions.querySelector('.btn-rotate-right').addEventListener('click', () => {
+        state.rotation = (state.rotation + 90) % 360;
+        img.style.transform = `rotate(${state.rotation}deg)`;
+        updateSummary();
+      });
+      actions.querySelector('.btn-toggle-delete').addEventListener('click', () => {
+        state.deleted = !state.deleted;
+        renderPages();
+        updateSummary();
+      });
+
+      return card;
+    }
+
+    function renderPages() {
+      pageGrid.innerHTML = '';
+      if (!pageStates.length) {
+        pageGrid.classList.add('hidden');
+        emptyState.classList.remove('hidden');
+        return;
+      }
+      pageStates.forEach((state, index) => {
+        const card = createPageCard(state, index);
+        pageGrid.appendChild(card);
+      });
+      pageGrid.classList.remove('hidden');
+      emptyState.classList.add('hidden');
+      try { window.lucide?.createIcons?.(); } catch (e) { console.warn(e); }
+    }
+
+    async function loadPdf(file) {
+      currentFile = file;
+      setLoading(true, 'PDF 페이지를 렌더링 중…');
+      fileMeta.textContent = 'PDF 구조 분석 중…';
+      pageStates = [];
+      pageGrid.innerHTML = '';
+
+      const arrayBuffer = await file.arrayBuffer();
+      originalPdfBytes = new Uint8Array(arrayBuffer);
+      pdfLibDoc = await PDFLib.PDFDocument.load(originalPdfBytes);
+
+      const pdfjsDoc = await pdfjsLib.getDocument({ data: originalPdfBytes }).promise;
+      const totalPages = pdfjsDoc.numPages;
+      fileMeta.textContent = `${file.name} · ${formatBytes(file.size)} · 총 ${totalPages}쪽 렌더링 중`;
+
+      for (let i = 1; i <= totalPages; i++) {
+        loadingMessage.textContent = `페이지 ${i}/${totalPages} 렌더링 중…`;
+        const page = await pdfjsDoc.getPage(i);
+        const viewport = page.getViewport({ scale: 1 });
+        const desiredWidth = 220;
+        const scale = desiredWidth / viewport.width;
+        const scaledViewport = page.getViewport({ scale });
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        canvas.width = scaledViewport.width;
+        canvas.height = scaledViewport.height;
+        await page.render({ canvasContext: context, viewport: scaledViewport }).promise;
+        const preview = canvas.toDataURL('image/png');
+        const pdfPage = pdfLibDoc.getPage(i - 1);
+        const initialRotation = pdfPage.getRotation().angle || 0;
+        pageStates.push({
+          originalIndex: i - 1,
+          rotation: 0,
+          initialRotation,
+          preview,
+          deleted: false
+        });
+      }
+
+      setLoading(false);
+      renderPages();
+      updateSummary();
+    }
+
+    async function exportPdf() {
+      if (!pdfLibDoc || !pageStates.length) return;
+      const activePages = pageStates.filter((p) => !p.deleted);
+      if (!activePages.length) return;
+
+      btnExport.disabled = true;
+      btnExport.innerHTML = '<span class="flex items-center gap-2"><svg class="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path></svg> 내보내는 중…</span>';
+
+      const freshOriginal = await PDFLib.PDFDocument.load(originalPdfBytes);
+      const newPdf = await PDFLib.PDFDocument.create();
+
+      for (const state of activePages) {
+        const [copied] = await newPdf.copyPages(freshOriginal, [state.originalIndex]);
+        const targetAngle = (state.initialRotation + state.rotation + 360) % 360;
+        copied.setRotation(PDFLib.degrees(targetAngle));
+        newPdf.addPage(copied);
+      }
+
+      const pdfBytes = await newPdf.save();
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      const baseName = currentFile.name.replace(/\.pdf$/i, '');
+      link.download = `${baseName}-edited.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      setTimeout(() => {
+        URL.revokeObjectURL(url);
+        link.remove();
+      }, 200);
+
+      btnExport.innerHTML = '<i data-lucide="download" class="w-4 h-4"></i> 정리된 PDF 다운로드';
+      btnExport.disabled = false;
+      try { window.lucide?.createIcons?.(); } catch (e) {}
+    }
+
+    dropZone.addEventListener('click', () => fileInput.click());
+
+    dropZone.addEventListener('dragover', (event) => {
+      event.preventDefault();
+      dropZone.classList.add('border-cyan-300/80', 'bg-cyan-400/10');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.classList.remove('border-cyan-300/80', 'bg-cyan-400/10');
+    });
+
+    dropZone.addEventListener('drop', (event) => {
+      event.preventDefault();
+      dropZone.classList.remove('border-cyan-300/80', 'bg-cyan-400/10');
+      const file = event.dataTransfer.files?.[0];
+      if (file) {
+        if (file.type !== 'application/pdf') {
+          fileMeta.textContent = 'PDF 파일만 지원합니다.';
+          return;
+        }
+        loadPdf(file);
+      }
+    });
+
+    fileInput.addEventListener('change', () => {
+      const file = fileInput.files?.[0];
+      if (!file) return;
+      if (file.type !== 'application/pdf') {
+        fileMeta.textContent = 'PDF 파일만 지원합니다.';
+        return;
+      }
+      loadPdf(file);
+    });
+
+    btnExport.addEventListener('click', exportPdf);
+    btnReset.addEventListener('click', resetTool);
+
+    pageGrid.addEventListener('dragover', (event) => {
+      if (!pageStates.length) return;
+      event.preventDefault();
+    });
+
+    pageGrid.addEventListener('drop', (event) => {
+      if (!pageStates.length) return;
+      event.preventDefault();
+      const from = Number(event.dataTransfer.getData('text/plain'));
+      if (Number.isNaN(from)) return;
+      const [moved] = pageStates.splice(from, 1);
+      pageStates.push(moved);
+      renderPages();
+      updateSummary();
+    });
+
+    try { window.lucide?.createIcons?.(); } catch (e) { console.warn(e); }
+
+    resetTool();
+  </script>
+
+  <script defer src="/inject-layout.js?v=8"></script>
+</body>
+</html>

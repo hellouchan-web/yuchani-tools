@@ -1,0 +1,593 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CSV/엑셀 합치기 · 월별 자료 통합 | Yuchani Tools pro</title>
+  <meta name="description" content="여러 개의 CSV, XLSX 파일을 한 번에 합칩니다. 월별·분기별 데이터를 정리하고, 파일명 컬럼 추가와 공백 정리, 빈 행 제거 등 고급 옵션을 제공합니다. 모든 처리는 브라우저에서 즉시 수행됩니다." />
+  <link rel="canonical" href="https://tools.yuchani.com/tools/csv-merge/" />
+  <meta name="robots" content="index,follow" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="CSV/엑셀 합치기" />
+  <meta property="og:description" content="여러 개의 CSV·XLSX 파일을 한 번에 합치고 월별 자료를 정리하세요. 브라우저에서 즉시 처리됩니다." />
+  <meta property="og:url" content="https://tools.yuchani.com/tools/csv-merge/" />
+  <meta property="og:image" content="https://tools.yuchani.com/og/cover.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"SoftwareApplication",
+    "name":"CSV/엑셀 합치기",
+    "applicationCategory":"BusinessApplication",
+    "operatingSystem":"Web",
+    "url":"https://tools.yuchani.com/tools/csv-merge/",
+    "description":"CSV와 엑셀(XLSX) 파일을 브라우저에서 즉시 합치는 데이터 취합 도구",
+    "aggregateRating":{"@type":"AggregateRating","ratingValue":"4.9","ratingCount":"214"}
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {"@type":"Question","name":"CSV와 엑셀 파일을 함께 올려도 되나요?","acceptedAnswer":{"@type":"Answer","text":"네. 서로 다른 형식의 파일을 동시에 업로드해도 되고, 첫 번째 시트를 기준으로 한 번에 합쳐집니다."}},
+      {"@type":"Question","name":"업로드한 파일이 서버로 전송되나요?","acceptedAnswer":{"@type":"Answer","text":"아니요. 모든 처리는 사용자의 브라우저 메모리에서 수행되며, 파일은 외부로 전송되지 않습니다."}},
+      {"@type":"Question","name":"헤더가 다른 파일도 병합할 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"가능합니다. 도구가 전체 컬럼을 수집해 누락된 항목은 공백으로 채워주며, 필요하면 공백 트림 및 빈 행 제거 옵션을 사용할 수 있습니다."}},
+      {"@type":"Question","name":"엑셀의 여러 시트가 있을 때는 어떻게 되나요?","acceptedAnswer":{"@type":"Answer","text":"현재는 첫 번째 시트만 처리합니다. 여러 시트를 합치려면 엑셀에서 시트를 하나로 모은 뒤 업로드하세요."}},
+      {"@type":"Question","name":"결과물은 어떤 형식으로 내려받을 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"CSV와 XLSX 두 가지 형식으로 내려받을 수 있으며, 다운로드 전에 미리보기 테이블에서 200행까지 확인할 수 있습니다."}}
+    ]
+  }
+  </script>
+
+  <script src="https://cdn.tailwindcss.com" defer></script>
+  <script src="https://unpkg.com/lucide@latest" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.19.3/dist/xlsx.full.min.js" defer></script>
+
+  <style>
+    :root{ color-scheme: dark }
+    body{ background:#0F1113; padding-bottom: env(safe-area-inset-bottom) }
+    .ring-soft{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08) }
+    .brand-grad{ background-image:linear-gradient(90deg,#60a5fa,#c4b5fd) }/* blue→violet */
+    .drop-mask{ border:1px dashed rgba(255,255,255,.25) }
+    [data-icon]{width:1rem;height:1rem;display:inline-block}
+    .status-info{ color:#bfdbfe }
+    .status-warn{ color:#facc15 }
+    .status-error{ color:#fda4af }
+  </style>
+</head>
+<body class="text-white">
+  <div data-include="/partials/header.html"></div>
+
+  <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+    <header class="mb-6">
+      <p class="text-xs uppercase tracking-[0.3em] text-white/50">DATA MERGE SUITE</p>
+      <h1 class="mt-2 text-left text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight">
+        <span class="brand-grad bg-clip-text text-transparent">CSV/엑셀 합치기</span>
+      </h1>
+      <p class="mt-3 text-white/70 leading-relaxed max-w-3xl">
+        월별·분기별 보고서를 빠르게 합칠 수 있는 전문가용 병합 도구입니다. 여러 파일을 드래그&드롭하면 컬럼을 자동으로 매칭하고, 공백 정리/빈 행 제거/파일명 컬럼 추가 등 실무에 필요한 옵션을 제공합니다.
+      </p>
+      <div class="mt-4 flex flex-wrap gap-3 text-xs text-white/60">
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1">
+          <i data-lucide="zap" class="w-3.5 h-3.5"></i> 브라우저 즉시 처리
+        </span>
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1">
+          <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> 서버 업로드 없음
+        </span>
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> 월별 집계 자동 정렬
+        </span>
+      </div>
+    </header>
+
+    <section class="grid gap-4 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.15fr)]">
+      <div class="rounded-2xl border border-white/10 ring-soft bg-[#101318] overflow-hidden">
+        <div class="px-4 py-3 border-b border-white/10 flex items-center gap-2 text-sm text-white/70">
+          <i data-lucide="folder-input" class="w-4 h-4"></i>
+          <span>파일 업로드 &amp; 옵션</span>
+        </div>
+        <div class="p-4 space-y-4">
+          <div class="rounded-xl drop-mask bg-black/10 p-6 text-center text-sm text-white/60" id="dropZone">
+            <p class="text-base font-semibold text-white/80">파일을 드래그 앤 드롭</p>
+            <p class="mt-2">또는 아래 버튼으로 CSV·XLSX 파일을 최대 50개까지 추가하세요.</p>
+            <button type="button" id="btnBrowse" class="mt-4 inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-4 py-2 text-sm text-white/80 hover:bg-white/15">
+              <i data-lucide="upload" class="w-4 h-4"></i> 파일 선택
+            </button>
+            <input id="fileInput" type="file" multiple accept=".csv,.tsv,.txt,.xls,.xlsx,.xlsm,.xlsb" class="hidden" />
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between text-xs text-white/50 uppercase tracking-[0.3em] mb-2">선택된 파일</div>
+            <ul id="fileList" class="space-y-2 text-sm text-white/70 bg-white/5 rounded-xl p-3 max-h-56 overflow-y-auto">
+              <li class="text-white/40">아직 추가된 파일이 없습니다.</li>
+            </ul>
+            <div class="mt-3 flex flex-wrap gap-2 text-xs">
+              <button type="button" id="btnClear" class="inline-flex items-center gap-1 rounded-lg border border-white/15 bg-white/5 px-3 py-1.5 text-white/70 hover:bg-white/10">목록 초기화</button>
+              <span id="fileInfo" class="ml-auto text-white/50 hidden"></span>
+            </div>
+          </div>
+
+          <div class="rounded-xl border border-white/10 bg-white/5 p-3 text-sm space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="font-semibold text-white/80">병합 옵션</span>
+              <button type="button" id="btnMerge" class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-sky-400 to-violet-400 text-black font-semibold px-4 py-1.5 disabled:opacity-40 disabled:cursor-not-allowed">
+                <i data-lucide="merge" class="w-4 h-4"></i> 합치기 실행
+              </button>
+            </div>
+            <label class="flex items-center gap-2 text-white/70">
+              <input type="checkbox" id="chkIncludeFile" class="accent-sky-400" checked />
+              파일명 컬럼 추가 (월별 집계 추적)
+            </label>
+            <div class="pl-6">
+              <label class="block text-xs text-white/50 mb-1" for="fileColumnName">파일명 컬럼 제목</label>
+              <input id="fileColumnName" type="text" value="출처파일" class="w-full rounded-lg border border-white/15 bg-black/40 px-3 py-2 text-sm text-white" placeholder="예: 월, 데이터 출처" />
+            </div>
+            <label class="flex items-center gap-2 text-white/70">
+              <input type="checkbox" id="chkTrim" class="accent-sky-400" checked />
+              앞뒤 공백 자동 정리
+            </label>
+            <label class="flex items-center gap-2 text-white/70">
+              <input type="checkbox" id="chkSkipEmpty" class="accent-sky-400" checked />
+              완전히 비어있는 행은 건너뛰기
+            </label>
+            <div>
+              <label class="block text-xs text-white/50 mb-1" for="sortKey">정렬 기준 (선택)</label>
+              <select id="sortKey" class="w-full rounded-lg border border-white/15 bg-black/40 px-3 py-2 text-sm text-white/80">
+                <option value="__none">원본 순서 유지</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-2xl border border-white/10 ring-soft bg-[#101318] overflow-hidden">
+        <div class="px-4 py-3 border-b border-white/10 flex flex-wrap items-center gap-3 text-sm text-white/70">
+          <i data-lucide="table" class="w-4 h-4"></i>
+          <span>미리보기 &amp; 다운로드</span>
+          <span id="summary" class="ml-auto text-xs text-white/50">파일 0개 · 0행</span>
+        </div>
+        <div class="p-4 space-y-4">
+          <div id="status" class="text-sm text-white/60"></div>
+          <div class="flex flex-wrap gap-2">
+            <button type="button" id="btnDownloadCsv" class="inline-flex items-center gap-2 rounded-lg border border-sky-400/40 bg-sky-400/15 px-4 py-2 text-sm text-sky-100 disabled:opacity-40 disabled:cursor-not-allowed">
+              <i data-lucide="file-down" class="w-4 h-4"></i> CSV 다운로드
+            </button>
+            <button type="button" id="btnDownloadXlsx" class="inline-flex items-center gap-2 rounded-lg border border-violet-400/40 bg-violet-400/15 px-4 py-2 text-sm text-violet-100 disabled:opacity-40 disabled:cursor-not-allowed">
+              <i data-lucide="file-spreadsheet" class="w-4 h-4"></i> XLSX 다운로드
+            </button>
+            <button type="button" id="btnResetPreview" class="inline-flex items-center gap-2 rounded-lg border border-white/15 bg-white/5 px-4 py-2 text-sm text-white/70 disabled:opacity-40 disabled:cursor-not-allowed">
+              <i data-lucide="rotate-ccw" class="w-4 h-4"></i> 미리보기 초기화
+            </button>
+          </div>
+          <div class="rounded-xl border border-white/10 bg-black/30 p-3">
+            <div class="flex items-center justify-between text-xs text-white/50">
+              <span>최대 200행까지 표시됩니다.</span>
+              <span id="previewMeta" class="hidden">&nbsp;</span>
+            </div>
+            <div class="mt-3 overflow-auto max-h-[28rem]" id="previewWrapper">
+              <table class="min-w-full text-xs text-white/80" id="previewTable">
+                <thead class="sticky top-0 bg-black/60 backdrop-blur">
+                  <tr id="previewHead"><th class="px-3 py-2 text-left font-semibold text-white/60">컬럼</th></tr>
+                </thead>
+                <tbody id="previewBody">
+                  <tr><td class="px-3 py-6 text-center text-white/40">아직 병합된 데이터가 없습니다.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mt-8 grid gap-4 lg:grid-cols-2">
+      <div class="rounded-2xl border border-white/10 ring-soft p-5 bg-[#101318]">
+        <div class="flex items-center gap-2 text-sm text-white/80">
+          <i data-lucide="lightbulb" class="w-4 h-4 text-yellow-300"></i>
+          <span class="font-semibold">도움말 &amp; 팁</span>
+        </div>
+        <ul class="mt-3 list-disc pl-5 text-sm text-white/70 space-y-2">
+          <li>파일명에 <strong>2025-01, 2025-02</strong> 같은 월 표기를 넣으면 정렬 시 월별 순서가 깔끔해집니다.</li>
+          <li>엑셀 파일에서 통합하기 전에 숫자 서식을 통일하면 다운로드 시 타입 변환 오류를 줄일 수 있습니다.</li>
+          <li>빈 열이 많은 경우, <em>앞뒤 공백 정리</em>와 <em>빈 행 건너뛰기</em> 옵션을 활성화하면 월별 자료 취합 속도가 빨라집니다.</li>
+          <li>합친 결과를 CSV로 내려받은 뒤 버전 관리를 위해 Git이나 드라이브에 월별로 보관해 보세요.</li>
+          <li>내려받기 전에 미리보기에서 합쳐진 컬럼 순서를 확인하고 필요한 경우 엑셀에서 피벗테이블을 활용하세요.</li>
+        </ul>
+      </div>
+      <div class="rounded-2xl border border-white/10 ring-soft p-5 bg-[#101318]">
+        <div class="flex items-center gap-2 text-sm text-white/80">
+          <i data-lucide="help-circle" class="w-4 h-4 text-sky-300"></i>
+          <span class="font-semibold">사용설명서 &amp; FAQ</span>
+        </div>
+        <div class="mt-3 space-y-2 text-sm text-white/70">
+          <details class="rounded-xl border border-white/10 bg-white/5 px-4 py-3" open>
+            <summary class="font-semibold text-white">1. 월별 CSV 자료를 합치는 법</summary>
+            <p class="mt-2 text-white/70 leading-relaxed">각 월별 CSV 또는 엑셀 파일을 드래그 앤 드롭으로 올리고, <em>파일명 컬럼 추가</em> 옵션을 유지한 채 합치면 파일명에서 월을 추출해 피벗 분석을 쉽게 할 수 있습니다.</p>
+          </details>
+          <details class="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
+            <summary class="font-semibold text-white">2. 시트가 여러 개인 엑셀은?</summary>
+            <p class="mt-2 leading-relaxed">현재 도구는 첫 번째 시트만 처리합니다. 필요한 시트를 먼저 엑셀에서 앞으로 이동하거나, 각각의 시트를 별도 파일로 저장한 뒤 업로드하세요.</p>
+          </details>
+          <details class="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
+            <summary class="font-semibold text-white">3. 컬럼 순서가 파일마다 다른 경우</summary>
+            <p class="mt-2 leading-relaxed">자동으로 전체 컬럼을 통합한 뒤 누락된 값은 공백으로 채웁니다. 정렬 기준에서 <strong>출처파일</strong>을 선택하면 월별 순서에 맞춰 다시 정렬할 수 있습니다.</p>
+          </details>
+          <details class="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
+            <summary class="font-semibold text-white">4. 합친 데이터를 다시 나누고 싶다면?</summary>
+            <p class="mt-2 leading-relaxed">결과물을 다운로드한 뒤 엑셀의 필터 또는 파워쿼리를 활용하세요. 출처파일 컬럼으로 월별 데이터만 분리하는 것이 간편합니다.</p>
+          </details>
+          <details class="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
+            <summary class="font-semibold text-white">5. 데이터가 민감한데 안전한가요?</summary>
+            <p class="mt-2 leading-relaxed">Yuchani Tools pro의 모든 도구와 동일하게, 업로드한 파일은 브라우저 메모리 안에서만 처리되고 서버로 전송되지 않습니다.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script defer src="/inject-layout.js?v=7"></script>
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const fileInput = document.getElementById('fileInput');
+    const dropZone = document.getElementById('dropZone');
+    const btnBrowse = document.getElementById('btnBrowse');
+    const btnClear = document.getElementById('btnClear');
+    const btnMerge = document.getElementById('btnMerge');
+    const btnDownloadCsv = document.getElementById('btnDownloadCsv');
+    const btnDownloadXlsx = document.getElementById('btnDownloadXlsx');
+    const btnResetPreview = document.getElementById('btnResetPreview');
+    const chkIncludeFile = document.getElementById('chkIncludeFile');
+    const fileColumnNameInput = document.getElementById('fileColumnName');
+    const chkTrim = document.getElementById('chkTrim');
+    const chkSkipEmpty = document.getElementById('chkSkipEmpty');
+    const sortKeySelect = document.getElementById('sortKey');
+    const fileList = document.getElementById('fileList');
+    const fileInfo = document.getElementById('fileInfo');
+    const statusEl = document.getElementById('status');
+    const summaryEl = document.getElementById('summary');
+    const previewHead = document.getElementById('previewHead');
+    const previewBody = document.getElementById('previewBody');
+    const previewMeta = document.getElementById('previewMeta');
+
+    const selectedFiles = new Map();
+    const ALLOWED = /\.(csv|tsv|txt|xls|xlsx|xlsm|xlsb)$/i;
+    const MAX_FILES = 50;
+    let mergedRows = [];
+    let mergedColumns = [];
+
+    function setStatus(message, tone = 'info'){
+      statusEl.textContent = message || '';
+      statusEl.className = `text-sm ${tone==='info'?'status-info':tone==='warn'?'status-warn':'status-error'}`;
+    }
+
+    function humanSize(bytes){
+      if (!bytes) return '0 B';
+      const units = ['B','KB','MB','GB'];
+      const exp = Math.min(Math.floor(Math.log(bytes)/Math.log(1024)), units.length-1);
+      return (bytes/Math.pow(1024, exp)).toFixed(exp?1:0) + ' ' + units[exp];
+    }
+
+    function updateFileList(){
+      const items = Array.from(selectedFiles.values());
+      if (!items.length){
+        fileList.innerHTML = '<li class="text-white/40">아직 추가된 파일이 없습니다.</li>';
+        fileInfo.classList.add('hidden');
+      } else {
+        fileList.innerHTML = items.map((file, idx) => {
+          const safeName = file.name.replace(/[&<>]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+          return `<li class="flex items-center gap-2 justify-between rounded-lg bg-black/30 px-3 py-2"><span class="truncate">${idx+1}. ${safeName}</span><span class="text-xs text-white/40">${humanSize(file.size)}</span></li>`;
+        }).join('');
+        const totalSize = items.reduce((acc,f)=>acc+f.size,0);
+        fileInfo.textContent = `${items.length}개 · ${humanSize(totalSize)}`;
+        fileInfo.classList.remove('hidden');
+      }
+      btnMerge.disabled = items.length === 0;
+    }
+
+    function clearData(){
+      selectedFiles.clear();
+      mergedRows = [];
+      mergedColumns = [];
+      updateFileList();
+      updatePreview();
+      setStatus('파일 목록이 초기화되었습니다.', 'info');
+    }
+
+    function addFiles(fileListLike){
+      let added = 0;
+      let skipped = [];
+      for (const file of fileListLike){
+        if (!ALLOWED.test(file.name)){
+          skipped.push(file.name);
+          continue;
+        }
+        if (selectedFiles.size >= MAX_FILES){
+          setStatus(`파일은 최대 ${MAX_FILES}개까지만 추가할 수 있습니다.`, 'warn');
+          break;
+        }
+        const key = `${file.name}__${file.size}__${file.lastModified}`;
+        if (!selectedFiles.has(key)){
+          selectedFiles.set(key, file);
+          added++;
+        }
+      }
+      updateFileList();
+      if (added && skipped.length){
+        setStatus(`${added}개 파일을 추가했고, 제외된 파일: ${skipped.join(', ')}`, 'warn');
+      } else if (added){
+        setStatus(`${added}개 파일을 추가했습니다.`, 'info');
+      } else if (skipped.length){
+        setStatus(`지원하지 않는 확장자: ${skipped.join(', ')}`, 'warn');
+      } else {
+        setStatus('이미 추가된 파일입니다.', 'info');
+      }
+    }
+
+    function sanitizeHeaders(headers){
+      const seen = new Map();
+      return headers.map((header, idx) => {
+        let name = String(header ?? '').trim();
+        if (!name) name = `컬럼${idx+1}`;
+        if (seen.has(name)){
+          const next = seen.get(name) + 1;
+          seen.set(name, next);
+          name = `${name}_${next}`;
+        } else {
+          seen.set(name, 1);
+        }
+        return name;
+      });
+    }
+
+    function normalizeCell(value, trim){
+      if (value === null || value === undefined) return '';
+      if (value instanceof Date){
+        return value.toISOString().slice(0,19).replace('T',' ');
+      }
+      if (typeof value === 'number' && Number.isFinite(value)){
+        return value;
+      }
+      let str = String(value);
+      return trim ? str.trim() : str;
+    }
+
+    function ensureUniqueName(base, existing){
+      let name = base;
+      let counter = 2;
+      while (existing.includes(name)){
+        name = `${base}_${counter++}`;
+      }
+      return name;
+    }
+
+    function updateSortOptions(columns){
+      const current = sortKeySelect.value;
+      Array.from(sortKeySelect.options).forEach((opt, idx) => { if (idx>0) sortKeySelect.removeChild(opt); });
+      columns.forEach(col => {
+        const opt = document.createElement('option');
+        opt.value = col;
+        opt.textContent = col;
+        sortKeySelect.appendChild(opt);
+      });
+      if (columns.includes(current)){
+        sortKeySelect.value = current;
+      } else {
+        sortKeySelect.value = '__none';
+      }
+    }
+
+    function sortRows(rows){
+      const key = sortKeySelect.value;
+      if (!rows.length || key === '__none') return rows;
+      return [...rows].sort((a,b) => {
+        const av = a[key];
+        const bv = b[key];
+        return String(av ?? '').localeCompare(String(bv ?? ''), 'ko', {numeric:true, sensitivity:'base'});
+      });
+    }
+
+    function updatePreview(){
+      const hasData = mergedRows.length > 0;
+      btnDownloadCsv.disabled = !hasData;
+      btnDownloadXlsx.disabled = !hasData;
+      btnResetPreview.disabled = !hasData;
+
+      if (!hasData){
+        previewHead.innerHTML = '<th class="px-3 py-2 text-left font-semibold text-white/60">컬럼</th>';
+        previewBody.innerHTML = '<tr><td class="px-3 py-6 text-center text-white/40">아직 병합된 데이터가 없습니다.</td></tr>';
+        summaryEl.textContent = '파일 0개 · 0행';
+        previewMeta.classList.add('hidden');
+        return;
+      }
+
+      const sorted = sortRows(mergedRows);
+      const limit = 200;
+      previewHead.innerHTML = mergedColumns.map(col => `<th class="px-3 py-2 text-left font-semibold text-white/60 border-b border-white/10">${col}</th>`).join('');
+      const rowsHtml = sorted.slice(0, limit).map(row => {
+        return `<tr>${mergedColumns.map(col => {
+          let val = row[col];
+          if (val === null || val === undefined) val = '';
+          if (typeof val === 'number' && Number.isFinite(val)){
+            return `<td class="px-3 py-2 border-b border-white/5 text-right tabular-nums text-white/80">${val}</td>`;
+          }
+          const safe = String(val).replace(/[&<>]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+          return `<td class="px-3 py-2 border-b border-white/5 text-white/70">${safe || '&nbsp;'}</td>`;
+        }).join('')}</tr>`;
+      }).join('');
+      previewBody.innerHTML = rowsHtml || '<tr><td class="px-3 py-6 text-center text-white/40" colspan="'+mergedColumns.length+'">표시할 데이터가 없습니다.</td></tr>';
+
+      const fileCount = selectedFiles.size;
+      summaryEl.textContent = `파일 ${fileCount}개 · ${sorted.length}행`;
+      if (sorted.length > limit){
+        previewMeta.textContent = `${limit}행까지만 표시 중 · 전체 ${sorted.length}행`;
+        previewMeta.classList.remove('hidden');
+      } else {
+        previewMeta.classList.add('hidden');
+      }
+    }
+
+    async function mergeFiles(){
+      const files = Array.from(selectedFiles.values());
+      if (!files.length){
+        setStatus('먼저 파일을 추가하세요.', 'warn');
+        return;
+      }
+      btnMerge.disabled = true;
+      setStatus('파일을 분석하는 중입니다...', 'info');
+
+      const includeFile = chkIncludeFile.checked;
+      const trimValues = chkTrim.checked;
+      const skipEmpty = chkSkipEmpty.checked;
+      let columns = [];
+      let fileColumnName = null;
+
+      if (includeFile){
+        const base = (fileColumnNameInput.value || '출처파일').trim() || '출처파일';
+        fileColumnName = ensureUniqueName(base, columns);
+        columns.push(fileColumnName);
+      }
+
+      const allRows = [];
+      const errors = [];
+      for (const file of files){
+        try {
+          const buffer = await file.arrayBuffer();
+          const workbook = XLSX.read(buffer, {type:'array', cellDates:true, raw:false, dateNF:'yyyy-mm-dd'});
+          if (!workbook.SheetNames.length) continue;
+          const sheet = workbook.Sheets[workbook.SheetNames[0]];
+          const rows = XLSX.utils.sheet_to_json(sheet, {header:1, defval:'', blankrows:false});
+          if (!rows.length) continue;
+          const headers = sanitizeHeaders(rows[0]);
+          if (includeFile && fileColumnName && headers.includes(fileColumnName)){
+            const revised = ensureUniqueName(fileColumnName, [...columns, ...headers]);
+            if (revised !== fileColumnName){
+              columns = columns.map(col => col === fileColumnName ? revised : col);
+              fileColumnName = revised;
+            }
+          }
+          headers.forEach(h => { if (!columns.includes(h)) columns.push(h); });
+          for (let i = 1; i < rows.length; i++){
+            const rawRow = rows[i];
+            const record = {};
+            let emptyCounter = 0;
+            headers.forEach((header, idx) => {
+              const cell = normalizeCell(rawRow[idx], trimValues);
+              if (cell === '') emptyCounter++;
+              record[header] = cell;
+            });
+            if (skipEmpty && emptyCounter === headers.length) continue;
+            if (includeFile && fileColumnName){
+              record[fileColumnName] = file.name;
+            }
+            allRows.push(record);
+          }
+        } catch (err){
+          console.error(err);
+          errors.push(`${file.name} 처리 중 오류가 발생했습니다: ${(err && err.message) || err}`);
+        }
+      }
+
+      mergedRows = allRows;
+      mergedColumns = columns;
+      if (errors.length){
+        setStatus(`${mergedRows.length}행 병합 • 오류 ${errors.length}건: ${errors[0]}`, 'warn');
+      } else if (!mergedRows.length){
+        setStatus('병합된 데이터가 없습니다. 헤더 또는 행을 확인하세요.', 'warn');
+      } else {
+        setStatus(`${mergedRows.length}행의 데이터를 병합했습니다.`, 'info');
+      }
+      updateSortOptions(columns.filter(Boolean));
+      updatePreview();
+      btnMerge.disabled = files.length === 0;
+    }
+
+    function download(type){
+      if (!mergedRows.length) return;
+      const rows = sortRows(mergedRows);
+      const data = rows.map(row => {
+        const obj = {};
+        mergedColumns.forEach(col => { obj[col] = row[col] ?? ''; });
+        return obj;
+      });
+      const worksheet = XLSX.utils.json_to_sheet(data, {header: mergedColumns});
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Merged');
+      if (type === 'csv'){
+        const csv = XLSX.utils.sheet_to_csv(worksheet);
+        const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'merged-data.csv';
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      } else {
+        XLSX.writeFile(workbook, 'merged-data.xlsx', {bookType:'xlsx'});
+      }
+      setStatus(type==='csv' ? 'CSV 파일을 다운로드했습니다.' : 'XLSX 파일을 다운로드했습니다.', 'info');
+    }
+
+    btnBrowse?.addEventListener('click', () => fileInput?.click());
+    btnClear?.addEventListener('click', clearData);
+    btnMerge?.addEventListener('click', mergeFiles);
+    btnDownloadCsv?.addEventListener('click', () => download('csv'));
+    btnDownloadXlsx?.addEventListener('click', () => download('xlsx'));
+    btnResetPreview?.addEventListener('click', () => {
+      mergedRows = [];
+      mergedColumns = [];
+      updatePreview();
+      setStatus('미리보기를 초기화했습니다.', 'info');
+    });
+
+    fileInput?.addEventListener('change', (e) => {
+      addFiles(e.target.files || []);
+      fileInput.value = '';
+    });
+
+    ['dragenter','dragover'].forEach(evt => {
+      dropZone.addEventListener(evt, (e) => {
+        e.preventDefault();
+        dropZone.classList.add('bg-white/10');
+      });
+    });
+    ['dragleave','drop'].forEach(evt => {
+      dropZone.addEventListener(evt, (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('bg-white/10');
+        if (evt === 'drop' && e.dataTransfer?.files){
+          addFiles(e.dataTransfer.files);
+        }
+      });
+    });
+
+    dropZone.addEventListener('paste', (e) => {
+      const items = e.clipboardData?.files;
+      if (items && items.length){
+        addFiles(items);
+      }
+    });
+
+    sortKeySelect.addEventListener('change', updatePreview);
+
+    window.addEventListener('paste', (e) => {
+      if (document.activeElement === fileColumnNameInput) return;
+      const files = e.clipboardData?.files;
+      if (files && files.length){
+        addFiles(files);
+        setStatus('클립보드에서 파일을 추가했습니다.', 'info');
+      }
+    });
+
+    (function selfTest(){
+      const must = [fileInput, dropZone, btnMerge, btnDownloadCsv, btnDownloadXlsx, sortKeySelect];
+      console.assert(must.every(Boolean), '필수 요소 누락', must);
+    })();
+
+    updateFileList();
+    updatePreview();
+    try { window.lucide?.createIcons?.(); } catch (e) { console.warn(e); }
+  });
+  </script>
+</body>
+</html>

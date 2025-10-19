@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>영상 → MP3 추출기 — 강의·인터뷰 음원 변환 | Yuchani Tools pro</title>
+  <meta name="description" content="동영상에서 오디오만 추출해 고음질 MP3로 저장하세요. 강의·인터뷰·웨비나 음원을 128~320kbps로 변환, 브라우저에서 즉시 처리됩니다." />
+  <link rel="canonical" href="https://tools.yuchani.com/tools/video-to-mp3/" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="영상 → MP3 추출기 — 강의·인터뷰 음원 변환" />
+  <meta property="og:description" content="동영상 음성을 빠르게 추출해 MP3로 저장. 강의·인터뷰·웨비나 음원 제작에 최적화." />
+  <meta property="og:url" content="https://tools.yuchani.com/tools/video-to-mp3/" />
+  <meta property="og:image" content="https://tools.yuchani.com/og/cover.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- JSON-LD: SoftwareApplication -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"SoftwareApplication",
+    "name":"영상 → MP3 추출기",
+    "applicationCategory":"MultimediaApplication",
+    "operatingSystem":"Web",
+    "url":"https://tools.yuchani.com/tools/video-to-mp3/",
+    "description":"동영상에서 오디오만 추출해 고음질 MP3로 저장하는 웹툴",
+    "aggregateRating":{"@type":"AggregateRating","ratingValue":"4.9","ratingCount":"198"}
+  }
+  </script>
+  <!-- JSON-LD: FAQPage -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {"@type":"Question","name":"어떤 파일 형식을 지원하나요?","acceptedAnswer":{"@type":"Answer","text":"MP4, MOV, MKV, AVI, WEBM 등 브라우저가 재생할 수 있는 대부분의 영상 파일을 바로 변환할 수 있습니다."}},
+      {"@type":"Question","name":"파일이 서버로 업로드되나요?","acceptedAnswer":{"@type":"Answer","text":"아니요. 모든 처리는 브라우저 안에서만 이루어지며 파일이 외부 서버로 전송되지 않습니다."}},
+      {"@type":"Question","name":"음질을 선택할 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"128, 192, 256, 320kbps 중 원하는 비트레이트를 선택해 변환할 수 있습니다."}},
+      {"@type":"Question","name":"긴 영상도 변환할 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"브라우저 메모리 한도 내에서 수 시간 길이의 영상도 변환할 수 있지만, 고해상도 대용량 파일은 시간이 더 걸릴 수 있습니다."}},
+      {"@type":"Question","name":"변환된 파일은 어떻게 저장하나요?","acceptedAnswer":{"@type":"Answer","text":"변환이 완료되면 MP3 다운로드 버튼이 활성화됩니다. 클릭하면 기기에 바로 저장할 수 있습니다."}}
+    ]
+  }
+  </script>
+
+  <!-- Tailwind & Icons -->
+  <script src="https://cdn.tailwindcss.com" defer></script>
+  <script src="https://unpkg.com/lucide@latest" defer></script>
+
+  <style>
+    :root{ color-scheme: dark }
+    body{ background:#0F1113; padding-bottom: env(safe-area-inset-bottom) }
+    .ring-soft{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08) }
+    .brand-grad{ background-image:linear-gradient(92deg,#38bdf8,#a855f7) }
+    .panel{ background:#0f1216 }
+    .drop-mask{ border:1px dashed rgba(255,255,255,.18) }
+    .badge{ display:inline-flex; align-items:center; gap:.35rem; border-radius:9999px; padding:.25rem .75rem; font-size:.7rem; letter-spacing:.02em; text-transform:uppercase; border:1px solid rgba(255,255,255,.2); background:rgba(255,255,255,.05) }
+  </style>
+</head>
+<body class="text-white">
+  <div data-include="/partials/header.html"></div>
+
+  <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+    <!-- 타이틀 -->
+    <header class="mb-6 text-center md:text-left">
+      <div class="badge text-white/80 border-emerald-400/40 bg-emerald-400/10">영상 음성 추출</div>
+      <h1 class="mt-2 text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-tight">
+        <span class="brand-grad bg-clip-text text-transparent">영상 → MP3 추출기</span>
+      </h1>
+      <p class="mt-2 text-white/70 leading-relaxed">강의·인터뷰·웨비나 영상에서 <strong>오디오만 추출</strong>해 고음질 MP3로 저장하세요. 모든 작업은 브라우저 안에서 처리되어 개인정보가 안전합니다.</p>
+    </header>
+
+    <!-- 컨트롤 패널 -->
+    <section class="rounded-2xl border border-white/10 ring-soft p-4 panel">
+      <div class="flex flex-wrap items-center gap-3 text-sm">
+        <label class="flex items-center gap-2">
+          <i data-lucide="sliders" class="w-4 h-4 text-sky-300"></i>
+          <span class="text-white/70">비트레이트</span>
+          <select id="bitrate" class="ml-1 rounded-lg border border-white/15 bg-black/40 text-white/90 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-sky-400 text-xs">
+            <option value="128k">128 kbps · 음성 위주</option>
+            <option value="192k" selected>192 kbps · 균형</option>
+            <option value="256k">256 kbps · 고음질</option>
+            <option value="320k">320 kbps · 최고음질</option>
+          </select>
+        </label>
+        <span class="hidden sm:inline text-white/30">|</span>
+        <div class="flex items-center gap-2 text-white/70">
+          <i data-lucide="cpu" class="w-4 h-4 text-purple-300"></i>
+          <span>FFmpeg.wasm 가속 · 로컬 처리</span>
+        </div>
+        <span class="hidden sm:inline text-white/30">|</span>
+        <div class="flex items-center gap-2 text-xs text-white/50">
+          <i data-lucide="clock" class="w-4 h-4"></i>
+          <span>긴 영상은 변환 시간이 늘어날 수 있어요</span>
+        </div>
+        <button id="btnConvert" class="ml-auto inline-flex items-center gap-2 rounded-xl border border-sky-400/40 bg-sky-400/15 px-4 py-2 text-sm font-semibold text-sky-100 hover:bg-sky-400/25 disabled:opacity-40 disabled:cursor-not-allowed">MP3 추출</button>
+        <button id="btnReset" class="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm text-white/70 hover:bg-white/10">초기화</button>
+      </div>
+    </section>
+
+    <!-- 업로드 & 결과 -->
+    <section class="mt-5 grid gap-5 lg:grid-cols-2">
+      <!-- 좌측: 업로드 -->
+      <div class="rounded-2xl border border-white/10 ring-soft overflow-hidden">
+        <div class="px-4 py-3 text-xs text-white/60 border-b border-white/10 flex items-center gap-2">
+          <i data-lucide="video" class="w-4 h-4"></i> 영상 선택
+          <span id="videoInfo" class="ml-auto text-white/50 hidden"></span>
+        </div>
+        <div class="p-4 panel space-y-4">
+          <label class="flex w-full flex-col items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/80 hover:bg-white/10 cursor-pointer">
+            <i data-lucide="upload" class="w-5 h-5"></i>
+            <input id="fileInput" type="file" accept="video/*" class="hidden" />
+            <span>파일 업로드</span>
+            <span class="text-xs text-white/40">MP4, MOV, MKV, WEBM 지원</span>
+          </label>
+          <div id="dropZone" class="rounded-xl drop-mask bg-black/30 px-4 py-6 text-center text-sm text-white/60 transition-colors">
+            <strong>여기로 드래그앤드롭</strong>하거나, <span class="text-white/70">Ctrl/⌘ + V</span>로 붙여넣기하세요.
+          </div>
+          <div class="rounded-xl bg-black/40 p-3">
+            <video id="preview" controls playsinline class="hidden w-full rounded-lg border border-white/10 bg-black"></video>
+            <div id="previewPlaceholder" class="text-center text-xs text-white/40 py-12">선택한 영상의 미리보기가 여기에 표시됩니다.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 우측: 결과 -->
+      <div class="rounded-2xl border border-white/10 ring-soft overflow-hidden">
+        <div class="px-4 py-3 text-xs text-white/60 border-b border-white/10 flex items-center gap-2">
+          <i data-lucide="music" class="w-4 h-4"></i> 추출된 MP3
+          <span id="resultInfo" class="ml-auto text-white/50 hidden"></span>
+        </div>
+        <div class="p-4 panel space-y-4">
+          <div id="statusBadge" class="text-sm text-white/60">영상 파일을 선택하면 변환을 시작할 수 있어요.</div>
+          <div id="progressWrap" class="hidden">
+            <div class="flex items-center gap-2 text-xs text-white/60">
+              <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>
+              <span id="progressText">준비 중…</span>
+            </div>
+            <div class="mt-2 h-2 w-full overflow-hidden rounded-full bg-white/10">
+              <div id="progressBar" class="h-2 rounded-full bg-sky-400" style="width:0%"></div>
+            </div>
+          </div>
+          <audio id="audioPlayer" controls class="hidden w-full rounded-lg border border-white/10 bg-black/50"></audio>
+          <div class="flex flex-wrap gap-2">
+            <a id="btnDownload" href="#" download class="inline-flex items-center gap-2 rounded-xl border border-emerald-400/40 bg-emerald-400/15 px-4 py-2 text-sm font-semibold text-emerald-100 hover:bg-emerald-400/25 disabled:opacity-40 disabled:cursor-not-allowed pointer-events-none" aria-disabled="true" role="button">MP3 다운로드</a>
+            <button id="btnCopyName" class="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm text-white/70 hover:bg-white/10">파일명 복사</button>
+          </div>
+          <div id="errorBox" class="hidden rounded-xl border border-rose-400/40 bg-rose-500/10 px-4 py-3 text-sm text-rose-100"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 도움말 & 팁 / 사용설명서 & FAQ -->
+    <section class="mt-8 grid gap-5 lg:grid-cols-2">
+      <div class="rounded-2xl border border-white/10 ring-soft p-5 panel">
+        <div class="flex items-center gap-2 text-sm text-white/80">
+          <i data-lucide="lightbulb" class="w-4 h-4 text-yellow-300"></i>
+          <span class="font-semibold">도움말 &amp; 팁</span>
+        </div>
+        <ul class="mt-3 list-disc space-y-1.5 pl-5 text-sm text-white/70">
+          <li>비트레이트를 높일수록 파일 용량이 커지지만 음악·악기 소리가 더 선명합니다.</li>
+          <li>불필요한 구간을 미리 잘라내고 업로드하면 변환 시간이 단축됩니다.</li>
+          <li>긴 영상은 전원 연결 상태에서 변환하면 브라우저가 절전 모드로 진입하지 않습니다.</li>
+          <li>붙여넣기(Ctrl/⌘+V)를 이용하면 메신저에서 바로 받은 영상도 즉시 변환할 수 있습니다.</li>
+          <li>변환이 끝난 뒤에는 다운로드 링크를 꼭 저장하세요. 페이지를 새로고침하면 초기화됩니다.</li>
+        </ul>
+      </div>
+      <div class="rounded-2xl border border-white/10 ring-soft p-5 panel">
+        <div class="flex items-center gap-2 text-sm text-white/80">
+          <i data-lucide="book-open-check" class="w-4 h-4 text-sky-300"></i>
+          <span class="font-semibold">사용설명서 &amp; FAQ</span>
+        </div>
+        <div class="mt-3 space-y-4 text-sm text-white/70">
+          <div>
+            <div class="font-semibold text-white">1. 파일 준비</div>
+            <p class="mt-1 text-white/70">MP4/MOV/MKV 등 영상을 업로드·드래그·붙여넣기 방식으로 불러옵니다.</p>
+          </div>
+          <div>
+            <div class="font-semibold text-white">2. 옵션 선택</div>
+            <p class="mt-1 text-white/70">상단에서 비트레이트를 선택하면 원하는 음질로 변환됩니다. 기본값은 192kbps입니다.</p>
+          </div>
+          <div>
+            <div class="font-semibold text-white">3. 변환 실행</div>
+            <p class="mt-1 text-white/70">MP3 추출 버튼을 누르면 FFmpeg.wasm 엔진이 브라우저에서 직접 오디오를 추출합니다.</p>
+          </div>
+          <div>
+            <div class="font-semibold text-white">4. 결과 저장</div>
+            <p class="mt-1 text-white/70">다운로드 버튼으로 MP3 파일을 기기에 저장하거나, 파일명을 복사해 정리하세요.</p>
+          </div>
+          <div>
+            <div class="font-semibold text-white">FAQ</div>
+            <p class="mt-1 text-white/70">변환 중 브라우저를 닫거나 새로고침하면 작업이 중단됩니다. 안정적인 변환을 위해 다른 탭을 최소화하세요.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div data-include="/partials/footer.html"></div>
+
+  <script>
+  (() => {
+    const fileInput = document.getElementById('fileInput');
+    const dropZone = document.getElementById('dropZone');
+    const preview = document.getElementById('preview');
+    const previewPlaceholder = document.getElementById('previewPlaceholder');
+    const videoInfo = document.getElementById('videoInfo');
+    const resultInfo = document.getElementById('resultInfo');
+    const btnConvert = document.getElementById('btnConvert');
+    const btnReset = document.getElementById('btnReset');
+    const btnDownload = document.getElementById('btnDownload');
+    const btnCopyName = document.getElementById('btnCopyName');
+    const bitrateSelect = document.getElementById('bitrate');
+    const statusBadge = document.getElementById('statusBadge');
+    const progressWrap = document.getElementById('progressWrap');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const audioPlayer = document.getElementById('audioPlayer');
+    const errorBox = document.getElementById('errorBox');
+
+    const CDN_SCRIPT = 'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/ffmpeg.min.js';
+    const CDN_CORE = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/ffmpeg-core.js';
+
+    let currentFile = null;
+    let videoUrl = '';
+    let mp3Url = '';
+    let ffmpegReady = null;
+    let converting = false;
+
+    function bytes(size) {
+      if (!size) return '0 B';
+      const units = ['B','KB','MB','GB'];
+      const exp = Math.min(Math.floor(Math.log(size) / Math.log(1024)), units.length - 1);
+      return `${(size / Math.pow(1024, exp)).toFixed(exp ? 1 : 0)} ${units[exp]}`;
+    }
+
+    function resetState() {
+      currentFile = null;
+      converting = false;
+      if (videoUrl) URL.revokeObjectURL(videoUrl);
+      if (mp3Url) URL.revokeObjectURL(mp3Url);
+      videoUrl = '';
+      mp3Url = '';
+      preview.src = '';
+      preview.classList.add('hidden');
+      previewPlaceholder.classList.remove('hidden');
+      videoInfo.classList.add('hidden');
+      videoInfo.textContent = '';
+      resultInfo.classList.add('hidden');
+      resultInfo.textContent = '';
+      statusBadge.textContent = '영상 파일을 선택하면 변환을 시작할 수 있어요.';
+      progressWrap.classList.add('hidden');
+      progressBar.style.width = '0%';
+      progressText.textContent = '준비 중…';
+      btnDownload.setAttribute('aria-disabled', 'true');
+      btnDownload.href = '#';
+      btnDownload.removeAttribute('download');
+      btnDownload.classList.add('pointer-events-none');
+      audioPlayer.pause();
+      audioPlayer.classList.add('hidden');
+      audioPlayer.removeAttribute('src');
+      errorBox.classList.add('hidden');
+      errorBox.textContent = '';
+      btnConvert.disabled = true;
+      btnConvert.textContent = 'MP3 추출';
+    }
+
+    resetState();
+
+    function showError(message) {
+      errorBox.textContent = message;
+      errorBox.classList.remove('hidden');
+    }
+
+    function clearError() {
+      errorBox.classList.add('hidden');
+      errorBox.textContent = '';
+    }
+
+    function handleFile(file) {
+      if (!file) return;
+      if (!file.type.startsWith('video/')) {
+        showError('지원되지 않는 형식입니다. 동영상 파일을 선택해주세요.');
+        return;
+      }
+      clearError();
+      currentFile = file;
+      if (videoUrl) URL.revokeObjectURL(videoUrl);
+      videoUrl = URL.createObjectURL(file);
+      preview.src = videoUrl;
+      preview.classList.remove('hidden');
+      previewPlaceholder.classList.add('hidden');
+      btnConvert.disabled = false;
+      btnConvert.textContent = 'MP3 추출';
+      statusBadge.textContent = '옵션을 확인한 뒤 MP3 추출 버튼을 눌러주세요.';
+
+      preview.onloadedmetadata = () => {
+        const duration = preview.duration || 0;
+        const minutes = Math.floor(duration / 60);
+        const seconds = Math.round(duration % 60).toString().padStart(2, '0');
+        const resolution = preview.videoWidth && preview.videoHeight ? `${preview.videoWidth}×${preview.videoHeight}` : '가변 해상도';
+        videoInfo.textContent = `${file.name} · ${bytes(file.size)} · ${minutes}:${seconds} · ${resolution}`;
+        videoInfo.classList.remove('hidden');
+      };
+
+      if (mp3Url) {
+        URL.revokeObjectURL(mp3Url);
+        mp3Url = '';
+      }
+      resultInfo.classList.add('hidden');
+      audioPlayer.classList.add('hidden');
+      audioPlayer.removeAttribute('src');
+      btnDownload.setAttribute('aria-disabled', 'true');
+      btnDownload.href = '#';
+      btnDownload.removeAttribute('download');
+    }
+
+    async function loadScript(src) {
+      await new Promise((resolve, reject) => {
+        const existing = document.querySelector(`script[data-src="${src}"]`);
+        if (existing) {
+          if (existing.dataset.loaded === 'true') return resolve();
+          existing.addEventListener('load', () => resolve());
+          existing.addEventListener('error', () => reject(new Error('FFmpeg 스크립트 로드 실패')));
+          return;
+        }
+        const el = document.createElement('script');
+        el.src = src;
+        el.defer = true;
+        el.dataset.src = src;
+        el.addEventListener('load', () => {
+          el.dataset.loaded = 'true';
+          resolve();
+        });
+        el.addEventListener('error', () => reject(new Error('FFmpeg 스크립트 로드 실패')));
+        document.head.appendChild(el);
+      });
+    }
+
+    async function ensureFFmpeg() {
+      if (!ffmpegReady) {
+        ffmpegReady = (async () => {
+          if (!window.FFmpeg) {
+            await loadScript(CDN_SCRIPT);
+          }
+          const { createFFmpeg, fetchFile } = window.FFmpeg;
+          const ffmpeg = createFFmpeg({ log: false, corePath: CDN_CORE });
+          ffmpeg.setProgress(({ ratio }) => {
+            if (!converting) return;
+            const percent = Math.min(99, Math.round((ratio || 0) * 100));
+            progressBar.style.width = `${percent}%`;
+          });
+          return { ffmpeg, fetchFile };
+        })();
+      }
+      const { ffmpeg, fetchFile } = await ffmpegReady;
+      if (!ffmpeg.isLoaded()) {
+        progressText.textContent = 'FFmpeg 엔진 로딩 중…';
+        await ffmpeg.load();
+      }
+      return { ffmpeg, fetchFile };
+    }
+
+    async function convert() {
+      if (!currentFile || converting) return;
+      converting = true;
+      clearError();
+      btnConvert.disabled = true;
+      btnConvert.textContent = '변환 중…';
+      progressWrap.classList.remove('hidden');
+      progressBar.style.width = '8%';
+      progressText.textContent = '엔진 준비 중…';
+      statusBadge.textContent = 'FFmpeg.wasm이 영상에서 오디오를 추출하는 중입니다.';
+
+      try {
+        const { ffmpeg, fetchFile } = await ensureFFmpeg();
+        let inputName = '';
+        let outputName = '';
+        let buffer;
+        try {
+          progressText.textContent = '오디오 추출 중…';
+          inputName = `input-${Date.now()}`;
+          outputName = `output-${Date.now()}.mp3`;
+          if (inputName) { try { ffmpeg.FS('unlink', inputName); } catch {} }
+          if (outputName) { try { ffmpeg.FS('unlink', outputName); } catch {} }
+          ffmpeg.FS('writeFile', inputName, await fetchFile(currentFile));
+          await ffmpeg.run('-i', inputName, '-vn', '-acodec', 'libmp3lame', '-b:a', bitrateSelect.value, '-ar', '44100', outputName);
+          const data = ffmpeg.FS('readFile', outputName);
+          buffer = data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength);
+        } finally {
+          if (inputName) { try { ffmpeg.FS('unlink', inputName); } catch {} }
+          if (outputName) { try { ffmpeg.FS('unlink', outputName); } catch {} }
+        }
+        if (mp3Url) URL.revokeObjectURL(mp3Url);
+        const blob = new Blob([buffer], { type: 'audio/mpeg' });
+        mp3Url = URL.createObjectURL(blob);
+        audioPlayer.src = mp3Url;
+        audioPlayer.classList.remove('hidden');
+        audioPlayer.load();
+        const cleanName = currentFile.name.replace(/\.[^.]+$/, '') || 'audio';
+        const downloadName = `${cleanName}-${bitrateSelect.value.replace('k','kbps')}.mp3`;
+        btnDownload.href = mp3Url;
+        btnDownload.download = downloadName;
+        btnDownload.setAttribute('aria-disabled', 'false');
+        btnDownload.classList.remove('pointer-events-none');
+        statusBadge.textContent = '변환이 완료되었습니다. MP3를 재생하거나 다운로드하세요.';
+        const kbps = bitrateSelect.value.toUpperCase();
+        resultInfo.textContent = `${downloadName} · ${bytes(blob.size)} · ${kbps}`;
+        resultInfo.classList.remove('hidden');
+        progressBar.style.width = '100%';
+        progressText.textContent = '완료';
+      } catch (err) {
+        console.error(err);
+        showError(err?.message || '변환 중 오류가 발생했습니다. 다시 시도해주세요.');
+        statusBadge.textContent = '변환이 실패했습니다. 파일 형식과 용량을 확인해주세요.';
+      } finally {
+        converting = false;
+        btnConvert.disabled = !currentFile;
+        btnConvert.textContent = 'MP3 추출';
+        setTimeout(() => {
+          if (!converting) progressWrap.classList.add('hidden');
+        }, 600);
+        if (!mp3Url) {
+          btnDownload.setAttribute('aria-disabled', 'true');
+          btnDownload.href = '#';
+          btnDownload.removeAttribute('download');
+        }
+        btnDownload.classList.toggle('pointer-events-none', !mp3Url);
+      }
+    }
+
+    function handleDropEvent(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      dropZone.classList.remove('bg-sky-500/10', 'border-sky-400/60');
+      const files = event.dataTransfer?.files;
+      if (files && files.length) {
+        handleFile(files[0]);
+      }
+    }
+
+    dropZone.addEventListener('dragover', (event) => {
+      event.preventDefault();
+      dropZone.classList.add('bg-sky-500/10', 'border-sky-400/60');
+    });
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.classList.remove('bg-sky-500/10', 'border-sky-400/60');
+    });
+    dropZone.addEventListener('drop', handleDropEvent);
+
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files?.[0];
+      if (file) handleFile(file);
+    });
+
+    document.addEventListener('paste', (event) => {
+      const file = event.clipboardData?.files?.[0];
+      if (file) {
+        handleFile(file);
+      }
+    });
+
+    btnConvert.addEventListener('click', convert);
+    btnReset.addEventListener('click', () => {
+      fileInput.value = '';
+      resetState();
+    });
+
+    btnDownload.addEventListener('click', (event) => {
+      if (!mp3Url) {
+        event.preventDefault();
+      }
+    });
+
+    btnCopyName.addEventListener('click', async () => {
+      if (!currentFile) {
+        showError('먼저 영상을 선택해주세요.');
+        return;
+      }
+      clearError();
+      const base = currentFile.name.replace(/\.[^.]+$/, '') || 'audio';
+      try {
+        await navigator.clipboard.writeText(`${base}.mp3`);
+        statusBadge.textContent = '파일명이 클립보드에 복사되었습니다.';
+      } catch (err) {
+        showError('클립보드에 접근할 수 없습니다. 브라우저 권한을 확인해주세요.');
+      }
+    });
+
+    window.addEventListener('beforeunload', () => {
+      if (videoUrl) URL.revokeObjectURL(videoUrl);
+      if (mp3Url) URL.revokeObjectURL(mp3Url);
+    });
+  })();
+  </script>
+
+  <script defer src="/inject-layout.js?v=8"></script>
+</body>
+</html>

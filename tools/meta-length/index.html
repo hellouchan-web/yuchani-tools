@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>메타 길이 체크 · 제목/설명 잘림 방지 | Yuchani Tools pro</title>
+  <meta name="description" content="구글 검색결과에서 제목과 설명이 잘리지 않도록 길이와 픽셀 폭을 실시간으로 점검하세요. 초록 막대 가이드, 데스크톱/모바일 미리보기, SEO 체크리스트 제공." />
+  <link rel="canonical" href="https://tools.yuchani.com/tools/meta-length/" />
+  <meta name="robots" content="index,follow" />
+  <!-- OG/Twitter -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="메타 길이 체크 · 제목/설명 잘림 방지" />
+  <meta property="og:description" content="검색결과에서 잘리는 문제를 초록 막대로 즉시 진단하세요. 데스크톱/모바일 미리보기와 SEO 팁 포함." />
+  <meta property="og:url" content="https://tools.yuchani.com/tools/meta-length/" />
+  <meta property="og:image" content="https://tools.yuchani.com/assets/og/cover.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- Tailwind / Lucide -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root { color-scheme: dark; }
+    body { background:#0F1113; }
+    .panel { background:#101318; }
+    .ring-soft { box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
+    .preview-card.desktop { max-width: 640px; }
+    .preview-card.mobile { max-width: 420px; }
+    .preview-card { background:#11141a; }
+    .preview-title { font-family:'Pretendard','Noto Sans KR','Apple SD Gothic Neo',system-ui,sans-serif; font-size:18px; font-weight:600; }
+    .preview-desc { font-family:'Pretendard','Noto Sans KR','Apple SD Gothic Neo',system-ui,sans-serif; font-size:14px; }
+    .preview-url { font-family:'Roboto','Pretendard','Noto Sans KR',system-ui,sans-serif; font-size:13px; letter-spacing:.01em; }
+    .preview-card.mobile .preview-title { font-size:16px; line-height:1.4; }
+    .preview-card.mobile .preview-desc { font-size:13px; line-height:1.6; }
+  </style>
+
+  <!-- JSON-LD: WebApplication -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"WebApplication",
+    "name":"메타 길이 체크",
+    "url":"https://tools.yuchani.com/tools/meta-length/",
+    "applicationCategory":"SEOApplication",
+    "operatingSystem":"Web",
+    "description":"검색결과에서 잘리지 않도록 메타 제목과 설명 길이를 픽셀 단위로 측정하는 전문 도구",
+    "featureList":[
+      "메타 제목/설명 길이 카운터",
+      "픽셀 폭 측정 및 초록 막대 시각화",
+      "데스크톱/모바일 SERP 미리보기",
+      "SEO 체크리스트와 FAQ"
+    ]
+  }
+  </script>
+
+  <!-- JSON-LD: FAQPage -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {"@type":"Question","name":"메타 제목은 몇 자까지 안전한가요?","acceptedAnswer":{"@type":"Answer","text":"한글 기준 45~60자 또는 580px 이하를 권장합니다. 픽셀 폭이 초록색일 때 대부분의 SERP에서 잘리지 않습니다."}},
+      {"@type":"Question","name":"모바일과 데스크톱 길이는 다른가요?","acceptedAnswer":{"@type":"Answer","text":"네. 모바일은 조금 더 짧은 제목과 설명을 노출합니다. 툴의 '미리보기 모드' 토글로 두 환경을 비교하세요."}},
+      {"@type":"Question","name":"메타 설명이 길어도 되나요?","acceptedAnswer":{"@type":"Answer","text":"110~160자 또는 920px 이하가 가장 안정적입니다. 그 이상은 구글이 중간을 잘라서 보여줄 수 있습니다."}},
+      {"@type":"Question","name":"문자수가 같아도 픽셀 폭이 다른 이유는?","acceptedAnswer":{"@type":"Answer","text":"폰트에서 각 글자의 폭이 다르기 때문입니다. 'W'나 숫자는 넓고, 'i'나 띄어쓰기는 좁습니다. 픽셀 기반 측정을 함께 참고하세요."}},
+      {"@type":"Question","name":"SEO 최적화를 위해 추가로 해야 할 일은?","acceptedAnswer":{"@type":"Answer","text":"키워드 배치, 클릭 유도 문구, 브랜드 표기 등 콘텐츠 전략도 함께 점검해야 합니다. 도움말에 제공된 체크리스트를 참고하세요."}}
+    ]
+  }
+  </script>
+</head>
+<body class="text-white">
+  <!-- 공통 헤더 -->
+  <div data-include="/partials/header.html"></div>
+
+  <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+    <!-- 타이틀 영역 -->
+    <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <div>
+        <h1 class="text-2xl md:text-3xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-cyan-300 to-sky-300">
+          메타 길이 체크
+        </h1>
+        <p class="mt-2 text-white/70 max-w-2xl">
+          제목/설명 길이를 <span class="font-semibold text-emerald-200">초록 막대</span>로 확인하고 SERP 잘림을 예방하세요.
+          구글 SEO 최적화 · 속도 최적화 · 모바일/PC 반응형 모두 지원합니다.
+        </p>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <a href="/" class="inline-flex items-center gap-2 px-3 py-1.5 text-sm rounded-xl border border-emerald-500/40 bg-emerald-500/10 text-emerald-100 hover:bg-emerald-500/20 transition">
+          <i data-lucide="home" class="w-4 h-4"></i> 메인으로
+        </a>
+        <button id="btnReset" class="inline-flex items-center gap-2 px-3 py-1.5 text-sm rounded-xl border border-white/15 hover:bg-white/5 transition">
+          <i data-lucide="rotate-ccw" class="w-4 h-4"></i> 초기화
+        </button>
+      </div>
+    </div>
+
+    <!-- KPI 카드 -->
+    <section class="mt-6 grid gap-4 md:grid-cols-3">
+      <article class="rounded-2xl border border-white/10 ring-soft p-4 panel">
+        <div class="flex items-center gap-2 text-sm text-white/70">
+          <i data-lucide="type" class="w-4 h-4 text-emerald-300"></i>
+          <span class="font-semibold">제목 권장 길이</span>
+        </div>
+        <p class="mt-2 text-lg font-semibold text-white/90">45~60자 · 580px</p>
+        <p class="text-sm text-white/60">브랜드명 포함 시 55자를 넘지 않는 구성이 가장 안정적입니다.</p>
+      </article>
+      <article class="rounded-2xl border border-white/10 ring-soft p-4 panel">
+        <div class="flex items-center gap-2 text-sm text-white/70">
+          <i data-lucide="align-left" class="w-4 h-4 text-cyan-300"></i>
+          <span class="font-semibold">설명 권장 길이</span>
+        </div>
+        <p class="mt-2 text-lg font-semibold text-white/90">110~160자 · 920px</p>
+        <p class="text-sm text-white/60">핵심 키워드, 가치 제안, CTA 문구를 초반 150자에 담으세요.</p>
+      </article>
+      <article class="rounded-2xl border border-white/10 ring-soft p-4 panel">
+        <div class="flex items-center gap-2 text-sm text-white/70">
+          <i data-lucide="sparkles" class="w-4 h-4 text-sky-300"></i>
+          <span class="font-semibold">실시간 SERP 미리보기</span>
+        </div>
+        <p class="mt-2 text-lg font-semibold text-white/90">데스크톱 · 모바일</p>
+        <p class="text-sm text-white/60">검색 스니펫 디자인을 즉시 확인하고 CTA를 다듬어 보세요.</p>
+      </article>
+    </section>
+
+    <!-- 입력 영역 -->
+    <section class="mt-6 grid gap-6 lg:grid-cols-2">
+      <div class="space-y-6">
+        <!-- 제목 입력 -->
+        <div class="rounded-2xl border border-white/10 ring-soft panel p-4">
+          <header class="flex items-center gap-2 text-sm text-white/70">
+            <i data-lucide="pen-square" class="w-4 h-4 text-emerald-300"></i>
+            <span class="font-semibold">메타 제목</span>
+          </header>
+          <textarea id="metaTitle" class="mt-3 w-full h-32 md:h-36 bg-white text-black rounded-xl px-3 py-3 text-sm leading-relaxed outline-none resize-y" placeholder="예: 초보자도 이해하는 SEO 가이드 | 브랜드명"></textarea>
+          <div class="mt-3 flex flex-col gap-2">
+            <div class="flex flex-wrap items-center gap-2 text-xs text-white/60">
+              <span>길이: <span id="titleChar" class="font-semibold text-white/80">0</span>자</span>
+              <span>픽셀 폭: <span id="titlePixel" class="font-semibold text-white/80">0</span>px</span>
+              <span id="titleStatus" class="ml-auto inline-flex items-center gap-1 px-2 py-1 rounded-lg border border-white/10 text-white/70">입력 대기</span>
+            </div>
+            <div class="h-2 w-full rounded-full bg-white/10 overflow-hidden">
+              <div id="titleBar" class="h-full w-0 rounded-full bg-emerald-400 transition-all duration-300"></div>
+            </div>
+            <p class="text-xs text-white/50">45~60자 또는 580px 이하에서 초록색으로 유지되도록 다듬어 주세요.</p>
+          </div>
+        </div>
+
+        <!-- 설명 입력 -->
+        <div class="rounded-2xl border border-white/10 ring-soft panel p-4">
+          <header class="flex items-center gap-2 text-sm text-white/70">
+            <i data-lucide="text" class="w-4 h-4 text-cyan-300"></i>
+            <span class="font-semibold">메타 설명</span>
+          </header>
+          <textarea id="metaDescription" class="mt-3 w-full h-40 md:h-48 bg-white text-black rounded-xl px-3 py-3 text-sm leading-relaxed outline-none resize-y" placeholder="예: 핵심 키워드, 문제 인식, 해결 방법, 클릭을 유도하는 콜투액션까지 한 문단으로 작성하세요."></textarea>
+          <div class="mt-3 flex flex-col gap-2">
+            <div class="flex flex-wrap items-center gap-2 text-xs text-white/60">
+              <span>길이: <span id="descChar" class="font-semibold text-white/80">0</span>자</span>
+              <span>픽셀 폭: <span id="descPixel" class="font-semibold text-white/80">0</span>px</span>
+              <span id="descStatus" class="ml-auto inline-flex items-center gap-1 px-2 py-1 rounded-lg border border-white/10 text-white/70">입력 대기</span>
+            </div>
+            <div class="h-2 w-full rounded-full bg-white/10 overflow-hidden">
+              <div id="descBar" class="h-full w-0 rounded-full bg-emerald-400 transition-all duration-300"></div>
+            </div>
+            <p class="text-xs text-white/50">110~160자 또는 920px 이하에서 초록색 상태를 유지하면 안정적입니다.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 미리보기 & 체크리스트 -->
+      <div class="space-y-6">
+        <div class="rounded-2xl border border-white/10 ring-soft panel p-4">
+          <header class="flex flex-wrap items-center gap-2 text-sm text-white/70">
+            <i data-lucide="monitor-smartphone" class="w-4 h-4 text-sky-300"></i>
+            <span class="font-semibold">SERP 미리보기</span>
+            <div class="ml-auto inline-flex rounded-lg border border-white/10 bg-black/10 p-1 text-xs">
+              <button data-mode="desktop" class="previewMode px-3 py-1 rounded-md bg-emerald-500/20 text-emerald-100 font-medium">데스크톱</button>
+              <button data-mode="mobile" class="previewMode px-3 py-1 rounded-md text-white/70 hover:text-white/90">모바일</button>
+            </div>
+          </header>
+          <div class="mt-4">
+            <div id="serpPreview" class="preview-card desktop mx-auto rounded-2xl border border-white/10 bg-gradient-to-br from-white/5 to-white/0 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)] transition-all duration-500">
+              <div class="preview-url text-emerald-200/80">https://example.com/landing</div>
+              <div class="mt-2 preview-title text-emerald-100" id="previewTitle">검색엔진 최적화 제목이 여기에 노출됩니다</div>
+              <div class="mt-1 text-xs text-white/40">사이트 · 웹마스터 · 오늘 업데이트</div>
+              <div class="mt-3 preview-desc text-white/70" id="previewDesc">한 줄 요약과 클릭을 유도하는 메시지를 2줄 이내로 작성하세요. 추천 길이 범위에서 초록 막대를 유지하면 깔끔하게 노출됩니다.</div>
+            </div>
+          </div>
+          <p class="mt-4 text-xs text-white/50">URL, 구조화 데이터 등은 실제 사이트 설정을 참고하세요. 본 미리보기는 길이와 톤 조정에 집중했습니다.</p>
+        </div>
+
+        <div class="rounded-2xl border border-white/10 ring-soft panel p-4">
+          <header class="flex items-center gap-2 text-sm text-white/70">
+            <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-300"></i>
+            <span class="font-semibold">SEO 체크리스트</span>
+          </header>
+          <ul class="mt-3 space-y-2 text-sm text-white/70">
+            <li class="flex items-start gap-2"><i data-lucide="sparkles" class="w-4 h-4 mt-0.5 text-emerald-300"></i><span>핵심 키워드는 제목 앞단에 배치하고 브랜드명은 끝부분에 둡니다.</span></li>
+            <li class="flex items-start gap-2"><i data-lucide="sparkles" class="w-4 h-4 mt-0.5 text-emerald-300"></i><span>메타 설명은 문제 인식 → 해결책 → CTA 순서로 구성합니다.</span></li>
+            <li class="flex items-start gap-2"><i data-lucide="sparkles" class="w-4 h-4 mt-0.5 text-emerald-300"></i><span>중복 메타 태그를 피하고 페이지마다 고유한 메시지를 작성하세요.</span></li>
+            <li class="flex items-start gap-2"><i data-lucide="sparkles" class="w-4 h-4 mt-0.5 text-emerald-300"></i><span>데이터 기반 테스트를 위해 A/B 실험 혹은 Search Console 성과를 추적하세요.</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 도움말 & FAQ -->
+    <section class="mt-8 grid gap-4 md:grid-cols-2">
+      <div class="rounded-2xl border border-white/10 ring-soft panel p-4">
+        <div class="flex items-center gap-2 text-sm text-white/80">
+          <i data-lucide="lightbulb" class="w-4 h-4 text-yellow-300"></i>
+          <span class="font-semibold">도움말 & 팁</span>
+        </div>
+        <ul class="mt-3 list-disc pl-5 text-sm text-white/70 space-y-1.5">
+          <li>입력한 내용은 브라우저에만 저장되며 서버로 전송되지 않습니다.</li>
+          <li>픽셀 폭은 SERP 폰트를 기준으로 측정합니다. 브라우저/언어 설정에 따라 ±5px 오차가 발생할 수 있습니다.</li>
+          <li>초록 막대가 유지되지 않으면 단어를 간결하게 정리하거나 기호 대신 자연어를 사용해 보세요.</li>
+          <li>모바일 모드에서 잘리면 핵심 문장을 더 앞쪽에 배치해 재작성하세요.</li>
+          <li>작성한 결과는 <span class="text-emerald-200 font-semibold">Ctrl/⌘ + C</span>로 복사해 CMS에 붙여넣으면 됩니다.</li>
+        </ul>
+      </div>
+      <div class="rounded-2xl border border-white/10 ring-soft panel p-4">
+        <div class="flex items-center gap-2 text-sm text-white/80">
+          <i data-lucide="help-circle" class="w-4 h-4 text-cyan-300"></i>
+          <span class="font-semibold">사용설명서 & FAQ</span>
+        </div>
+        <ol class="mt-3 list-decimal pl-5 text-sm text-white/70 space-y-1.5">
+          <li><strong>제목과 설명</strong>을 각각 입력합니다. 샘플 문구를 참고해 구조를 잡으세요.</li>
+          <li>초록 막대를 유지할 때까지 <strong>길이</strong>와 <strong>픽셀 폭</strong>을 조정합니다.</li>
+          <li><strong>미리보기 모드</strong>를 전환하며 데스크톱/모바일 화면을 확인합니다.</li>
+          <li>필요하면 SEO 체크리스트를 따라 메시지를 강화합니다.</li>
+          <li>완료 후 CMS 또는 메타 태그에 복사하여 붙여넣고 사이트를 업데이트합니다.</li>
+        </ol>
+      </div>
+    </section>
+  </main>
+
+  <!-- 공통 푸터 -->
+  <div data-include="/partials/footer.html"></div>
+
+  <!-- include + 스크립트 -->
+  <script defer src="/inject-layout.js?v=6"></script>
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const titleInput = document.getElementById('metaTitle');
+    const descInput = document.getElementById('metaDescription');
+    const titleChar = document.getElementById('titleChar');
+    const titlePixel = document.getElementById('titlePixel');
+    const titleStatus = document.getElementById('titleStatus');
+    const titleBar = document.getElementById('titleBar');
+    const descChar = document.getElementById('descChar');
+    const descPixel = document.getElementById('descPixel');
+    const descStatus = document.getElementById('descStatus');
+    const descBar = document.getElementById('descBar');
+    const previewTitle = document.getElementById('previewTitle');
+    const previewDesc = document.getElementById('previewDesc');
+    const previewModes = document.querySelectorAll('.previewMode');
+    const serpPreview = document.getElementById('serpPreview');
+    const resetBtn = document.getElementById('btnReset');
+
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
+    const configs = {
+      title: {
+        min: 30,
+        goodMin: 45,
+        goodMax: 60,
+        hardMax: 70,
+        maxPixel: 580,
+        font: '600 20px "Pretendard","Noto Sans KR","Apple SD Gothic Neo",system-ui'
+      },
+      desc: {
+        min: 80,
+        goodMin: 110,
+        goodMax: 160,
+        hardMax: 180,
+        maxPixel: 920,
+        font: '400 14px "Pretendard","Noto Sans KR","Apple SD Gothic Neo",system-ui'
+      }
+    };
+
+    const statusTheme = {
+      empty: { text:'text-white/60', badge:'border-white/15 text-white/60 bg-white/5', bar:'bg-white/30' },
+      short: { text:'text-amber-200', badge:'border-amber-400/40 text-amber-200 bg-amber-500/15', bar:'bg-amber-400' },
+      good: { text:'text-emerald-200', badge:'border-emerald-400/40 text-emerald-100 bg-emerald-500/20', bar:'bg-emerald-400' },
+      long: { text:'text-rose-200', badge:'border-rose-400/40 text-rose-100 bg-rose-500/20', bar:'bg-rose-400' }
+    };
+
+    const defaultPreview = {
+      title: '검색엔진 최적화 제목이 여기에 노출됩니다',
+      desc: '한 줄 요약과 클릭을 유도하는 메시지를 2줄 이내로 작성하세요. 추천 길이 범위에서 초록 막대를 유지하면 깔끔하게 노출됩니다.'
+    };
+
+    function measurePx(value, font){
+      ctx.font = font;
+      return Math.round(ctx.measureText(value).width);
+    }
+
+    function classify(value, cfg){
+      const length = value.trim().length;
+      if (!length) return { state:'empty', message:'입력해 주세요', ratio:0, px:0, length:0 };
+      const px = measurePx(value.trim(), cfg.font);
+      let state = 'good';
+      let message = '이대로 사용해도 좋아요!';
+      if (length < cfg.goodMin || px < cfg.maxPixel * 0.75) {
+        state = 'short';
+        message = `${cfg.goodMin}자 이상 또는 픽셀 폭을 조금 늘려보세요.`;
+      }
+      if (length > cfg.goodMax || px > cfg.maxPixel) {
+        state = 'long';
+        message = `권장 범위를 초과했어요. ${cfg.goodMax}자·${cfg.maxPixel}px 이하로 다듬어 주세요.`;
+      }
+      return { state, message, ratio: Math.min(length / cfg.hardMax, 1), px, length };
+    }
+
+    function update(){
+      const title = titleInput.value;
+      const desc = descInput.value;
+      const titleInfo = classify(title, configs.title);
+      const descInfo = classify(desc, configs.desc);
+
+      titleChar.textContent = titleInfo.length || 0;
+      titlePixel.textContent = titleInfo.px || 0;
+      descChar.textContent = descInfo.length || 0;
+      descPixel.textContent = descInfo.px || 0;
+
+      applyStatus(titleStatus, titleBar, titleInfo, configs.title);
+      applyStatus(descStatus, descBar, descInfo, configs.desc);
+
+      previewTitle.textContent = title.trim() || defaultPreview.title;
+      previewDesc.textContent = desc.trim() || defaultPreview.desc;
+    }
+
+    function applyStatus(badge, bar, info){
+      const theme = statusTheme[info.state] || statusTheme.empty;
+      badge.className = `ml-auto inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium ${theme.badge}`;
+      badge.innerHTML = '';
+      const icon = document.createElement('i');
+      icon.setAttribute('data-lucide', info.state === 'good' ? 'check' : info.state === 'short' ? 'alert-circle' : info.state === 'long' ? 'alert-octagon' : 'loader');
+      icon.className = 'w-3.5 h-3.5';
+      badge.appendChild(icon);
+      const span = document.createElement('span');
+      span.textContent = info.message;
+      badge.appendChild(span);
+
+      bar.style.width = `${Math.max(info.ratio, 0) * 100}%`;
+      bar.className = `h-full rounded-full transition-all duration-300 ${theme.bar}`;
+
+      window.lucide?.createIcons?.();
+    }
+
+    previewModes.forEach(btn => {
+      btn.addEventListener('click', () => {
+        previewModes.forEach(b => {
+          b.classList.remove('bg-emerald-500/20','text-emerald-100','font-medium');
+          b.classList.add('text-white/70');
+        });
+        btn.classList.add('bg-emerald-500/20','text-emerald-100','font-medium');
+        btn.classList.remove('text-white/70');
+        const mode = btn.dataset.mode;
+        serpPreview.classList.toggle('desktop', mode === 'desktop');
+        serpPreview.classList.toggle('mobile', mode === 'mobile');
+      });
+    });
+
+    resetBtn.addEventListener('click', () => {
+      titleInput.value = '';
+      descInput.value = '';
+      update();
+      titleInput.focus();
+    });
+
+    titleInput.addEventListener('input', update);
+    descInput.addEventListener('input', update);
+
+    update();
+    window.lucide?.createIcons?.();
+  });
+  </script>
+</body>
+</html>

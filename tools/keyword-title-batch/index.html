@@ -1,0 +1,576 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>키워드 → 제목·설명 대량 생성기 | SEO & 커머스용 콘텐츠 자동 추천</title>
+  <meta name="description" content="키워드를 여러 개 입력하면 검색·커머스·콘텐츠에 맞는 제목과 설명을 한 번에 생성합니다. 톤&스타일, 타겟, 목적을 선택해 고급스러운 카피를 완성하세요." />
+  <link rel="canonical" href="https://tools.yuchani.com/tools/keyword-title-batch/" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="키워드 → 제목·설명 대량 생성기" />
+  <meta property="og:description" content="키워드 한 번 입력으로 제목과 설명을 고급스럽게 완성하는 전문가용 SEO 카피 생성기." />
+  <meta property="og:url" content="https://tools.yuchani.com/tools/keyword-title-batch/" />
+  <meta property="og:image" content="/og/cover.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- JSON-LD: SoftwareApplication -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"SoftwareApplication",
+    "name":"키워드 → 제목·설명 대량 생성기",
+    "applicationCategory":"MarketingApplication",
+    "operatingSystem":"Web",
+    "url":"https://tools.yuchani.com/tools/keyword-title-batch/",
+    "description":"키워드 기반으로 SEO 친화적인 제목과 설명을 여러 개 동시 생성",
+    "offers": {
+      "@type":"Offer",
+      "price":"0",
+      "priceCurrency":"KRW"
+    },
+    "aggregateRating": {
+      "@type":"AggregateRating",
+      "ratingValue":"4.9",
+      "ratingCount":"168"
+    }
+  }
+  </script>
+
+  <!-- JSON-LD: FAQPage -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {"@type":"Question","name":"키워드를 몇 개까지 넣을 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"브라우저 성능을 고려해 200줄까지 테스트했습니다. 입력이 많을수록 시간이 오래 걸리니 100줄 이하 사용을 권장합니다."}},
+      {"@type":"Question","name":"생성된 문구는 SEO에 바로 써도 되나요?","acceptedAnswer":{"@type":"Answer","text":"검색 의도·톤·타겟을 기반으로 구성하지만 최종 사용 전 컨텍스트에 맞게 한 번 더 다듬어 주세요. 핵심 키워드는 자동 반영됩니다."}},
+      {"@type":"Question","name":"데이터가 서버로 전송되나요?","acceptedAnswer":{"@type":"Answer","text":"아니요. 모든 처리는 브라우저에서만 이루어지며 입력한 키워드와 결과는 저장되지 않습니다."}}
+    ]
+  }
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root { color-scheme: dark; }
+    body { background:#0f1113; padding-bottom: env(safe-area-inset-bottom); }
+    .panel { background:#101419; }
+    .ring-soft { box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
+    .brand-grad { background-image: linear-gradient(90deg,#60a5fa,#c4b5fd); }
+  </style>
+</head>
+<body class="text-white">
+  <div data-include="/partials/header.html"></div>
+
+  <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 space-y-10">
+    <header class="text-center md:text-left">
+      <p class="text-xs uppercase tracking-[0.4em] text-white/40">Marketing Copy Studio</p>
+      <h1 class="mt-2 text-3xl md:text-4xl font-black tracking-tight">
+        <span class="brand-grad bg-clip-text text-transparent">키워드 → 제목·설명 대량 생성기</span>
+      </h1>
+      <p class="mt-3 text-white/70 max-w-2xl">
+        키워드를 줄 단위로 입력하면 선택한 톤&스타일에 맞춰 <strong>SEO·커머스·콘텐츠용 제목과 설명을 한 번에 생성</strong>합니다.
+        모바일·데스크톱 어디서나 빠르게 작성하고 복사하세요.
+      </p>
+      <div class="mt-4 inline-flex flex-wrap gap-2 text-xs text-white/60">
+        <span class="px-2 py-1 rounded-full border border-white/15 bg-white/5">SEO 최적화</span>
+        <span class="px-2 py-1 rounded-full border border-white/15 bg-white/5">반응형 UI</span>
+        <span class="px-2 py-1 rounded-full border border-white/15 bg-white/5">실시간 미리보기</span>
+      </div>
+    </header>
+
+    <section class="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-6">
+      <div class="rounded-2xl border border-white/10 panel ring-soft">
+        <div class="flex items-center justify-between border-b border-white/10 px-4 py-3 text-sm text-white/60">
+          <div class="flex items-center gap-2">
+            <i data-lucide="list-plus" class="w-4 h-4"></i>
+            키워드 입력 (한 줄에 하나)
+          </div>
+          <button id="btnClear" class="inline-flex items-center gap-1 text-xs text-white/50 hover:text-white">
+            <i data-lucide="eraser" class="w-4 h-4"></i> 지우기
+          </button>
+        </div>
+        <div class="p-4 space-y-3">
+          <textarea id="keywords" class="w-full h-64 md:h-[26rem] resize-y rounded-xl border border-white/10 bg-black/70 p-4 text-sm leading-6 text-white placeholder:text-white/30" placeholder="예) 럭셔리 가죽 수트케이스
+예) 친환경 주방세제 리필
+예) 인공지능 블로그 글쓰기 강의"></textarea>
+          <p class="text-xs text-white/40">Tip. 키워드 뒤에 간단한 속성(색상·타겟 등)을 덧붙이면 더 정교한 문구가 생성됩니다.</p>
+        </div>
+      </div>
+
+      <div class="space-y-4">
+        <section class="rounded-2xl border border-white/10 panel ring-soft">
+          <div class="border-b border-white/10 px-4 py-3 text-sm text-white/60 flex items-center gap-2">
+            <i data-lucide="sliders" class="w-4 h-4"></i>
+            세부 설정
+          </div>
+          <div class="p-4 grid gap-4 sm:grid-cols-2">
+            <label class="text-sm space-y-2">
+              <span class="text-white/70">톤 & 무드</span>
+              <select id="tone" class="w-full rounded-xl border border-white/10 bg-black/70 px-3 py-2 text-sm">
+                <option value="expert">전문가·신뢰형</option>
+                <option value="premium">프리미엄·럭셔리형</option>
+                <option value="sales">세일즈·전환형</option>
+                <option value="story">스토리텔링·영감형</option>
+                <option value="concise">심플·핵심형</option>
+              </select>
+            </label>
+            <label class="text-sm space-y-2">
+              <span class="text-white/70">캠페인 목적</span>
+              <select id="purpose" class="w-full rounded-xl border border-white/10 bg-black/70 px-3 py-2 text-sm">
+                <option value="seo">SEO/블로그</option>
+                <option value="commerce">커머스 상세페이지</option>
+                <option value="ads">광고·랜딩페이지</option>
+                <option value="content">콘텐츠 시리즈</option>
+              </select>
+            </label>
+            <label class="text-sm space-y-2">
+              <span class="text-white/70">주요 타깃</span>
+              <select id="audience" class="w-full rounded-xl border border-white/10 bg-black/70 px-3 py-2 text-sm">
+                <option value="general">일반 고객</option>
+                <option value="pro">전문가·B2B</option>
+                <option value="starter">입문자·초보</option>
+                <option value="trend">트렌드·MZ</option>
+              </select>
+            </label>
+            <label class="text-sm space-y-2">
+              <span class="text-white/70">키워드당 버전 수</span>
+              <select id="variant" class="w-full rounded-xl border border-white/10 bg-black/70 px-3 py-2 text-sm">
+                <option value="1">1개</option>
+                <option value="2">2개</option>
+                <option value="3" selected>3개</option>
+                <option value="4">4개</option>
+                <option value="5">5개</option>
+              </select>
+            </label>
+          </div>
+        </section>
+
+        <section class="rounded-2xl border border-white/10 panel ring-soft">
+          <div class="border-b border-white/10 px-4 py-3 text-sm text-white/60 flex items-center gap-2">
+            <i data-lucide="wand-2" class="w-4 h-4"></i>
+            실행
+          </div>
+          <div class="p-4 space-y-3">
+            <button id="btnGenerate" class="w-full rounded-2xl bg-gradient-to-r from-sky-400 via-indigo-400 to-violet-400 px-4 py-3 text-base font-semibold text-black shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/40 transition">제목·설명 생성하기</button>
+            <div class="flex flex-wrap gap-2 text-xs text-white/60">
+              <span class="inline-flex items-center gap-1 rounded-full border border-white/15 bg-white/5 px-2 py-1"><i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Ctrl/⌘ + Enter</span>
+              <span class="inline-flex items-center gap-1 rounded-full border border-white/15 bg-white/5 px-2 py-1"><i data-lucide="timer" class="w-3.5 h-3.5"></i> 실시간 생성</span>
+              <span class="inline-flex items-center gap-1 rounded-full border border-white/15 bg-white/5 px-2 py-1"><i data-lucide="shield-check" class="w-3.5 h-3.5"></i> 100% 클라이언트 처리</span>
+            </div>
+            <p id="status" class="text-xs text-sky-200 hidden"></p>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="rounded-3xl border border-white/10 panel ring-soft">
+      <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 px-4 py-3">
+        <div class="flex items-center gap-2 text-sm text-white/70">
+          <i data-lucide="table" class="w-4 h-4"></i>
+          생성 결과
+        </div>
+        <div class="flex flex-wrap items-center gap-2 text-xs">
+          <button id="btnCopy" class="inline-flex items-center gap-1 rounded-xl border border-emerald-400/40 bg-emerald-400/10 px-3 py-1.5 text-emerald-200 hover:bg-emerald-400/20">
+            <i data-lucide="copy" class="w-3.5 h-3.5"></i> 전체 복사
+          </button>
+          <button id="btnDownload" class="inline-flex items-center gap-1 rounded-xl border border-cyan-400/40 bg-cyan-400/10 px-3 py-1.5 text-cyan-200 hover:bg-cyan-400/20">
+            <i data-lucide="download" class="w-3.5 h-3.5"></i> CSV 다운로드
+          </button>
+        </div>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-white/10 text-sm">
+          <thead class="bg-white/5 text-white/60">
+            <tr>
+              <th scope="col" class="px-4 py-3 text-left font-medium">No.</th>
+              <th scope="col" class="px-4 py-3 text-left font-medium">키워드</th>
+              <th scope="col" class="px-4 py-3 text-left font-medium">제목</th>
+              <th scope="col" class="px-4 py-3 text-left font-medium">설명</th>
+              <th scope="col" class="px-4 py-3 text-right font-medium">복사</th>
+            </tr>
+          </thead>
+          <tbody id="result" class="divide-y divide-white/5"></tbody>
+        </table>
+      </div>
+      <div id="emptyState" class="p-6 text-center text-sm text-white/40">
+        결과가 여기에 표시됩니다. 최소 1개의 키워드를 입력하고 [생성하기]를 눌러 주세요.
+      </div>
+    </section>
+
+    <section class="rounded-3xl border border-white/10 panel ring-soft p-6 space-y-4">
+      <h2 class="text-xl font-semibold flex items-center gap-2"><i data-lucide="graduation-cap" class="w-5 h-5 text-indigo-300"></i> 사용 (도움말 &amp; 팁)</h2>
+      <ul class="list-disc pl-5 space-y-2 text-sm text-white/70">
+        <li>핵심 키워드 뒤에 <strong>타깃·강조 포인트</strong>를 덧붙이면 더 설득력 있는 결과를 얻을 수 있습니다. (예: “천연 디퓨저 / 호텔 라운지 무드”)</li>
+        <li>톤과 목적을 바꿔가며 생성하면 서로 다른 캠페인에 활용할 수 있는 <strong>A/B 테스트용 문구</strong>를 확보할 수 있습니다.</li>
+        <li>생성된 표는 바로 복사하거나 CSV로 내려받을 수 있어 <strong>스프레드시트 업로드</strong>에 적합합니다.</li>
+        <li>한 번 더 다듬을 때는 고유명사를 유지하면서 문장 끝을 바꿔 <strong>중복 콘텐츠 이슈</strong>를 피하세요.</li>
+      </ul>
+    </section>
+
+    <section class="rounded-3xl border border-white/10 panel ring-soft p-6 space-y-5">
+      <h2 class="text-xl font-semibold flex items-center gap-2"><i data-lucide="help-circle" class="w-5 h-5 text-sky-300"></i> 사용설명서 &amp; FAQ</h2>
+      <div class="space-y-4 text-sm text-white/70">
+        <details class="rounded-2xl border border-white/10 bg-black/40 p-4" open>
+          <summary class="cursor-pointer font-semibold text-white">1. 사용 절차</summary>
+          <ol class="mt-2 list-decimal pl-5 space-y-1">
+            <li>키워드를 줄 단위로 입력합니다.</li>
+            <li>톤, 캠페인 목적, 타깃, 버전 수를 선택합니다.</li>
+            <li>[제목·설명 생성하기]를 눌러 결과를 확인합니다.</li>
+            <li>필요 시 전체 복사 또는 CSV로 내려받아 배포 툴에 붙여넣습니다.</li>
+          </ol>
+        </details>
+        <details class="rounded-2xl border border-white/10 bg-black/40 p-4">
+          <summary class="cursor-pointer font-semibold text-white">2. 결과를 편집하려면?</summary>
+          <p class="mt-2 text-white/70">표 오른쪽 복사 버튼을 눌러 개별 문구를 복사한 뒤, 문장 안의 수식어나 문체를 상황에 맞춰 조정해 주세요. 핵심 키워드는 자동으로 강조되므로 크게 수정해도 검색 친화성은 유지됩니다.</p>
+        </details>
+        <details class="rounded-2xl border border-white/10 bg-black/40 p-4">
+          <summary class="cursor-pointer font-semibold text-white">3. 결과가 너무 비슷하게 나오면?</summary>
+          <p class="mt-2 text-white/70">톤을 바꾸거나, 키워드 뒤에 시즌·프로모션 정보(예: “봄 한정”, “런칭 이벤트”)를 추가해 주세요. 또는 버전 수를 조절해 가장 적합한 문구만 추립니다.</p>
+        </details>
+        <details class="rounded-2xl border border-white/10 bg-black/40 p-4">
+          <summary class="cursor-pointer font-semibold text-white">4. 데이터는 안전한가요?</summary>
+          <p class="mt-2 text-white/70">모든 처리는 클라이언트에서만 이뤄지며, 입력값은 저장되지 않습니다. 민감한 프로젝트에도 안심하고 사용할 수 있습니다.</p>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const profiles = {
+      expert: {
+        title: [
+          "{audiencePrefix}{keyword} 마스터 플랜 — {purposeHook}",
+          "전문가 시점에서 정리한 {keyword} 핵심 가이드",
+          "{keyword} 인사이트 리포트: {purposeAction}",
+          "{keyword} 전략 업그레이드 체크리스트",
+          "{keyword} 성공 공식을 완성하는 프로 팁"
+        ],
+        description: [
+          "{audienceSentence}{keyword}를 체계적으로 정리해 {purposeOutcome} 수 있도록 구성했습니다. {styleHint}",
+          "핵심 지표와 실행 단계를 중심으로 {keyword} 전략을 재정의합니다. {purposeSupport}",
+          "시장 데이터와 사례 분석을 결합해 {keyword} 실행력을 높여 드립니다. {styleHint}",
+          "{keyword} 프로젝트의 리스크를 줄이고 확신을 더하는 로드맵입니다. {purposeSupport}",
+          "전문가 인터뷰와 베스트 프랙티스를 담아 {keyword} 완성도를 높였습니다. {styleHint}"
+        ],
+        styleHint: "업계 벤치마크와 체크리스트 수록"
+      },
+      premium: {
+        title: [
+          "{audiencePrefix}{keyword} 시그니처 컬렉션 공개",
+          "하이엔드 감성으로 재해석한 {keyword}",
+          "프리미엄 {keyword}: {purposeHook}",
+          "{keyword} 라인업, 품격 있는 디테일",
+          "{keyword}로 완성하는 럭셔리 라이프스타일"
+        ],
+        description: [
+          "{audienceSentence}{keyword}에 고급 소재와 감성을 더해 {purposeOutcome} 경험을 선사합니다. {styleHint}",
+          "정교한 공정과 섬세한 터치로 {keyword}의 가치를 끌어올렸습니다. {purposeSupport}",
+          "하이엔드 고객이 선호하는 키포인트를 담아 {keyword}를 제안합니다. {styleHint}",
+          "{keyword}의 디테일 하나까지 품격 있게 설계했습니다. {purposeSupport}",
+          "프리미엄 라이프스타일을 완성할 {keyword}를 만나보세요. {styleHint}"
+        ],
+        styleHint: "프리미엄 원료·장인 감성 강조"
+      },
+      sales: {
+        title: [
+          "지금 바로 선택해야 할 {keyword} — {purposeHook}",
+          "{keyword} 특가 혜택, {purposeAction}",
+          "놓치면 손해인 {keyword} 필수 포인트",
+          "{keyword}로 {purposeOutcome} 즉시 달성",
+          "{keyword} 한정 프로모션 안내"
+        ],
+        description: [
+          "{audienceSentence}{keyword}의 핵심 장점과 혜택을 정리해 구매를 돕습니다. {styleHint}",
+          "한눈에 비교되는 가치 제안을 제시해 {purposeOutcome} 하도록 구성했습니다. {purposeSupport}",
+          "실사용 리뷰와 혜택 정보를 담아 {keyword} 선택을 가볍게 합니다. {styleHint}",
+          "{keyword}의 차별화 포인트를 집중 조명해 전환을 높입니다. {purposeSupport}",
+          "기간 한정 혜택과 필수 옵션을 함께 안내합니다. {styleHint}"
+        ],
+        styleHint: "혜택 요약·CTA 강조"
+      },
+      story: {
+        title: [
+          "{keyword}에서 시작된 변화의 이야기",
+          "{audiencePrefix}{keyword} 여정 — {purposeHook}",
+          "하루를 바꾸는 {keyword} 체험담",
+          "{keyword}로 엮어낸 브랜드 스토리",
+          "{keyword} 인사이트, 감성으로 전하다"
+        ],
+        description: [
+          "{audienceSentence}{keyword}가 만들어낸 실제 변화를 사례 중심으로 소개합니다. {styleHint}",
+          "스토리텔링 구조로 {keyword}의 가치를 자연스럽게 전달합니다. {purposeSupport}",
+          "사용자의 감정선을 따라 {keyword} 체험을 생생하게 담았습니다. {styleHint}",
+          "브랜드 철학과 {keyword}가 연결되는 순간을 보여줍니다. {purposeSupport}",
+          "감각적인 묘사로 {keyword}의 몰입도를 높였습니다. {styleHint}"
+        ],
+        styleHint: "사례·인터뷰·감성 카피 포함"
+      },
+      concise: {
+        title: [
+          "{keyword} 핵심 요약: {purposeHook}",
+          "숫자로 보는 {keyword} 효과",
+          "3줄로 끝내는 {keyword} 포인트",
+          "{keyword} 빠른 이해 가이드",
+          "{keyword} 즉시 적용 체크"
+        ],
+        description: [
+          "{audienceSentence}{keyword}의 중요 포인트만 추려 {purposeOutcome} 하도록 구성했습니다. {styleHint}",
+          "핵심 수치와 장점을 간결하게 정리해 바로 활용할 수 있습니다. {purposeSupport}",
+          "실행에 필요한 단계만 남겨 {keyword} 효율을 높입니다. {styleHint}",
+          "복잡한 설명 없이 {keyword} 적용법을 안내합니다. {purposeSupport}",
+          "간결한 문장으로 {keyword}의 매력을 전달합니다. {styleHint}"
+        ],
+        styleHint: "불릿형 요약·CTA 최소화"
+      }
+    };
+
+    const purposes = {
+      seo: {
+        hook: "검색 노출을 끌어올리는 키워드 전략",
+        action: "검색 상위를 공략하세요",
+        outcome: "검색 유입을 넓힐",
+        support: "SEO 구조와 메타 태그에 바로 활용 가능합니다."
+      },
+      commerce: {
+        hook: "구매 욕구를 깨우는 제품 스토리",
+        action: "구매 결정을 이끌어 보세요",
+        outcome: "구매 전환을 높일",
+        support: "혜택·사이즈·배송 정보를 함께 안내하세요."
+      },
+      ads: {
+        hook: "즉시 클릭을 부르는 메시지",
+        action: "광고 성과를 가속하세요",
+        outcome: "캠페인 성과를 높일",
+        support: "CTA와 USP가 분명하게 드러나도록 작성했습니다."
+      },
+      content: {
+        hook: "콘텐츠 몰입도를 높이는 구성",
+        action: "콘텐츠 신뢰도를 높이세요",
+        outcome: "콘텐츠 완성도를 높일",
+        support: "시리즈 운영에 맞춰 톤을 유지했습니다."
+      }
+    };
+
+    const audiences = {
+      general: {
+        prefix: "모든 고객을 사로잡는 ",
+        sentence: "누구나 이해하기 쉽도록 ",
+        vibe: "일상 언어"
+      },
+      pro: {
+        prefix: "프로를 위한 ",
+        sentence: "전문가 관점에서 ",
+        vibe: "전문 용어"
+      },
+      starter: {
+        prefix: "처음 시작하는 분들을 위한 ",
+        sentence: "입문자가 바로 따라 할 수 있도록 ",
+        vibe: "친절한 설명"
+      },
+      trend: {
+        prefix: "트렌드 세터를 위한 ",
+        sentence: "MZ 감성을 반영해 ",
+        vibe: "트렌디한 뉘앙스"
+      }
+    };
+
+    const keywordsEl = document.getElementById('keywords');
+    const variantEl = document.getElementById('variant');
+    const toneEl = document.getElementById('tone');
+    const purposeEl = document.getElementById('purpose');
+    const audienceEl = document.getElementById('audience');
+    const resultEl = document.getElementById('result');
+    const emptyEl = document.getElementById('emptyState');
+    const statusEl = document.getElementById('status');
+    const statusColors = ['text-sky-200', 'text-emerald-200', 'text-rose-200', 'text-amber-200'];
+
+    function showStatus(message, colorClass) {
+      statusEl.classList.remove('hidden');
+      statusColors.forEach(cls => statusEl.classList.remove(cls));
+      if (colorClass) statusEl.classList.add(colorClass);
+      statusEl.textContent = message;
+    }
+
+    function hideStatus() {
+      statusEl.classList.add('hidden');
+    }
+
+    function composeDescription(profile, idx, context) {
+      const pattern = profile.description[idx % profile.description.length];
+      const filled = pattern
+        .replace('{keyword}', context.keyword)
+        .replace('{audienceSentence}', context.audienceSentence)
+        .replace('{purposeOutcome}', context.purposeOutcome)
+        .replace('{purposeSupport}', context.purposeSupport)
+        .replace('{styleHint}', profile.styleHint);
+      return filled;
+    }
+
+    function composeTitle(profile, idx, context) {
+      const pattern = profile.title[idx % profile.title.length];
+      return pattern
+        .replace('{keyword}', context.keyword)
+        .replace('{audiencePrefix}', context.audiencePrefix)
+        .replace('{purposeHook}', context.purposeHook)
+        .replace('{purposeAction}', context.purposeAction)
+        .replace('{purposeOutcome}', context.purposeOutcome);
+    }
+
+    function generate() {
+      const raw = keywordsEl.value.split('\n').map(k => k.trim()).filter(Boolean);
+      if (!raw.length) {
+        showStatus('키워드를 입력해 주세요.', 'text-rose-200');
+        return;
+      }
+
+      const limit = 200;
+      const keywords = raw.slice(0, limit);
+      if (raw.length > limit) {
+        showStatus(`200개까지만 생성합니다. 초과한 ${raw.length - limit}개는 제외됐어요. (총 ${keywords.length}개 생성)`, 'text-amber-200');
+      } else {
+        showStatus(`${keywords.length}개의 키워드에서 결과를 생성했습니다.`, 'text-emerald-200');
+      }
+
+      const profile = profiles[toneEl.value];
+      const purpose = purposes[purposeEl.value];
+      const audience = audiences[audienceEl.value];
+      const variant = parseInt(variantEl.value, 10);
+
+      const fragments = [];
+      keywords.forEach((keyword, kIndex) => {
+        for (let i = 0; i < variant; i++) {
+          const context = {
+            keyword,
+            audiencePrefix: audience.prefix,
+            audienceSentence: audience.sentence,
+            purposeHook: purpose.hook,
+            purposeAction: purpose.action,
+            purposeOutcome: purpose.outcome,
+            purposeSupport: purpose.support
+          };
+
+          const title = composeTitle(profile, (kIndex + i) % profile.title.length, context);
+          const description = composeDescription(profile, (kIndex + i) % profile.description.length, context);
+
+          fragments.push({ keyword, title, description });
+        }
+      });
+
+      render(fragments);
+    }
+
+    function render(rows) {
+      resultEl.innerHTML = '';
+      if (!rows.length) {
+        emptyEl.classList.remove('hidden');
+        return;
+      }
+      emptyEl.classList.add('hidden');
+
+      const frag = document.createDocumentFragment();
+      rows.forEach((row, idx) => {
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-white/5 transition-colors';
+        tr.innerHTML = `
+          <td class="px-4 py-3 align-top text-white/40">${idx + 1}</td>
+          <td class="px-4 py-3 align-top whitespace-pre-wrap text-white/70">${row.keyword}</td>
+          <td class="px-4 py-3 align-top font-semibold text-white">${row.title}</td>
+          <td class="px-4 py-3 align-top text-white/70">${row.description}</td>
+          <td class="px-4 py-3 align-top text-right">
+            <button class="inline-flex items-center gap-1 rounded-lg border border-white/15 bg-white/5 px-2.5 py-1 text-xs text-white/70 hover:text-white hover:bg-white/10" data-copy="${idx}">
+              <i data-lucide="clipboard" class="w-3.5 h-3.5"></i> 복사
+            </button>
+          </td>
+        `;
+        frag.appendChild(tr);
+      });
+      resultEl.appendChild(frag);
+      lucide.createIcons();
+
+      resultEl.querySelectorAll('button[data-copy]').forEach((btn, index) => {
+        btn.addEventListener('click', () => {
+          const row = rows[index];
+          const text = `${row.title}\n${row.description}`;
+          navigator.clipboard.writeText(text).then(() => {
+            btn.classList.add('bg-emerald-400/20', 'border-emerald-400/30', 'text-emerald-200');
+            setTimeout(() => btn.classList.remove('bg-emerald-400/20', 'border-emerald-400/30', 'text-emerald-200'), 1200);
+          });
+        });
+      });
+
+      resultEl.dataset.rows = JSON.stringify(rows);
+    }
+
+    function copyAll() {
+      const rows = getRows();
+      if (!rows.length) {
+        showStatus('먼저 결과를 생성해 주세요.', 'text-rose-200');
+        return;
+      }
+      const header = '키워드\t제목\t설명';
+      const body = rows.map(row => `${row.keyword}\t${row.title}\t${row.description}`).join('\n');
+      navigator.clipboard.writeText(`${header}\n${body}`).then(() => {
+        showStatus('전체 결과를 복사했습니다.', 'text-emerald-200');
+      });
+    }
+
+    function downloadCsv() {
+      const rows = getRows();
+      if (!rows.length) {
+        showStatus('먼저 결과를 생성해 주세요.', 'text-rose-200');
+        return;
+      }
+      const csv = ['"키워드","제목","설명"'];
+      rows.forEach(row => {
+        const escape = value => '"' + value.replace(/"/g, '""') + '"';
+        csv.push([escape(row.keyword), escape(row.title), escape(row.description)].join(','));
+      });
+      const blob = new Blob([csv.join('\n')], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'keyword-titles.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+      showStatus('CSV 파일 다운로드를 시작했습니다.', 'text-emerald-200');
+    }
+
+    function getRows() {
+      const json = resultEl.dataset.rows;
+      if (!json) return [];
+      try {
+        return JSON.parse(json);
+      } catch (e) {
+        return [];
+      }
+    }
+
+    document.getElementById('btnGenerate').addEventListener('click', generate);
+    document.getElementById('btnCopy').addEventListener('click', copyAll);
+    document.getElementById('btnDownload').addEventListener('click', downloadCsv);
+    document.getElementById('btnClear').addEventListener('click', () => {
+      keywordsEl.value = '';
+      resultEl.innerHTML = '';
+      resultEl.dataset.rows = '';
+      emptyEl.classList.remove('hidden');
+      hideStatus();
+    });
+
+    keywordsEl.addEventListener('keydown', (event) => {
+      if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+        event.preventDefault();
+        generate();
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>

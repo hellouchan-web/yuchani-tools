@@ -3,15 +3,15 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Base64 변환기 — 텍스트·이미지 파일을 안전한 문자열로 변환 | Yuchani Tools pro</title>
-  <meta name="description" content="텍스트와 이미지/파일을 Base64 문자열로 인코딩하거나, Base64를 원본으로 디코딩합니다. 복사/붙여넣기·드래그앤드롭·파일 업로드 지원." />
+  <title>Base64·URL 인코딩 — 깨지는 글자 없는 안전 변환기 | Yuchani Tools pro</title>
+  <meta name="description" content="텍스트·파일을 Base64 또는 URL 인코딩으로 안전하게 변환하고 다시 되돌립니다. 개발·퍼블리싱 필수 도구." />
   <link rel="canonical" href="https://tools.yuchani.com/tools/base64/" />
   <meta name="robots" content="index,follow" />
 
   <!-- Open Graph / Twitter -->
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="Base64 변환기 — 텍스트·이미지 파일을 안전한 문자열로 변환" />
-  <meta property="og:description" content="초보도 쉽게 쓰는 Base64 변환기. 텍스트/이미지 인코딩·디코딩, 파일 다운로드, 자동감지 지원." />
+  <meta property="og:title" content="Base64·URL 인코딩 — 깨지는 글자 없는 안전 변환기" />
+  <meta property="og:description" content="텍스트·파일·URL을 안전하게 인코딩/디코딩하는 전문가용 웹툴. 브라우저 안에서 즉시 처리." />
   <meta property="og:url" content="https://tools.yuchani.com/tools/base64/" />
   <meta property="og:image" content="/og/cover.png" />
   <meta name="twitter:card" content="summary_large_image" />
@@ -21,116 +21,569 @@
   {
     "@context":"https://schema.org",
     "@type":"SoftwareApplication",
-    "name":"Base64 변환기",
+    "name":"Base64·URL 인코더",
     "applicationCategory":"DeveloperApplication",
     "operatingSystem":"Web",
     "url":"https://tools.yuchani.com/tools/base64/",
-    "description":"텍스트/이미지/파일 Base64 인코딩·디코딩",
-    "aggregateRating": {"@type":"AggregateRating","ratingValue":"4.9","ratingCount":"212"}
+    "description":"텍스트·파일 Base64/URL 인코딩·디코딩",
+    "featureList":["Base64 인코딩/디코딩","URL 인코딩/디코딩","파일 자동 MIME 탐지"],
+    "aggregateRating":{"@type":"AggregateRating","ratingValue":"4.9","ratingCount":"212"}
   }
   </script>
-  <!-- JSON-LD: FAQPage (5문항) -->
+  <!-- JSON-LD: FAQPage -->
   <script type="application/ld+json">
   {
     "@context":"https://schema.org",
     "@type":"FAQPage",
     "mainEntity":[
-      {"@type":"Question","name":"Base64가 뭐예요?","acceptedAnswer":{"@type":"Answer","text":"바이너리 데이터를 텍스트로 안전하게 표현하는 표준 인코딩 방식입니다. 이메일/URL/JSON 등에 안전하게 담기 위해 사용합니다."}},
-      {"@type":"Question","name":"이미지도 변환돼요?","acceptedAnswer":{"@type":"Answer","text":"네. 이미지를 업로드하면 자동으로 Base64(Data URL)로 변환되며, 복사하거나 파일로 저장할 수 있습니다."}},
-      {"@type":"Question","name":"한글이 깨져요. 어떻게 하나요?","acceptedAnswer":{"@type":"Answer","text":"이 도구는 UTF-8로 인코딩/디코딩합니다. 텍스트 모드에서 한글이 깨지지 않도록 TextEncoder/TextDecoder를 사용합니다."}},
-      {"@type":"Question","name":"Base64에서 다시 이미지로 돌릴 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"가능합니다. Base64 입력 후 ‘디코드’하면 파일로 다운로드할 수 있습니다. Data URL 형식이면 MIME 타입을 자동 인식합니다."}},
-      {"@type":"Question","name":"개인정보는 안전한가요?","acceptedAnswer":{"@type":"Answer","text":"모든 변환은 브라우저에서만 일어나며 서버로 전송되지 않습니다."}}
+      {"@type":"Question","name":"Base64와 URL 인코딩은 어떻게 다른가요?","acceptedAnswer":{"@type":"Answer","text":"Base64는 바이너리를 안전한 텍스트 문자열로 바꾸고, URL 인코딩은 주소창에서 깨지는 문자를 %기호로 치환합니다. 각각의 모드를 선택해 변환할 수 있습니다."}},
+      {"@type":"Question","name":"파일도 Base64로 변환할 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"네. 파일을 업로드하면 MIME 타입을 인식해 Data URL 형식으로 Base64를 만들어 줍니다."}},
+      {"@type":"Question","name":"Base64를 원본 파일로 되돌릴 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"디코드 모드에서 Base64를 붙여 넣으면 브라우저에서 바로 Blob을 생성해 원본 파일로 다운로드할 수 있습니다."}},
+      {"@type":"Question","name":"변환 데이터는 어디로 전송되나요?","acceptedAnswer":{"@type":"Answer","text":"모든 변환은 브라우저 내부에서만 처리되며 서버로 전송되지 않습니다."}},
+      {"@type":"Question","name":"인코딩 결과를 바로 복사할 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"결과 영역의 ‘복사’ 버튼으로 클립보드에 저장하거나, 파일 디코딩 시 ‘다운로드’ 버튼으로 저장할 수 있습니다."}}
     ]
   }
   </script>
 
-  <!-- Tailwind & Icons (CDN 미로딩 시에도 기능 문제 없도록 작성) -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
 
   <style>
-    :root{ color-scheme: dark }
-    body{ background:#0F1113; padding-bottom: env(safe-area-inset-bottom) }
-    .ring-soft{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08) }
-    .brand-grad{ background-image:linear-gradient(90deg,#34d399,#a3e635) } /* emerald→lime */
-    .panel{ background:#0f1216 }
-    .input{ background:#fff; color:#000 }
+    :root { color-scheme: dark; }
+    body { background:#080b10; font-family:'Pretendard','Apple SD Gothic Neo','Noto Sans KR',sans-serif; padding-bottom:env(safe-area-inset-bottom); }
+    .surface { background:linear-gradient(160deg,rgba(20,25,35,.96),rgba(12,16,24,.96)); }
+    .ring-soft { box-shadow:inset 0 0 0 1px rgba(255,255,255,.06); }
+    .brand-grad { background-image:linear-gradient(120deg,#34d399,#38bdf8,#a855f7); }
+    .input-box { background:rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.08); backdrop-filter:blur(12px); }
+    textarea { font-feature-settings:"liga" 0; }
   </style>
 </head>
 <body class="text-white">
-  <!-- 공통 헤더 include -->
   <div data-include="/partials/header.html"></div>
 
-  <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-    <!-- 타이틀 -->
-    <header class="mb-4 text-center md:text-left">
-      <h1 class="text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-tight">
-        <span class="brand-grad bg-clip-text text-transparent">Base64 변환기</span>
+  <main class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+    <header class="space-y-4 text-center md:text-left">
+      <span class="inline-flex items-center gap-2 rounded-full border border-white/10 px-4 py-1 text-xs uppercase tracking-[0.2em] text-white/70">
+        <i data-lucide="shield-check" class="h-3.5 w-3.5"></i>
+        안전한 브라우저 내 변환
+      </span>
+      <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight">
+        <span class="brand-grad bg-clip-text text-transparent">Base64·URL 인코딩</span>
+        전문가용 통합 툴
       </h1>
-      <p class="mt-2 text-white/70">텍스트·이미지/파일을 <strong>Base64</strong> 문자열로 인코딩하거나, Base64를 원본으로 디코딩합니다.</p>
+      <p class="text-base md:text-lg text-white/70 max-w-2xl">깨지는 한글과 특수 문자를 안전하게 다루세요. 개발·퍼블리싱 작업에 꼭 필요한 Base64/URL 인코딩과 디코딩을 한곳에서 처리합니다.</p>
+      <dl class="mt-4 grid grid-cols-2 gap-4 text-xs text-white/60 sm:grid-cols-4">
+        <div class="rounded-xl border border-white/10 px-3 py-2">
+          <dt class="font-semibold text-white/70">Base64 & URL</dt>
+          <dd>텍스트·파일·주소 즉시 변환</dd>
+        </div>
+        <div class="rounded-xl border border-white/10 px-3 py-2">
+          <dt class="font-semibold text-white/70">SEO 최적화</dt>
+          <dd>JSON-LD·FAQ 자동 제공</dd>
+        </div>
+        <div class="rounded-xl border border-white/10 px-3 py-2">
+          <dt class="font-semibold text-white/70">반응형 UI</dt>
+          <dd>모바일·데스크톱 모두 쾌적</dd>
+        </div>
+        <div class="rounded-xl border border-white/10 px-3 py-2">
+          <dt class="font-semibold text-white/70">100% 오프라인</dt>
+          <dd>데이터가 서버로 전송되지 않음</dd>
+        </div>
+      </dl>
     </header>
 
-    <!-- 컨트롤 패널 -->
-    <section class="rounded-2xl border border-white/10 ring-soft p-3 panel">
-      <div class="flex flex-wrap items-center gap-2 text-sm">
-        <label class="inline-flex items-center gap-2">
-          <input type="radio" name="mode" value="encode" class="accent-emerald-400" checked>
-          인코드(원본 → Base64)
-        </label>
-        <label class="inline-flex items-center gap-2">
-          <input type="radio" name="mode" value="decode" class="accent-emerald-400">
-          디코드(Base64 → 원본)
-        </label>
-        <span class="mx-2 text-white/30">|</span>
-        <label class="inline-flex items-center gap-2">
-          <input type="radio" name="kind" value="text" class="accent-emerald-400" checked>
-          텍스트
-        </label>
-        <label class="inline-flex items-center gap-2">
-          <input type="radio" name="kind" value="file" class="accent-emerald-400">
-          파일
-        </label>
-        <span class="ml-auto inline-flex items-center gap-2">
-          <label class="inline-flex items-center gap-2">
-            <input type="checkbox" id="auto" class="accent-emerald-400"> 자동 처리
-          </label>
-          <span class="text-xs text-white/50">단축키: <span class="border px-1 rounded kbd">Ctrl/⌘+Enter</span></span>
-        </span>
+    <section class="surface rounded-3xl ring-soft border border-white/10 p-5 md:p-7 space-y-6">
+      <div class="flex flex-col gap-3 lg:flex-row lg:items-center">
+        <div class="flex items-center gap-2 rounded-2xl bg-white/5 p-1 text-sm">
+          <button data-mode="base64" class="mode-btn flex items-center gap-2 rounded-2xl px-4 py-1.5 font-semibold text-white transition">Base64</button>
+          <button data-mode="url" class="mode-btn flex items-center gap-2 rounded-2xl px-4 py-1.5 font-semibold text-white/60 transition">URL</button>
+        </div>
+        <div class="flex flex-wrap items-center gap-3 text-sm text-white/80" id="base64Options">
+          <label class="inline-flex items-center gap-2"><input type="radio" name="action" value="encode" class="accent-emerald-400" checked> 인코드</label>
+          <label class="inline-flex items-center gap-2"><input type="radio" name="action" value="decode" class="accent-emerald-400"> 디코드</label>
+          <span class="hidden sm:inline text-white/30">|</span>
+          <label class="inline-flex items-center gap-2"><input type="radio" name="kind" value="text" class="accent-emerald-400" checked> 텍스트</label>
+          <label class="inline-flex items-center gap-2"><input type="radio" name="kind" value="file" class="accent-emerald-400"> 파일</label>
+        </div>
+        <div class="flex flex-wrap items-center gap-3 text-sm text-white/80" id="urlOptions" hidden>
+          <label class="inline-flex items-center gap-2"><input type="radio" name="urlAction" value="encode" class="accent-sky-400" checked> URL 인코드</label>
+          <label class="inline-flex items-center gap-2"><input type="radio" name="urlAction" value="decode" class="accent-sky-400"> URL 디코드</label>
+          <p class="text-xs text-white/40">RFC3986 기반, UTF-8 지원</p>
+        </div>
+        <div class="flex items-center gap-2 text-sm text-white/70 lg:ml-auto">
+          <label class="inline-flex items-center gap-2"><input type="checkbox" id="auto" class="accent-violet-400"> 자동 처리</label>
+          <span class="text-xs text-white/40">단축키: <span class="rounded border border-white/20 px-1">Ctrl/⌘ + Enter</span></span>
+        </div>
+      </div>
+
+      <div class="grid gap-5 lg:grid-cols-2">
+        <div id="inputPanel" class="input-box rounded-3xl p-4 space-y-3 transition">
+          <header class="flex items-center gap-2 text-sm text-white/60">
+            <i data-lucide="file-input" class="h-4 w-4"></i>
+            <span>입력</span>
+            <span id="fileInfo" class="ml-auto text-xs text-white/40 hidden"></span>
+          </header>
+          <textarea id="input" class="min-h-[16rem] w-full rounded-2xl border border-white/10 bg-black/20 p-4 text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-emerald-400/40" placeholder="여기에 텍스트·Base64·URL을 붙여넣거나 아래로 파일을 드롭하세요."></textarea>
+          <footer class="flex flex-wrap items-center justify-between gap-3 text-xs text-white/50">
+            <label class="flex items-center gap-2 rounded-xl border border-white/15 px-3 py-2 text-sm text-white/80 hover:border-emerald-400/40 transition cursor-pointer">
+              <i data-lucide="upload-cloud" class="h-4 w-4"></i>
+              <input id="file" type="file" class="hidden" /> 파일 업로드
+            </label>
+            <span>붙여넣기 · 드래그 앤드 드롭 지원</span>
+          </footer>
+        </div>
+
+        <div class="input-box rounded-3xl p-4 space-y-3">
+          <header class="flex items-center gap-2 text-sm text-white/60">
+            <i data-lucide="file-output" class="h-4 w-4"></i>
+            <span>결과</span>
+            <span id="outInfo" class="ml-auto text-xs text-white/40 hidden"></span>
+          </header>
+          <textarea id="output" class="min-h-[16rem] w-full rounded-2xl border border-white/10 bg-black/20 p-4 text-sm text-white placeholder:text-white/30 focus:outline-none" placeholder="결과가 여기에 표시됩니다." readonly></textarea>
+          <div class="flex flex-wrap items-center gap-2 text-sm">
+            <button id="btnRun" class="rounded-xl border border-emerald-400/50 bg-emerald-400/20 px-4 py-2 font-semibold text-emerald-200 hover:bg-emerald-400/30 transition">변환 실행</button>
+            <button id="btnCopy" class="rounded-xl border border-white/20 px-4 py-2 text-white/80 hover:border-white/40 transition">복사</button>
+            <button id="btnSwap" class="rounded-xl border border-white/20 px-4 py-2 text-white/80 hover:border-white/40 transition">입력↔결과</button>
+            <button id="btnClear" class="rounded-xl border border-white/20 px-4 py-2 text-white/80 hover:border-white/40 transition">초기화</button>
+            <a id="btnDownload" class="rounded-xl border border-sky-400/40 px-4 py-2 text-sky-200 hover:bg-sky-400/20 transition hidden" href="#" download>다운로드</a>
+          </div>
+          <dl class="grid grid-cols-2 gap-3 text-xs text-white/60">
+            <div>
+              <dt class="text-white/40">입력 길이</dt>
+              <dd id="inputStats" class="font-mono text-white/80">0 chars</dd>
+            </div>
+            <div>
+              <dt class="text-white/40">결과 길이</dt>
+              <dd id="outputStats" class="font-mono text-white/80">0 chars</dd>
+            </div>
+          </dl>
+          <p id="status" class="text-xs text-emerald-300 hidden">완료</p>
+        </div>
       </div>
     </section>
 
-    <!-- 에디터 & 결과 -->
-    <section class="mt-4 grid gap-4 md:grid-cols-2">
-      <!-- 입력 -->
-      <div class="rounded-2xl border border-white/10 ring-soft overflow-hidden">
-        <div class="px-3 py-2 text-xs text-white/60 border-b border-white/10 flex items-center gap-2">
-          <i data-lucide="file-input" class="w-4 h-4"></i> 입력
-          <span id="fileInfo" class="ml-auto text-white/40 hidden"></span>
-        </div>
-        <div class="p-3 panel">
-          <textarea id="input" class="w-full h-56 md:h-[28rem] text-sm text-black outline-none resize-y bg-white rounded-lg border border-black/10 p-3" placeholder="여기에 텍스트 또는 Base64를 붙여넣거나, 아래에 파일을 업로드하세요."></textarea>
-          <div class="mt-2 flex items-center justify-between gap-2">
-            <label class="inline-flex items-center gap-2 justify-center w-full sm:w-auto text-sm text-white/80 bg-white/10 px-3 py-2 rounded-lg border border-white/10 cursor-pointer">
-              <i data-lucide="upload" class="w-4 h-4"></i>
-              <input id="file" type="file" class="hidden"> 파일 업로드
-            </label>
-            <div class="text-xs text-white/50">붙여넣기/드래그&드롭 지원</div>
-          </div>
-        </div>
+    <section class="space-y-6">
+      <h2 class="text-2xl font-semibold">도움말 &amp; 팁</h2>
+      <div class="grid gap-4 md:grid-cols-2">
+        <article class="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+          <h3 class="flex items-center gap-2 text-lg font-semibold text-emerald-200"><i data-lucide="zap" class="h-5 w-5"></i> 빠른 워크플로우</h3>
+          <ul class="mt-3 space-y-2 text-sm text-white/70">
+            <li><span class="font-medium text-white">자동 처리</span>를 켜면 입력과 동시에 결과가 실시간으로 업데이트됩니다.</li>
+            <li><kbd class="rounded border border-white/20 px-1">Ctrl/⌘ + Enter</kbd>를 눌러 언제든 수동 변환을 실행하세요.</li>
+            <li>입력과 결과를 <em>입력↔결과</em> 버튼으로 한 번에 교환할 수 있습니다.</li>
+          </ul>
+        </article>
+        <article class="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+          <h3 class="flex items-center gap-2 text-lg font-semibold text-sky-200"><i data-lucide="shield" class="h-5 w-5"></i> 안전한 변환</h3>
+          <ul class="mt-3 space-y-2 text-sm text-white/70">
+            <li>모든 연산은 브라우저 내부에서 이루어져 개인정보가 외부로 전송되지 않습니다.</li>
+            <li>Base64 디코드 결과가 파일일 경우 MIME을 인식해 즉시 다운로드 링크를 제공합니다.</li>
+            <li>URL 인코딩은 RFC3986을 준수하며 UTF-8 문자도 깨짐 없이 처리합니다.</li>
+          </ul>
+        </article>
       </div>
+    </section>
 
-      <!-- 결과 -->
-      <div class="rounded-2xl border border-white/10 ring-soft overflow-hidden">
-        <div class="px-3 py-2 text-xs text-white/60 border-b border-white/10 flex items-center gap-2">
-          <i data-lucide="file-output" class="w-4 h-4"></i> 결과
-          <span id="outInfo" class="ml-auto text-white/40 hidden"></span>
-        </div>
-        <div class="p-3 panel">
-          <textarea id="output" class="w-full h-56 md:h-[28rem] text-sm text-black outline-none resize-y bg-white rounded-lg border border-black/10 p-3" placeholder="결과가 여기에 표시됩니다." readonly></textarea>
-          <div class="mt-2 flex flex-wrap items-center justify-between gap-2">
-            <div class="flex flex-wrap gap-2 w-full sm:w-auto">
-              <button id="btnEncode" class="px-3 py-1.5 text-sm rounded-xl border border-emerald-400/35 bg-emerald-400/15 text-emerald-700 hover:bg-emerald-400/25 w-full sm:w-auto">인코드</button>
-              <button id="btnDecode" class="px-3 py-1.5 text-sm rounded-xl border border-cyan-400/35 bg-cyan-400/15 text-cyan-700 hover:bg-cyan-400/25 w-full sm:w-auto">디코드</button>
-              <button id="btnSwap"   class="px-3 py-1.5 text-sm rounded-xl border border-white/20 hover:bg-white/10 text-white w-full sm:w-auto">입력↔결과 교체</button>
-              <button id="btnClear"  class="px-3 py-1.5 text-sm rounded-xl border border-white/20 hover:bg-white/10 text-white w-full sm:w-aut
+    <section class="space-y-5">
+      <h2 class="text-2xl font-semibold">사용 설명서 &amp; FAQ</h2>
+      <div class="space-y-3">
+        <details class="group rounded-2xl border border-white/10 bg-white/[0.02] p-5">
+          <summary class="flex cursor-pointer items-center justify-between text-lg font-semibold text-white/80">
+            Base64 인코딩은 어떻게 하나요?
+            <i data-lucide="chevron-down" class="h-5 w-5 transition group-open:rotate-180"></i>
+          </summary>
+          <div class="mt-3 space-y-2 text-sm text-white/70">
+            <p>상단 모드를 <strong>Base64</strong>로 두고, 입력 영역에 텍스트 또는 파일을 드롭한 뒤 <em>인코드</em>를 선택합니다.</p>
+            <p>텍스트는 UTF-8로 자동 인코딩되며, 파일은 MIME 타입을 포함한 Data URL 형식으로 출력됩니다.</p>
+          </div>
+        </details>
+        <details class="group rounded-2xl border border-white/10 bg-white/[0.02] p-5">
+          <summary class="flex cursor-pointer items-center justify-between text-lg font-semibold text-white/80">
+            URL 인코딩이 필요한 경우는 언제인가요?
+            <i data-lucide="chevron-down" class="h-5 w-5 transition group-open:rotate-180"></i>
+          </summary>
+          <div class="mt-3 space-y-2 text-sm text-white/70">
+            <p>주소창이나 쿼리스트링에 공백·한글·특수문자를 넣을 때 깨짐을 방지하려면 URL 인코딩이 필요합니다.</p>
+            <p>모드를 <strong>URL</strong>로 전환하고 <em>URL 인코드</em>를 선택하면 <code>%</code> 기호 기반 안전 문자열이 생성됩니다.</p>
+          </div>
+        </details>
+        <details class="group rounded-2xl border border-white/10 bg-white/[0.02] p-5">
+          <summary class="flex cursor-pointer items-center justify-between text-lg font-semibold text-white/80">
+            Base64를 다시 원본으로 복원하고 싶어요.
+            <i data-lucide="chevron-down" class="h-5 w-5 transition group-open:rotate-180"></i>
+          </summary>
+          <div class="mt-3 space-y-2 text-sm text-white/70">
+            <p><em>디코드</em> 모드에서 Base64 문자열을 붙여넣으면 UTF-8 텍스트는 즉시 복원됩니다.</p>
+            <p>파일일 경우 <strong>다운로드</strong> 버튼이 활성화되어 원본 확장자와 함께 저장할 수 있습니다.</p>
+          </div>
+        </details>
+        <details class="group rounded-2xl border border-white/10 bg-white/[0.02] p-5">
+          <summary class="flex cursor-pointer items-center justify-between text-lg font-semibold text-white/80">
+            에러가 발생하면 어떻게 하나요?
+            <i data-lucide="chevron-down" class="h-5 w-5 transition group-open:rotate-180"></i>
+          </summary>
+          <div class="mt-3 space-y-2 text-sm text-white/70">
+            <p>Base64 문자열이 잘못되었거나 URL 디코드 중 예약문자가 맞지 않으면 상태 영역에 오류 메시지가 표시됩니다.</p>
+            <p>불필요한 공백을 제거하고 다시 시도하거나, Base64라면 패딩(<code>=</code>)이 정확한지 확인하세요.</p>
+          </div>
+        </details>
+      </div>
+    </section>
+  </main>
 
+  <script>
+    const modeButtons = document.querySelectorAll('.mode-btn');
+    const base64Options = document.getElementById('base64Options');
+    const urlOptions = document.getElementById('urlOptions');
+    const input = document.getElementById('input');
+    const output = document.getElementById('output');
+    const fileInput = document.getElementById('file');
+    const auto = document.getElementById('auto');
+    const btnRun = document.getElementById('btnRun');
+    const btnCopy = document.getElementById('btnCopy');
+    const btnSwap = document.getElementById('btnSwap');
+    const btnClear = document.getElementById('btnClear');
+    const btnDownload = document.getElementById('btnDownload');
+    const fileInfo = document.getElementById('fileInfo');
+    const outInfo = document.getElementById('outInfo');
+    const status = document.getElementById('status');
+    const inputStats = document.getElementById('inputStats');
+    const outputStats = document.getElementById('outputStats');
+    const inputPanel = document.getElementById('inputPanel');
+
+    let state = {
+      mode: 'base64',
+      action: 'encode',
+      kind: 'text',
+      urlAction: 'encode'
+    };
+
+    let selectedFile = null;
+    let downloadUrl = null;
+
+    const applySelectedFile = (file) => {
+      selectedFile = file || null;
+      if (selectedFile) {
+        fileInfo.textContent = `${selectedFile.name} · ${formatBytes(selectedFile.size)}`;
+        fileInfo.classList.remove('hidden');
+        if (state.kind !== 'file') {
+          const fileRadio = document.querySelector('input[name="kind"][value="file"]');
+          if (fileRadio) fileRadio.checked = true;
+          state.kind = 'file';
+        }
+      } else {
+        fileInfo.classList.add('hidden');
+      }
+    };
+
+    const formatBytes = (bytes) => {
+      if (!Number.isFinite(bytes)) return '0 B';
+      if (bytes < 1024) return `${bytes} B`;
+      const units = ['KB','MB','GB'];
+      let value = bytes / 1024;
+      for (const unit of units) {
+        if (value < 1024) return `${value.toFixed(1)} ${unit}`;
+        value /= 1024;
+      }
+      return `${value.toFixed(1)} TB`;
+    };
+
+    const updateStats = () => {
+      if (state.mode === 'base64' && state.kind === 'file' && selectedFile) {
+        inputStats.textContent = `${selectedFile.name} · ${formatBytes(selectedFile.size)}`;
+      } else {
+        inputStats.textContent = `${input.value.length} chars`;
+      }
+      outputStats.textContent = `${output.value.length} chars`;
+    };
+
+    const clearStatus = () => {
+      status.classList.add('hidden');
+      status.textContent = '';
+      status.classList.remove('text-red-300','text-emerald-300');
+    };
+
+    const showStatus = (message, isError = false) => {
+      status.textContent = message;
+      status.classList.remove('hidden');
+      status.classList.toggle('text-red-300', isError);
+      status.classList.toggle('text-emerald-300', !isError);
+    };
+
+    const cleanBase64 = (value) => value.trim().replace(/^data:[^,]+,/, '').replace(/\s+/g, '');
+
+    const encodeBase64 = (text) => {
+      const bytes = new TextEncoder().encode(text);
+      let binary = '';
+      const chunk = 0x8000;
+      for (let i = 0; i < bytes.length; i += chunk) {
+        const slice = bytes.subarray(i, i + chunk);
+        binary += String.fromCharCode(...slice);
+      }
+      return btoa(binary);
+    };
+
+    const decodeBase64 = (value) => {
+      const binary = atob(cleanBase64(value));
+      const len = binary.length;
+      const bytes = new Uint8Array(len);
+      for (let i = 0; i < len; i++) bytes[i] = binary.charCodeAt(i);
+      return new TextDecoder().decode(bytes);
+    };
+
+    const detectFileInfoFromBase64 = (value) => {
+      const dataUrlMatch = value.trim().match(/^data:([^;,]+)?(;base64)?,/);
+      if (dataUrlMatch) {
+        const mime = dataUrlMatch[1] || 'application/octet-stream';
+        const ext = mime.split('/')[1] || 'bin';
+        return { mime, name: `decoded.${ext}` };
+      }
+      return { mime: 'application/octet-stream', name: 'decoded.bin' };
+    };
+
+    const decodeBase64ToBlob = (value) => {
+      const cleaned = cleanBase64(value);
+      const binary = atob(cleaned);
+      const len = binary.length;
+      const bytes = new Uint8Array(len);
+      for (let i = 0; i < len; i++) bytes[i] = binary.charCodeAt(i);
+      return new Blob([bytes]);
+    };
+
+    const runTransform = async () => {
+      clearStatus();
+      btnDownload.classList.add('hidden');
+      btnDownload.href = '#';
+      outInfo.classList.add('hidden');
+      if (downloadUrl) {
+        URL.revokeObjectURL(downloadUrl);
+        downloadUrl = null;
+      }
+
+      try {
+        if (state.mode === 'base64') {
+          if (state.kind === 'file' && state.action === 'encode') {
+            if (!selectedFile) {
+              showStatus('먼저 업로드할 파일을 선택하세요.', true);
+              return;
+            }
+            const arrayBuffer = await selectedFile.arrayBuffer();
+            const bytes = new Uint8Array(arrayBuffer);
+            let binary = '';
+            const chunk = 0x8000;
+            for (let i = 0; i < bytes.length; i += chunk) {
+              const slice = bytes.subarray(i, i + chunk);
+              binary += String.fromCharCode(...slice);
+            }
+            const base64 = btoa(binary);
+            const mime = selectedFile.type || 'application/octet-stream';
+            const dataUrl = `data:${mime};base64,${base64}`;
+            output.value = dataUrl;
+            outInfo.textContent = `${mime} · ${formatBytes(selectedFile.size)}`;
+            outInfo.classList.remove('hidden');
+            showStatus('파일을 Base64(Data URL)로 변환했습니다.');
+          } else if (state.kind === 'file' && state.action === 'decode') {
+            const raw = input.value.trim();
+            if (!raw) {
+              showStatus('디코드할 Base64 문자열을 입력하세요.', true);
+              return;
+            }
+            const info = detectFileInfoFromBase64(raw);
+            const blob = decodeBase64ToBlob(raw);
+            downloadUrl = URL.createObjectURL(blob);
+            btnDownload.href = downloadUrl;
+            btnDownload.download = info.name;
+            btnDownload.classList.remove('hidden');
+            output.value = `[파일 디코드 준비 완료] ${info.name}`;
+            outInfo.textContent = `${info.mime} · ${formatBytes(blob.size)}`;
+            outInfo.classList.remove('hidden');
+            showStatus('디코드된 파일을 다운로드할 수 있습니다.');
+          } else if (state.action === 'encode') {
+            output.value = encodeBase64(input.value);
+            showStatus('Base64 인코드 완료.');
+          } else {
+            output.value = decodeBase64(input.value);
+            showStatus('Base64 디코드 완료.');
+          }
+        } else {
+          const urlAction = state.urlAction;
+          const value = input.value;
+          if (!value) {
+            output.value = '';
+            return;
+          }
+          if (urlAction === 'encode') {
+            output.value = encodeURIComponent(value).replace(/[!'()*]/g, c => '%' + c.charCodeAt(0).toString(16).toUpperCase());
+            showStatus('URL 인코드 완료.');
+          } else {
+            try {
+              output.value = decodeURIComponent(value.replace(/\+/g, '%20'));
+              showStatus('URL 디코드 완료.');
+            } catch (err) {
+              showStatus('URL 디코드 중 오류가 발생했습니다. 입력을 확인하세요.', true);
+            }
+          }
+        }
+      } catch (error) {
+        console.error(error);
+        showStatus('변환 중 오류가 발생했습니다. 입력 값을 확인하세요.', true);
+      } finally {
+        updateStats();
+      }
+    };
+
+    modeButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const mode = btn.dataset.mode;
+        if (mode === state.mode) return;
+        state.mode = mode;
+        modeButtons.forEach(b => b.classList.toggle('bg-white/20', b.dataset.mode === mode));
+        if (mode === 'base64') {
+          base64Options.hidden = false;
+          urlOptions.hidden = true;
+          btnRun.textContent = '변환 실행';
+        } else {
+          base64Options.hidden = true;
+          urlOptions.hidden = false;
+          btnRun.textContent = 'URL 처리';
+        }
+        modeButtons.forEach(b => {
+          const active = b.dataset.mode === mode;
+          b.classList.toggle('bg-white/20', active);
+          b.classList.toggle('text-white', active);
+          b.classList.toggle('text-white/60', !active);
+        });
+        runTransform();
+      });
+    });
+
+    base64Options.addEventListener('change', (event) => {
+      if (event.target.name === 'action') {
+        state.action = event.target.value;
+      }
+      if (event.target.name === 'kind') {
+        state.kind = event.target.value;
+      }
+      runTransform();
+    });
+
+    urlOptions.addEventListener('change', (event) => {
+      if (event.target.name === 'urlAction') {
+        state.urlAction = event.target.value;
+        runTransform();
+      }
+    });
+
+    input.addEventListener('input', () => {
+      updateStats();
+      if (auto.checked) runTransform();
+    });
+
+    input.addEventListener('paste', () => {
+      if (auto.checked) setTimeout(runTransform, 0);
+    });
+
+    fileInput.addEventListener('change', () => {
+      applySelectedFile(fileInput.files && fileInput.files[0]);
+      updateStats();
+      if (selectedFile && auto.checked) {
+        runTransform();
+      }
+    });
+
+    const preventDefaults = (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+    };
+
+    ['dragenter','dragover'].forEach(type => {
+      inputPanel.addEventListener(type, (event) => {
+        preventDefaults(event);
+        inputPanel.classList.add('ring-2','ring-emerald-400/40');
+      });
+    });
+
+    ['dragleave','drop'].forEach(type => {
+      inputPanel.addEventListener(type, (event) => {
+        preventDefaults(event);
+        inputPanel.classList.remove('ring-2','ring-emerald-400/40');
+      });
+    });
+
+    inputPanel.addEventListener('drop', (event) => {
+      const dt = event.dataTransfer;
+      if (dt?.files?.length) {
+        if (typeof DataTransfer !== 'undefined') {
+          try {
+            const transfer = new DataTransfer();
+            Array.from(dt.files).forEach(file => transfer.items.add(file));
+            fileInput.files = transfer.files;
+            fileInput.dispatchEvent(new Event('change', { bubbles: true }));
+          } catch (err) {
+            applySelectedFile(dt.files[0]);
+            updateStats();
+            if (selectedFile && auto.checked) runTransform();
+          }
+        } else {
+          applySelectedFile(dt.files[0]);
+          updateStats();
+          if (selectedFile && auto.checked) runTransform();
+        }
+      } else if (dt?.getData('text')) {
+        input.value = dt.getData('text');
+        updateStats();
+        if (auto.checked) runTransform();
+      }
+    });
+
+    btnRun.addEventListener('click', runTransform);
+
+    btnCopy.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(output.value);
+        showStatus('결과를 복사했습니다.');
+      } catch (error) {
+        console.error(error);
+        showStatus('클립보드 접근이 거부되었습니다.', true);
+      }
+    });
+
+    btnSwap.addEventListener('click', () => {
+      const temp = input.value;
+      input.value = output.value;
+      output.value = temp;
+      updateStats();
+      showStatus('입력과 결과를 교환했습니다.');
+      if (auto.checked) runTransform();
+    });
+
+    btnClear.addEventListener('click', () => {
+      input.value = '';
+      output.value = '';
+      applySelectedFile(null);
+      fileInput.value = '';
+      if (downloadUrl) URL.revokeObjectURL(downloadUrl);
+      downloadUrl = null;
+      btnDownload.classList.add('hidden');
+      btnDownload.href = '#';
+      clearStatus();
+      updateStats();
+    });
+
+    btnDownload.addEventListener('click', () => {
+      showStatus('파일 다운로드를 시작했습니다.');
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+        event.preventDefault();
+        runTransform();
+      }
+    });
+
+    updateStats();
+    modeButtons[0].classList.add('bg-white/20');
+    lucide?.createIcons?.();
+  </script>
+</body>
+</html>

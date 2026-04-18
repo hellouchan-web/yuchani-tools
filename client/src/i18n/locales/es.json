@@ -1,0 +1,92 @@
+{
+  "site": {
+    "title": "Yuchani Tools Pro - Todas las herramientas web en un solo lugar",
+    "description": "No pierdas tiempo en tareas repetitivas. Accede a herramientas de productividad utilizadas por el 1% de profesionales, todo en un solo lugar.",
+    "tagline": "Centro de herramientas web que ahorra tu tiempo"
+  },
+  "nav": {
+    "home": "Inicio",
+    "tools": "Herramientas",
+    "about": "Acerca de",
+    "contact": "Contacto",
+    "language": "Idioma"
+  },
+  "hero": {
+    "title": "Centro de herramientas web que ahorra tu tiempo",
+    "subtitle": "¿Cansado de perder tiempo en tareas repetitivas?",
+    "description": "'Yuchani Tools pro' reúne herramientas de productividad utilizadas secretamente por el 1% de profesionales.",
+    "search_placeholder": "¿Con qué podemos ayudarte?",
+    "search_button": "Buscar",
+    "features": {
+      "pinned": "Las herramientas populares están fijadas en la parte superior",
+      "responsive": "Responsive para móvil/escritorio"
+    }
+  },
+  "categories": {
+    "seo": "SEO & Marketing",
+    "media": "PDF & Imagen",
+    "content": "Contenido & Texto",
+    "data": "Datos & Conversión",
+    "development": "Herramientas de desarrollador",
+    "utility": "Utilidades"
+  },
+  "tools": {
+    "meta_length": {
+      "name": "Contador de caracteres de etiquetas SEO Meta",
+      "description": "Asegúrate de que Google no corte tu título y descripción. Verifica el número óptimo de caracteres en tiempo real."
+    },
+    "serp_preview": {
+      "name": "Vista previa de resultados de búsqueda de Google",
+      "description": "Mira cómo aparece tu sitio en los resultados de búsqueda de Google. Mejora tu tasa de clics."
+    },
+    "og_preview": {
+      "name": "Vista previa de tarjeta de compartir social (OG)",
+      "description": "¿Se rompe tu imagen al compartir enlaces en WhatsApp o Slack? Prueba cómo se verá tu enlace antes de compartir."
+    },
+    "robots_sitemap": {
+      "name": "Generador de robots.txt y mapa del sitio",
+      "description": "Crea una guía para el robot de búsqueda de Google en solo 10 segundos. ¡Tarea fundamental y esencial de SEO!"
+    },
+    "background_remover": {
+      "name": "Herramienta de eliminación de fondo de imagen con IA",
+      "description": "¡Sin Photoshop, en 5 segundos! Elimina el fondo de cualquier imagen y hazlo transparente."
+    },
+    "pdf_rotate": {
+      "name": "Editor de páginas PDF",
+      "description": "Corrige páginas escaneadas al revés y elimina páginas innecesarias. ¡Sin necesidad de instalar software!"
+    },
+    "korean_proofread": {
+      "name": "Herramienta de corrección de oraciones con IA",
+      "description": "Corrige oraciones incómodas, errores tipográficos y espaciado. Deja que la IA pula tu escritura a nivel profesional."
+    },
+    "text_metrics": {
+      "name": "Contador de caracteres y corrector ortográfico",
+      "description": "No te estreses por los límites de caracteres en ensayos y reportes. Verifica en tiempo real mientras escribes."
+    }
+  },
+  "footer": {
+    "brand": "Yuchani Tools pro",
+    "description": "No pierdas tiempo buscando las herramientas web adecuadas. Resuelve todo en un solo lugar rápidamente.",
+    "resources": "Recursos",
+    "guides": "Guías y tutoriales",
+    "changelog": "Registro de cambios",
+    "privacy": "Política de privacidad",
+    "cookies": "Política de cookies",
+    "sitemap": "Mapa del sitio",
+    "connect": "Conectar",
+    "website": "Sitio web de Yuchani",
+    "telegram": "Telegram",
+    "kakao": "KakaoTalk",
+    "donate": "El apoyo es amor",
+    "language": "Idioma",
+    "copyright": "© {year} Yuchani Tools pro • All rights reserved"
+  },
+  "tags": {
+    "seo": "SEO",
+    "ai": "IA",
+    "best": "Mejor",
+    "workflow": "Flujo de trabajo",
+    "korean": "Coreano",
+    "basic": "Básico"
+  }
+}

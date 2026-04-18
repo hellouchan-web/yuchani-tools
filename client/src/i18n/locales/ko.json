@@ -1,0 +1,92 @@
+{
+  "site": {
+    "title": "Yuchani Tools Pro - 모든 웹도구를 한 곳에",
+    "description": "반복적인 작업에 시간을 낭비하지 마세요. 상위 1%의 전문가들이 사용하는 생산성 도구를 한 곳에서 빠르게 해결하세요.",
+    "tagline": "시간을 아껴주는 웹툴 허브"
+  },
+  "nav": {
+    "home": "홈",
+    "tools": "도구",
+    "about": "소개",
+    "contact": "문의",
+    "language": "언어"
+  },
+  "hero": {
+    "title": "시간을 아껴주는 웹툴 허브",
+    "subtitle": "반복적인 작업에 시간을 낭비하고 계신가요?",
+    "description": "'Yuchani Tools pro'는 상위 1%의 전문가들이 비밀리에 사용하는 생산성 도구를 한 곳에 모았습니다.",
+    "search_placeholder": "무엇을 도와드릴까요?",
+    "search_button": "검색",
+    "features": {
+      "pinned": "인기 툴은 상단에 고정돼요",
+      "responsive": "모바일/데스크톱 반응형"
+    }
+  },
+  "categories": {
+    "seo": "SEO & 마케팅",
+    "media": "PDF & 이미지",
+    "content": "콘텐츠 & 텍스트",
+    "data": "데이터 & 변환",
+    "development": "개발자 도구",
+    "utility": "유틸리티"
+  },
+  "tools": {
+    "meta_length": {
+      "name": "SEO 메타태그 글자 수 계산기",
+      "description": "구글이 제목과 설명을 잘라먹지 않도록, 최적의 글자 수를 실시간으로 확인하세요."
+    },
+    "serp_preview": {
+      "name": "구글 검색결과 미리보기",
+      "description": "내 사이트가 구글에서 어떻게 보일까? 고객의 눈으로 미리 보고 클릭률을 높여보세요."
+    },
+    "og_preview": {
+      "name": "소셜 공유(OG) 카드 미리보기",
+      "description": "카톡이나 슬랙에 링크 공유했을 때 이미지가 깨지나요? 링크가 어떻게 보일지 미리 테스트하세요."
+    },
+    "robots_sitemap": {
+      "name": "robots.txt & 사이트맵 생성기",
+      "description": "구글 검색 로봇을 위한 안내서, 단 10초 만에 만드세요. SEO의 가장 기초이자 필수 작업!"
+    },
+    "background_remover": {
+      "name": "AI 이미지 배경 제거 (누끼따기)",
+      "description": "포토샵 없이 5초 만에! 어떤 이미지든 원하는 부분만 남기고 배경을 투명하게 만드세요."
+    },
+    "pdf_rotate": {
+      "name": "PDF 페이지 편집기",
+      "description": "거꾸로 스캔된 페이지, 불필요한 페이지 삭제. 프로그램을 설치할 필요 없이 바로 해결하세요."
+    },
+    "korean_proofread": {
+      "name": "AI 문장 교정기",
+      "description": "어색한 문장, 오타, 띄어쓰기까지. 당신의 글을 AI가 전문가 수준으로 다듬어 드립니다."
+    },
+    "text_metrics": {
+      "name": "글자 수/공백/맞춤법 검사기",
+      "description": "자기소개서, 보고서 글자 수 때문에 스트레스받지 마세요. 쓰면서 실시간으로 확인하세요."
+    }
+  },
+  "footer": {
+    "brand": "Yuchani Tools pro",
+    "description": "필요한 웹도구를 찾는데 시간을 낭비하지마세요. 한 곳에서 빠르게 해결할수있습니다",
+    "resources": "리소스",
+    "guides": "가이드 & 튜토리얼",
+    "changelog": "업데이트 로그",
+    "privacy": "개인정보 처리방침",
+    "cookies": "쿠키 정책",
+    "sitemap": "사이트맵",
+    "connect": "연결",
+    "website": "Yuchani 웹사이트",
+    "telegram": "텔레그램",
+    "kakao": "카카오톡",
+    "donate": "후원은 사랑입니다",
+    "language": "언어",
+    "copyright": "© {year} Yuchani Tools pro • All rights reserved"
+  },
+  "tags": {
+    "seo": "SEO",
+    "ai": "AI",
+    "best": "베스트",
+    "workflow": "워크플로우",
+    "korean": "국문",
+    "basic": "기본기"
+  }
+}

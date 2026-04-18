@@ -1,0 +1,92 @@
+{
+  "site": {
+    "title": "Yuchani Tools Pro - All Web Tools in One Place",
+    "description": "Don't waste time on repetitive tasks. Access productivity tools used by top 1% professionals, all in one place.",
+    "tagline": "Web Tools Hub That Saves Your Time"
+  },
+  "nav": {
+    "home": "Home",
+    "tools": "Tools",
+    "about": "About",
+    "contact": "Contact",
+    "language": "Language"
+  },
+  "hero": {
+    "title": "Web Tools Hub That Saves Your Time",
+    "subtitle": "Tired of wasting time on repetitive tasks?",
+    "description": "'Yuchani Tools pro' brings together productivity tools secretly used by top 1% professionals.",
+    "search_placeholder": "What can we help you with?",
+    "search_button": "Search",
+    "features": {
+      "pinned": "Popular tools are pinned at the top",
+      "responsive": "Mobile/Desktop responsive"
+    }
+  },
+  "categories": {
+    "seo": "SEO & Marketing",
+    "media": "PDF & Image",
+    "content": "Content & Text",
+    "data": "Data & Conversion",
+    "development": "Developer Tools",
+    "utility": "Utilities"
+  },
+  "tools": {
+    "meta_length": {
+      "name": "SEO Meta Tag Character Counter",
+      "description": "Ensure Google doesn't cut off your title and description. Check optimal character count in real-time."
+    },
+    "serp_preview": {
+      "name": "Google Search Result Preview",
+      "description": "See how your site appears in Google search results. Preview from your customer's perspective and boost click-through rates."
+    },
+    "og_preview": {
+      "name": "Social Share (OG) Card Preview",
+      "description": "Is your image broken when sharing links on KakaoTalk or Slack? Test how your link will look before sharing."
+    },
+    "robots_sitemap": {
+      "name": "robots.txt & Sitemap Generator",
+      "description": "Create a guide for Google search robots in just 10 seconds. Essential SEO foundation!"
+    },
+    "background_remover": {
+      "name": "AI Image Background Remover",
+      "description": "Remove backgrounds in 5 seconds without Photoshop! Keep what you want and make the background transparent."
+    },
+    "pdf_rotate": {
+      "name": "PDF Page Editor",
+      "description": "Fix upside-down scanned pages and delete unnecessary pages. No software installation needed!"
+    },
+    "korean_proofread": {
+      "name": "AI Sentence Proofreader",
+      "description": "Fix awkward sentences, typos, and spacing. Let AI polish your writing to professional standards."
+    },
+    "text_metrics": {
+      "name": "Character Count & Spell Checker",
+      "description": "Stop stressing about character limits for essays and reports. Check in real-time as you type."
+    }
+  },
+  "footer": {
+    "brand": "Yuchani Tools pro",
+    "description": "Don't waste time finding the right web tools. Solve everything in one place quickly.",
+    "resources": "Resources",
+    "guides": "Guides & Tutorials",
+    "changelog": "Changelog",
+    "privacy": "Privacy Policy",
+    "cookies": "Cookie Policy",
+    "sitemap": "Sitemap",
+    "connect": "Connect",
+    "website": "Yuchani Website",
+    "telegram": "Telegram",
+    "kakao": "KakaoTalk",
+    "donate": "Support is Love",
+    "language": "Language",
+    "copyright": "© {year} Yuchani Tools pro • All rights reserved"
+  },
+  "tags": {
+    "seo": "SEO",
+    "ai": "AI",
+    "best": "Best",
+    "workflow": "Workflow",
+    "korean": "Korean",
+    "basic": "Basic"
+  }
+}

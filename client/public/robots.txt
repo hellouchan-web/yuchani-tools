@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /*.json$
+
+Sitemap: https://tools.yuchani.com/sitemap.xml
+Sitemap: https://tools.yuchani.com/sitemap-ko.xml
+Sitemap: https://tools.yuchani.com/sitemap-en.xml
+Sitemap: https://tools.yuchani.com/sitemap-ja.xml
+Sitemap: https://tools.yuchani.com/sitemap-zh.xml
+Sitemap: https://tools.yuchani.com/sitemap-es.xml
+
+# Crawl delay for respectful crawling
+Crawl-delay: 1

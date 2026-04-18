@@ -1,0 +1,92 @@
+{
+  "site": {
+    "title": "Yuchani Tools Pro - 所有网络工具一站式解决",
+    "description": "不要浪费时间在重复的任务上。访问顶级1%专业人士使用的生产力工具，全部集中在一个地方。",
+    "tagline": "节省您时间的网络工具中心"
+  },
+  "nav": {
+    "home": "首页",
+    "tools": "工具",
+    "about": "关于",
+    "contact": "联系",
+    "language": "语言"
+  },
+  "hero": {
+    "title": "节省您时间的网络工具中心",
+    "subtitle": "厌倦了在重复任务上浪费时间吗？",
+    "description": "'Yuchani Tools pro'汇集了顶级1%专业人士秘密使用的生产力工具。",
+    "search_placeholder": "我们能帮您什么？",
+    "search_button": "搜索",
+    "features": {
+      "pinned": "热门工具固定在顶部",
+      "responsive": "移动/桌面响应式"
+    }
+  },
+  "categories": {
+    "seo": "SEO & 营销",
+    "media": "PDF & 图像",
+    "content": "内容 & 文本",
+    "data": "数据 & 转换",
+    "development": "开发者工具",
+    "utility": "实用工具"
+  },
+  "tools": {
+    "meta_length": {
+      "name": "SEO元标签字符计数器",
+      "description": "确保Google不会截断您的标题和描述。实时检查最佳字符数。"
+    },
+    "serp_preview": {
+      "name": "Google搜索结果预览",
+      "description": "查看您的网站在Google搜索中的显示方式。从客户的角度预览并提高点击率。"
+    },
+    "og_preview": {
+      "name": "社交分享(OG)卡片预览",
+      "description": "在微信或Slack上分享链接时图像损坏？分享前测试您的链接外观。"
+    },
+    "robots_sitemap": {
+      "name": "robots.txt & 网站地图生成器",
+      "description": "在10秒内为Google搜索机器人创建指南。SEO的基础和必要任务！"
+    },
+    "background_remover": {
+      "name": "AI图像背景移除工具",
+      "description": "无需Photoshop，5秒内完成！从任何图像中移除背景并使其透明。"
+    },
+    "pdf_rotate": {
+      "name": "PDF页面编辑器",
+      "description": "修复倒扫描的页面并删除不必要的页面。无需安装软件！"
+    },
+    "korean_proofread": {
+      "name": "AI句子校对工具",
+      "description": "修复尴尬的句子、打字错误和间距。让AI将您的文章打磨到专业水准。"
+    },
+    "text_metrics": {
+      "name": "字符计数 & 拼写检查器",
+      "description": "不要为论文和报告的字符限制而感到压力。边输入边实时检查。"
+    }
+  },
+  "footer": {
+    "brand": "Yuchani Tools pro",
+    "description": "不要浪费时间寻找合适的网络工具。在一个地方快速解决所有问题。",
+    "resources": "资源",
+    "guides": "指南 & 教程",
+    "changelog": "更新日志",
+    "privacy": "隐私政策",
+    "cookies": "Cookie政策",
+    "sitemap": "网站地图",
+    "connect": "连接",
+    "website": "Yuchani网站",
+    "telegram": "Telegram",
+    "kakao": "KakaoTalk",
+    "donate": "支持就是爱",
+    "language": "语言",
+    "copyright": "© {year} Yuchani Tools pro • All rights reserved"
+  },
+  "tags": {
+    "seo": "SEO",
+    "ai": "AI",
+    "best": "最佳",
+    "workflow": "工作流程",
+    "korean": "韩语",
+    "basic": "基础"
+  }
+}

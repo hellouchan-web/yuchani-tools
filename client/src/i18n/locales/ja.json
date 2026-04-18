@@ -1,0 +1,92 @@
+{
+  "site": {
+    "title": "Yuchani Tools Pro - すべてのウェブツールを一箇所に",
+    "description": "繰り返しのタスクに時間を無駄にしないでください。トップ1%の専門家が使う生産性ツールをすべて一箇所で利用できます。",
+    "tagline": "あなたの時間を節約するウェブツールハブ"
+  },
+  "nav": {
+    "home": "ホーム",
+    "tools": "ツール",
+    "about": "について",
+    "contact": "お問い合わせ",
+    "language": "言語"
+  },
+  "hero": {
+    "title": "あなたの時間を節約するウェブツールハブ",
+    "subtitle": "繰り返しのタスクに時間を無駄にしていませんか？",
+    "description": "'Yuchani Tools pro'は、トップ1%の専門家が秘密裏に使用する生産性ツールを一箇所に集めました。",
+    "search_placeholder": "何かお手伝いできることはありますか？",
+    "search_button": "検索",
+    "features": {
+      "pinned": "人気のツールはトップに固定されています",
+      "responsive": "モバイル/デスクトップ対応"
+    }
+  },
+  "categories": {
+    "seo": "SEO & マーケティング",
+    "media": "PDF & 画像",
+    "content": "コンテンツ & テキスト",
+    "data": "データ & 変換",
+    "development": "開発者ツール",
+    "utility": "ユーティリティ"
+  },
+  "tools": {
+    "meta_length": {
+      "name": "SEOメタタグ文字数カウンター",
+      "description": "Googleがタイトルと説明をカットしないように、最適な文字数をリアルタイムで確認してください。"
+    },
+    "serp_preview": {
+      "name": "Google検索結果プレビュー",
+      "description": "あなたのサイトがGoogle検索でどのように表示されるかを確認してください。クリック率を向上させましょう。"
+    },
+    "og_preview": {
+      "name": "ソーシャルシェア(OG)カードプレビュー",
+      "description": "LINEやSlackでリンク共有したときに画像が壊れていますか？共有前にプレビューをテストしてください。"
+    },
+    "robots_sitemap": {
+      "name": "robots.txt & サイトマップジェネレーター",
+      "description": "Google検索ロボット用ガイドを10秒で作成。SEOの基本かつ必須タスク！"
+    },
+    "background_remover": {
+      "name": "AI画像背景削除ツール",
+      "description": "Photoshopなしで5秒で完了！任意の画像から背景を透明にしてください。"
+    },
+    "pdf_rotate": {
+      "name": "PDFページエディター",
+      "description": "逆さまにスキャンされたページを修正し、不要なページを削除してください。ソフトウェアのインストールは不要です！"
+    },
+    "korean_proofread": {
+      "name": "AI文章校正ツール",
+      "description": "不自然な文章、タイプミス、スペーシングを修正してください。AIがあなたの文章をプロレベルに磨き上げます。"
+    },
+    "text_metrics": {
+      "name": "文字数 & スペルチェッカー",
+      "description": "エッセイやレポートの文字数制限でストレスを感じないでください。入力中にリアルタイムで確認してください。"
+    }
+  },
+  "footer": {
+    "brand": "Yuchani Tools pro",
+    "description": "適切なウェブツールを探すのに時間を無駄にしないでください。一箇所ですべてを素早く解決できます。",
+    "resources": "リソース",
+    "guides": "ガイド & チュートリアル",
+    "changelog": "変更ログ",
+    "privacy": "プライバシーポリシー",
+    "cookies": "クッキーポリシー",
+    "sitemap": "サイトマップ",
+    "connect": "つながる",
+    "website": "Yuchaniウェブサイト",
+    "telegram": "Telegram",
+    "kakao": "KakaoTalk",
+    "donate": "サポートは愛です",
+    "language": "言語",
+    "copyright": "© {year} Yuchani Tools pro • All rights reserved"
+  },
+  "tags": {
+    "seo": "SEO",
+    "ai": "AI",
+    "best": "ベスト",
+    "workflow": "ワークフロー",
+    "korean": "韓国語",
+    "basic": "基本"
+  }
+}
